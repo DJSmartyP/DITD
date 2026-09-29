@@ -55,7 +55,7 @@ The supplied noticeboard, map, manuals and Jonabot portrait are included in `ass
 
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
-New downloadable Bodach Bay outbound and return blimp tickets are included as the completed Scene 22 reward.
+A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward.
 
 See `MEDIA_INVENTORY.md` for the complete source-to-scene map and hashes.
 

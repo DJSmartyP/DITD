@@ -78,6 +78,8 @@ test("the final reward includes downloadable Bodach Bay tickets", () => {
   assert.equal(tickets.kind, "image");
   assert.equal(tickets.download, true);
   assert.equal(tickets.status, "generated-reward-asset");
+  assert.match(tickets.src, /completion-pass\.png$/);
+  assert.equal(tickets.downloadLabel, "Download your completion pass");
 });
 
 test("HTML uses repository-relative local URLs", async () => {

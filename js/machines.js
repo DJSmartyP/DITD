@@ -271,7 +271,7 @@ function reward(scene) {
   wrapper.append(el("div", "armed-badge", "BLIMP PASS: RESERVED"));
   const credits = document.createElement("ul");
   (scene.credits || []).forEach((credit) => credits.append(el("li", "", credit)));
-  wrapper.append(el("p", "", "Your outbound and return tickets are ready above."), el("h3", "", "Credits"), credits);
+  wrapper.append(el("p", "", "Your collectible completion pass is ready above. Download it, add your details and keep it as proof that you completed the trail."), el("h3", "", "Credits"), credits);
   return wrapper;
 }
 

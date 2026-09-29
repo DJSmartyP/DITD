@@ -50,4 +50,4 @@ No replacement canon was invented for the missing Activation Centre visual.
 
 | Asset | Required scene | Runtime mapping |
 |---|---:|---|
-| New Bodach Bay outbound and return blimp tickets, generated 2026-09-29 with blank passenger/date/seat fields | 22 | `assets/tickets/bodach-bay-blimp-tickets.png` |
+| Collectible Bodach Bay Blimp Completion Pass, generated 2026-09-30 with Jonabot cameo, completion seal, travel stub and blank passenger/date/seat fields | 22 | `assets/tickets/bodach-bay-trail-completion-pass.png` |
