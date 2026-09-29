@@ -374,10 +374,10 @@
       "mode": "reward",
       "phase": "restored",
       "body": [
-        "Your visit to Bodach Bay is booked.",
-        "TBD - the original Bodach Bay blimp-ticket image/PDF was not present in the supplied media folder. This named placeholder deliberately does not invent a replacement reward."
+        "Your visit to Bodach Bay is booked."
       ],
       "mediaId": "post-trail-credits",
+      "ticketMediaId": "bodach-bay-tickets",
       "credits": [
         "Written by Grayfitz, Smarty, Arty and Founder Neven",
         "Video content: Grayfitz",

@@ -55,6 +55,12 @@ function image(item) {
   if (item.kind === "image-region") {
     caption.append(el("p", "", "The cypher poster is in the lower-right area of the noticeboard image."));
   }
+  if (item.download) {
+    const link = el("a", "secondary-button", "Download tickets");
+    link.href = item.src;
+    link.download = item.downloadName || "bodach-bay-blimp-tickets.png";
+    caption.append(link);
+  }
   shell.append(img, caption);
   return shell;
 }

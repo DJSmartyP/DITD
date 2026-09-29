@@ -43,6 +43,11 @@ These original files were referenced by the planning material but were not prese
 | Placeholder ID | Required scene | Current behaviour |
 |---|---:|---|
 | `activation-centre` / original CAPTCHA art | 10 | Authored fictional activation interaction with visible `[TBD ORIGINAL VISUAL]` label; canonical code `WD54L` retained |
-| `bodach-bay-tickets` | 22 | Named reward placeholder; booking completion and credits still function |
 
-No replacement canon was invented for either missing asset.
+No replacement canon was invented for the missing Activation Centre visual.
+
+## Generated reward asset
+
+| Asset | Required scene | Runtime mapping |
+|---|---:|---|
+| New Bodach Bay outbound and return blimp tickets, generated 2026-09-29 with blank passenger/date/seat fields | 22 | `assets/tickets/bodach-bay-blimp-tickets.png` |

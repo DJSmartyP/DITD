@@ -136,11 +136,14 @@
       "scenes": ["activation-centre"]
     },
     "bodach-bay-tickets": {
-      "kind": "download",
-      "src": "TBD_BODACH_BAY_BLIMP_TICKETS",
+      "kind": "image",
+      "src": "./assets/tickets/bodach-bay-blimp-tickets.png",
       "title": "Bodach Bay blimp tickets",
-      "sourceFile": null,
-      "status": "tbd-original-asset-unavailable",
+      "alt": "Two matching vintage JonaTravel blimp tickets for Bodach Bay, one outbound and one return, with blank passenger, date and seat fields.",
+      "sourceFile": "Generated for the DITD web trail on 2026-09-29",
+      "status": "generated-reward-asset",
+      "download": true,
+      "downloadName": "bodach-bay-blimp-tickets.png",
       "scenes": ["trail-complete"]
     }
   }

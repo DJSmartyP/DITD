@@ -61,6 +61,7 @@ test("noticeboard evidence is retained for the 2JP investigation", () => {
 test("every scene media ID exists and local mapped assets resolve", async () => {
   for (const scene of trail.scenes) {
     if (scene.mediaId) assert.ok(manifest.items[scene.mediaId], `Missing manifest item: ${scene.mediaId}`);
+    if (scene.ticketMediaId) assert.ok(manifest.items[scene.ticketMediaId], `Missing ticket manifest item: ${scene.ticketMediaId}`);
   }
   for (const [id, item] of Object.entries(manifest.items)) {
     if (typeof item.src === "string" && item.src.startsWith("./")) {
@@ -68,6 +69,15 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
     }
     if (item.kind === "youtube") assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
   }
+});
+
+test("the final reward includes downloadable Bodach Bay tickets", () => {
+  const finale = trail.scenes.find((scene) => scene.id === "trail-complete");
+  const tickets = manifest.items[finale.ticketMediaId];
+  assert.equal(finale.ticketMediaId, "bodach-bay-tickets");
+  assert.equal(tickets.kind, "image");
+  assert.equal(tickets.download, true);
+  assert.equal(tickets.status, "generated-reward-asset");
 });
 
 test("HTML uses repository-relative local URLs", async () => {

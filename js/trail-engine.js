@@ -131,6 +131,11 @@ export class TrailEngine {
       if (media) this.root.append(media);
     }
 
+    if (scene.ticketMediaId) {
+      const tickets = renderMedia(this.manifest.items[scene.ticketMediaId]);
+      if (tickets) this.root.append(tickets);
+    }
+
     if (replay) {
       const notice = el("p", "feedback", "History replay is read-only. Your current scene has not changed.");
       notice.dataset.kind = "success";

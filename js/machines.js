@@ -269,10 +269,9 @@ function restore(scene, onComplete) {
 function reward(scene) {
   const wrapper = machineFrame("BODACH BAY BOOKING", "CONFIRMED");
   wrapper.append(el("div", "armed-badge", "BLIMP PASS: RESERVED"));
-  const missing = el("p", "tbd-copy", "[TBD: ORIGINAL BODACH BAY BLIMP TICKETS]");
   const credits = document.createElement("ul");
   (scene.credits || []).forEach((credit) => credits.append(el("li", "", credit)));
-  wrapper.append(missing, el("h3", "", "Credits"), credits);
+  wrapper.append(el("p", "", "Your outbound and return tickets are ready above."), el("h3", "", "Credits"), credits);
   return wrapper;
 }
 

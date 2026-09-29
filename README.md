@@ -53,10 +53,9 @@ All compromise, activation, install, scanning and deletion effects are fictional
 
 The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The nine videos use the supplied unlisted YouTube playlist rather than duplicating the local MOV masters.
 
-Two original assets were not present in the supplied folder and remain clearly named placeholders:
+The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
-- original Activation Centre/CAPTCHA artwork;
-- Bodach Bay blimp tickets.
+New downloadable Bodach Bay outbound and return blimp tickets are included as the completed Scene 22 reward.
 
 See `MEDIA_INVENTORY.md` for the complete source-to-scene map and hashes.
 
