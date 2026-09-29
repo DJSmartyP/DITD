@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d6865">
+  <meta name="description" content="Discord In The Discord - A Jonabot Trail, presented through the PPEC Trail Console.">
+  <title>Discord In The Discord - A Jonabot Trail</title>
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/machines.css">
+  <link rel="stylesheet" href="./css/corruption.css">
+</head>
+<body data-phase="normal">
+  <a class="skip-link" href="#workspace">Skip to current trail scene</a>
+
+  <noscript>
+    <div class="noscript-card">
+      The Trail Console needs JavaScript to save progress and operate its fictional machines.
+    </div>
+  </noscript>
+
+  <div class="console" id="trail-console">
+    <header class="console-header">
+      <div class="brand-block">
+        <span class="brand-kicker">PPEC FIELD EQUIPMENT</span>
+        <h1>TRAIL CONSOLE <span aria-hidden="true">//</span> <span class="unit-name">JONABOT</span></h1>
+      </div>
+      <div class="status-cluster" aria-label="Trail status">
+        <span class="status-lamp" aria-hidden="true"></span>
+        <span id="phase-label">SYSTEM: CLEAN</span>
+        <span id="stage-label">STAGE 00 / 22</span>
+      </div>
+    </header>
+
+    <div class="console-grid">
+      <aside class="jonabot-rail" aria-label="Jonabot status">
+        <div class="portrait" aria-hidden="true">
+          <img src="./assets/images/jonabot-portrait.webp" alt="">
+          <span class="portrait-eye portrait-eye-left"></span>
+          <span class="portrait-eye portrait-eye-right"></span>
+          <span class="portrait-mouth"></span>
+        </div>
+        <div>
+          <p class="eyebrow">NARRATOR LINK</p>
+          <h2 id="narrator-name">Jonabot v2.3</h2>
+          <p id="narrator-status">Connected and standing by.</p>
+        </div>
+        <dl class="system-readout">
+          <div><dt>Trail</dt><dd id="trail-progress">0%</dd></div>
+          <div><dt>Evidence</dt><dd id="evidence-count">0 items</dd></div>
+          <div><dt>Storage</dt><dd>Local device</dd></div>
+        </dl>
+        <button class="quiet-button desktop-only" id="menu-button" type="button">Console menu</button>
+      </aside>
+
+      <main class="workspace" id="workspace" tabindex="-1">
+        <div id="scene-root" aria-live="polite"></div>
+      </main>
+
+      <aside class="tool-rail" id="tool-rail" aria-label="Trail tools">
+        <div class="tool-tabs" role="tablist" aria-label="Trail tools">
+          <button role="tab" aria-selected="true" aria-controls="panel-field-kit" id="tab-field-kit" data-tool="field-kit">Field Kit</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-notes" id="tab-notes" data-tool="notes">Notes</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-hints" id="tab-hints" data-tool="hints">Hints</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-history" id="tab-history" data-tool="history">History</button>
+        </div>
+
+        <section class="tool-panel" id="panel-field-kit" role="tabpanel" aria-labelledby="tab-field-kit">
+          <div class="panel-heading">
+            <h2>Field Kit</h2>
+            <span id="pin-status">Nothing pinned</span>
+          </div>
+          <div id="evidence-list" class="evidence-list"></div>
+        </section>
+
+        <section class="tool-panel" id="panel-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
+          <div class="panel-heading">
+            <h2>Notes</h2>
+            <span id="notes-status">Saved locally</span>
+          </div>
+          <label class="sr-only" for="trail-notes">Trail notes</label>
+          <textarea id="trail-notes" rows="13" placeholder="Codes, names, suspicious robots..."></textarea>
+        </section>
+
+        <section class="tool-panel" id="panel-hints" role="tabpanel" aria-labelledby="tab-hints" hidden>
+          <div class="panel-heading">
+            <h2>Hints</h2>
+            <span id="hint-count">0 / 0</span>
+          </div>
+          <div id="hint-list"></div>
+          <button class="secondary-button" id="reveal-hint" type="button">Ask Jonabot for a hint</button>
+        </section>
+
+        <section class="tool-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+          <div class="panel-heading">
+            <h2>History</h2>
+            <span>Read-only replay</span>
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </section>
+      </aside>
+    </div>
+
+    <nav class="mobile-toolbar" aria-label="Trail tools">
+      <button type="button" data-mobile-tool="field-kit"><span aria-hidden="true">◇</span> Clues</button>
+      <button type="button" data-mobile-tool="notes"><span aria-hidden="true">✎</span> Notes</button>
+      <button type="button" data-mobile-tool="hints"><span aria-hidden="true">?</span> Hint</button>
+      <button type="button" data-mobile-tool="menu"><span aria-hidden="true">☰</span> Menu</button>
+    </nav>
+  </div>
+
+  <dialog id="welcome-dialog" class="console-dialog">
+    <div class="dialog-badge">PPEC TRAIL CONSOLE</div>
+    <h2>Discord In The Discord</h2>
+    <p class="dialog-subtitle">A Jonabot Trail</p>
+    <p id="welcome-message">One persistent console. Twenty-three canonical scenes. Your progress stays on this device.</p>
+    <div class="dialog-actions">
+      <button class="primary-button" id="continue-trail" type="button">Begin trail</button>
+      <button class="quiet-button" id="welcome-reset" type="button" hidden>Start again</button>
+    </div>
+  </dialog>
+
+  <dialog id="menu-dialog" class="console-dialog">
+    <button class="dialog-close" type="button" data-close-dialog aria-label="Close console menu">×</button>
+    <p class="eyebrow">CONSOLE MENU</p>
+    <h2>Trail controls</h2>
+    <button class="menu-action" type="button" data-menu-tool="history">Review completed scenes</button>
+    <button class="menu-action" type="button" data-menu-tool="notes">Open notes</button>
+    <button class="menu-action danger-action" id="reset-trail" type="button">Start trail again</button>
+    <p class="fine-print">Reset removes only <code>ppecTrailState:v1</code> from this browser.</p>
+  </dialog>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "sourceFolder": "C:\\Users\\nickp\\Desktop\\Phantom Peak Stuff\\Discord In The Discord Media",
+  "sourceDocument": "https://docs.google.com/document/d/1_JLZ6GsC-ILbwJdITtZuuqmhXJzBEQYYRh9HmboL6hE/edit?usp=drivesdk",
+  "items": {
+    "intro": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=o4-d7swjHQA",
+      "title": "Jonabot trail introduction",
+      "sourceFile": "PPEC_01_INTRO_240210.mov",
+      "status": "mapped-youtube",
+      "scenes": ["intro"]
+    },
+    "jonabot-portrait": {
+      "kind": "image",
+      "src": "./assets/images/jonabot-portrait.webp",
+      "title": "Jonabot narrator portrait",
+      "alt": "Jonabot, a small retro robot with large brass lenses, a pale industrial helmet and a red waistcoat.",
+      "sourceFile": "D1 - 50 Pieces.png",
+      "status": "mapped",
+      "scenes": ["persistent-shell"]
+    },
+    "town-noticeboard": {
+      "kind": "image",
+      "src": "./assets/images/town-noticeboard.jpg",
+      "title": "Town noticeboard",
+      "alt": "A crowded town noticeboard. A Bodach Bay advert names Jonavision channel 207, and a dark Gremlins poster at lower right pairs names with symbols.",
+      "sourceFile": "PPEC_02_NOTICEBOARD_240208.jpg",
+      "status": "mapped",
+      "scenes": ["noticeboard"]
+    },
+    "gremlin-cypher-poster": {
+      "kind": "image-region",
+      "src": "./assets/images/town-noticeboard.jpg",
+      "title": "Gremlins Getting At Your Gigabytes? poster",
+      "alt": "The Gremlin symbol key printed on the lower-right area of the town noticeboard. Keep this evidence to translate the corrupted Ridge map later.",
+      "sourceFile": "PPEC_02_NOTICEBOARD_240208.jpg",
+      "status": "mapped-region",
+      "scenes": ["noticeboard", "corrupted-ridge-map"]
+    },
+    "bodach-bay-tourism": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=NBgHzkGyLH8",
+      "title": "Bodach Bay tourism item",
+      "sourceFile": "PPEC_03_BODACH_BAY_VIDEO_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["jonavision-207", "bodach-bay"]
+    },
+    "corrupted-ridge-map": {
+      "kind": "image",
+      "src": "./assets/images/corrupted-ridge-map.jpg",
+      "title": "Corrupted Ridge map",
+      "alt": "A sepia Ridge map with eleven location labels replaced by green Gremlin symbols. Each location points to a geometric area symbol; the bottom reads Error 103114101109108105110, Data Corrupted.",
+      "sourceFile": "PPEC_04_JONAGRAPH_MAP_240208.jpg",
+      "status": "mapped",
+      "scenes": ["corrupted-ridge-map"]
+    },
+    "jonatravel-jonana-peel": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=XZTUwUgWQ0w",
+      "title": "JonaTravel call with Jonana Peel",
+      "sourceFile": "PPEC_05_JONATRAVEL_VIDEO_01_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["jonatravel-call"]
+    },
+    "jonatravel-operator-manual": {
+      "kind": "document",
+      "src": "./assets/documents/jonatravel-operator-manual.pdf",
+      "title": "JonaTravel Operational Manual",
+      "sourceFile": "PPEC_06_JONATRAVEL_MANUAL_240205.pdf",
+      "status": "mapped",
+      "scenes": ["repair-jonatravel"]
+    },
+    "videomatic-4763-hacker": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=3Xmr5k-s2Uo",
+      "title": "Videomatic recording 4763",
+      "sourceFile": "PPEC_07_HACKER_VIDEO_01_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["videomatic-4763", "licence-failure"]
+    },
+    "videomatic-8345-reveal": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=0Q03cm6mG4U",
+      "title": "Videomatic recording 8345 - Jonabot reveal",
+      "sourceFile": "PPEC_08_HACKER_VIDEO_02_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["test-videomatic", "jonabot-reveal"]
+    },
+    "cancel-plan-mockery": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=UZvwzrTpF4M",
+      "title": "Jonabot cancel-plan response",
+      "sourceFile": "PPEC_09_HACKER_VIDEO_03_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["fake-cancel-plan"]
+    },
+    "jonabot-operator-manual-protected": {
+      "kind": "document",
+      "src": "./assets/documents/jonabot-operator-manual-protected.pdf",
+      "title": "Password-protected Jonabot Owners Guide",
+      "sourceFile": "PPEC_10_JONABOT_MANUAL_PROTECTED_240209.pdf",
+      "status": "mapped",
+      "scenes": ["recovery-manual", "jonabot-taunt", "recovery-console"]
+    },
+    "restore-finale": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=3Bau9qcTICE",
+      "title": "Jonabot restore finale",
+      "sourceFile": "PPEC_11_HACKER_VIDEO_04_240205.mov",
+      "status": "mapped-youtube",
+      "scenes": ["restore"]
+    },
+    "final-jonana-peel": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=UBRdKAB_FL8",
+      "title": "Final Jonana Peel call",
+      "sourceFile": "PPEC_12_JONATRAVEL_VIDEO_02_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["bodach-bay-booking"]
+    },
+    "post-trail-credits": {
+      "kind": "youtube",
+      "src": "https://www.youtube.com/watch?v=QUs3g0damK4",
+      "title": "Post-trail credits",
+      "sourceFile": "PPEC_13_POST_TRAIL_CREDITS_240211.mov",
+      "status": "mapped-youtube",
+      "scenes": ["trail-complete"]
+    },
+    "activation-centre": {
+      "kind": "generated-interface",
+      "src": "TBD_ORIGINAL_ACTIVATION_CENTRE_VISUAL",
+      "title": "Legacy Videomatic Activation Centre",
+      "sourceFile": null,
+      "status": "tbd-original-asset-unavailable",
+      "scenes": ["activation-centre"]
+    },
+    "bodach-bay-tickets": {
+      "kind": "download",
+      "src": "TBD_BODACH_BAY_BLIMP_TICKETS",
+      "title": "Bodach Bay blimp tickets",
+      "sourceFile": null,
+      "status": "tbd-original-asset-unavailable",
+      "scenes": ["trail-complete"]
+    }
+  }
+}

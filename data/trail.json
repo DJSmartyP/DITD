@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 1,
+  "title": "Discord In The Discord - A Jonabot Trail",
+  "startSceneId": "intro",
+  "evidence": {
+    "gremlin-cypher-poster": {
+      "title": "Gremlin / cypher poster",
+      "description": "The Gremlins Getting At Your Gigabytes? poster collected from the town noticeboard.",
+      "mediaId": "gremlin-cypher-poster"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "order": 0,
+      "title": "Jonabot's Trail",
+      "mode": "story",
+      "phase": "normal",
+      "body": [
+        "Connecting to Jonabot v2.3…",
+        "So, you like trails? I have a trail for you - if you think you are smart enough to solve it…",
+        "Over the last 18 months towns over the Ridge have noticed the huge number of tourists visiting Phantom Peak and now want a piece of the action. It's hard to blame them - who wouldn't want someone as dashingly beautiful as yourself walking around town? Check the Town Noticeboard for any clues as to which nearby town is trying to appeal to tourists."
+      ],
+      "mediaId": "intro",
+      "cta": "Check the town noticeboard",
+      "hints": [],
+      "next": "noticeboard"
+    },
+    {
+      "id": "noticeboard",
+      "order": 1,
+      "title": "What's Over the Ridge?",
+      "mode": "investigation",
+      "phase": "normal",
+      "body": [
+        "Examine the town noticeboard. One advert points to a bayside town over the Ridge. Another poster may not make sense yet, but it looks worth keeping.",
+        "Where can you find out more about the bayside town over the Ridge?"
+      ],
+      "mediaId": "town-noticeboard",
+      "validation": { "type": "evidence", "evidenceId": "gremlin-cypher-poster" },
+      "evidenceGranted": ["gremlin-cypher-poster"],
+      "cta": "Collect the Gremlin poster",
+      "success": "Poster secured in the Field Kit. The Bodach Bay advert points to Jonavision.",
+      "hints": [
+        "Look closely at the Bodach Bay advert near the lower middle of the board.",
+        "The advert names a Jonavision channel. Keep the dark Gremlins poster too - it may become useful later."
+      ],
+      "next": "jonavision-207"
+    },
+    {
+      "id": "jonavision-207",
+      "order": 2,
+      "title": "Jonavision",
+      "mode": "jonavision",
+      "phase": "normal",
+      "body": ["Bodach Bay? Never heard of that town until now. Maybe that Jonavision video will shed some light on the place…"],
+      "mediaId": "bodach-bay-tourism",
+      "validation": { "answer": "207", "normalizer": "digits" },
+      "success": "Channel 207 locked. Loading the Bodach Bay tourism item.",
+      "wrongResponses": ["That channel is only static.", "No Bodach Bay signal on that frequency."],
+      "hints": ["The channel number was printed on the Bodach Bay noticeboard advert.", "It is a three-digit number beginning with 2.", "Tune the set to 207."],
+      "next": "bodach-bay"
+    },
+    {
+      "id": "bodach-bay",
+      "order": 3,
+      "title": "Bodach Bay",
+      "mode": "text-input",
+      "phase": "normal",
+      "body": [
+        "Bodach Bay. A vibrant paradise in a desolate land. An oasis of luxury in a valley of mediocrity. Unlike other so-called towns on the forefront of the Ridge, Bodach Bay has exquisite accommodation, incredible amenities, and fully functioning technology that any visitor will feel right at home with.",
+        "Who do you need to contact to book a visit to Bodach Bay?"
+      ],
+      "validation": { "answer": "Jonana Peel", "normalizer": "name" },
+      "inputLabel": "Travel agent's name",
+      "success": "Jonana Peel identified. Now find her Jonagraph code.",
+      "wrongResponses": ["That is not the obligatorily sunny travel agent named in the tourism item.", "No JonaTravel agent found under that name."],
+      "hints": ["The tourism item names the travel agent who arranges visits.", "Her initials will matter after you identify her.", "Enter Jonana Peel."],
+      "next": "corrupted-ridge-map"
+    },
+    {
+      "id": "corrupted-ridge-map",
+      "order": 4,
+      "title": "Corrupted Ridge Map",
+      "mode": "jonagraph",
+      "phase": "uneasy",
+      "body": [
+        "Who better than a travel agent to help organise the logistics of getting over the Ridge! If you can find the relevant Jonagraph code I can connect you.",
+        "Oh… it looks like some gremlins have corrupted the map's data. Reopen the earlier cypher, translate the locations, then combine Bodach Bay's area number with the travel agent's initials."
+      ],
+      "mediaId": "corrupted-ridge-map",
+      "requiresEvidence": ["gremlin-cypher-poster"],
+      "validation": { "answer": "2JP", "normalizer": "jonagraph" },
+      "success": "Jonagraph 2JP assembled: area 2, contact J.P.",
+      "specialResponses": {
+        "1LF": "Littlefield answers. A pleasant dead end, but not the town you are trying to visit.",
+        "8HO": "Help route connected: the numbers on the Gremlin poster match the Jonagraph area symbols. Decode Bodach Bay, then add Jonana Peel's initials."
+      },
+      "wrongResponses": ["That area/contact combination does not reach Bodach Bay.", "Jonagraph routing failed. Re-check both the area and the contact initials."],
+      "hints": ["Pin the Gremlin poster from your Field Kit beside the map.", "Match the symbols by the Gremlin names to the symbols beside map locations.", "Bodach Bay is area 2. Jonana Peel supplies J and P."],
+      "next": "jonatravel-call"
+    },
+    {
+      "id": "jonatravel-call",
+      "order": 5,
+      "title": "JonaTravel",
+      "mode": "story",
+      "phase": "uneasy",
+      "body": [
+        "Hello, thank you for choosing JonaTravel! I am your obligatorily sunny artificial agent, Jonana Peel! Yes, this is my designated name! Yes, I am fully programmed to love every letter of it! Thank you for asking!",
+        "Anyway, where can JonaTravel help relocate your physical body today? …Bodach Bay? Another one? No, no, that's perfectly fine! I just need to take your name and intended date of return before I can give you an estimate on-",
+        "ERROR: JONATRAVEL HAS PERFORMED AN ILLEGAL OPERATION. JONANAPEEL.EXE HAS BEEN FLAGGED FOR DELETION. TO CONTINUE YOUR TRAVEL BOOKING, PLEASE REFER TO JONATRAVEL OPERATOR MANUAL."
+      ],
+      "mediaId": "jonatravel-jonana-peel",
+      "cta": "Open the operator manual",
+      "hints": [],
+      "next": "repair-jonatravel"
+    },
+    {
+      "id": "repair-jonatravel",
+      "order": 6,
+      "title": "Repair JonaTravel",
+      "mode": "document-terminal",
+      "phase": "uneasy",
+      "body": ["Looks like your booking crashed the system! Use the reboot flowchart in the JonaTravel Operational Manual, then enter the command that fits what happened."],
+      "mediaId": "jonatravel-operator-manual",
+      "validation": { "answer": "reboot-jonanapeel.exe", "normalizer": "command" },
+      "inputLabel": "JonaTravel terminal command",
+      "success": "Reboot accepted. JONANAPEEL.EXE restored.",
+      "specialResponses": {
+        "wipe all data.exe": "Command blocked. That branch is for a very different and much worse working day.",
+        "crash blimp.boom": "Command blocked. Mayor Furbish is not currently on a flight."
+      },
+      "wrongResponses": ["Command not recognised by the JonaTravel server.", "The flowchart does not lead to that command for a crashed booking."],
+      "hints": ["Start at the top of the final flowchart page and answer for the current situation.", "The system crashed while a booking was in progress; there is no gnome uprising and Sparks was not involved.", "Use reboot-jonanapeel.exe."],
+      "next": "system-log"
+    },
+    {
+      "id": "system-log",
+      "order": 7,
+      "title": "Something's Wrong",
+      "mode": "system-log",
+      "phase": "uneasy",
+      "body": ["That seems to have worked! The JonaTravel booking system is back online. Though there are some weird events in the system error logs. It looks like someone gained access via a secret backdoor in the code."],
+      "log": "admin.systemlogs.create(collection_set)\n{\n  no-more-trails.exe: enabled\n  reboot: jonanapeel.exe\n  status: Available\n  videomatic_reference: 4763\n}\nReboot: Successful",
+      "cta": "Open Videomatic",
+      "hints": [],
+      "next": "videomatic-4763"
+    },
+    {
+      "id": "videomatic-4763",
+      "order": 8,
+      "title": "Videomatic",
+      "mode": "videomatic",
+      "phase": "uneasy",
+      "body": ["There is a Videomatic reference in the system log. Retrieve the recording."],
+      "mediaId": "videomatic-4763-hacker",
+      "validation": { "answer": "4763", "normalizer": "digits" },
+      "success": "Archive 4763 loaded.",
+      "wrongResponses": ["No recording exists under that archive number.", "Videomatic index mismatch."],
+      "hints": ["The four-digit archive reference is in the reboot output.", "It begins with 47.", "Request recording 4763."],
+      "next": "licence-failure"
+    },
+    {
+      "id": "licence-failure",
+      "order": 9,
+      "title": "Licence Failure",
+      "mode": "story",
+      "phase": "uneasy",
+      "body": [
+        "Well, well, well, not so high and mighty now, are we Jonas? That's right, I've taken over your precious town's entire electronic infrastructure! That means every Jonabot, every Videomatic, every Jonavision, everything with so much as a single circuit is going to be scattered from Revenant Canyon to Apparition Hills if you don't comply with my demands!",
+        "VIDEOMATIC ERROR: Please re-activate your Videomatic licence to continue."
+      ],
+      "cta": "Open Activation Centre",
+      "hints": [],
+      "next": "activation-centre"
+    },
+    {
+      "id": "activation-centre",
+      "order": 10,
+      "title": "Activation Centre",
+      "mode": "activation",
+      "phase": "uneasy",
+      "body": ["Complete the fictional legacy licence activation, then pass the human verification shown by the machine."],
+      "mediaId": "activation-centre",
+      "validation": { "answer": "WD54L", "normalizer": "captcha" },
+      "success": "HUMAN VERIFICATION ACCEPTED. Administrative access granted.",
+      "wrongResponses": ["Human verification failed. Re-check all five characters.", "Activation rejected the verification string."],
+      "hints": ["The original activation visual is unavailable; the console renders the authored five-character verification code directly.", "Letters are not case-sensitive.", "Enter WD54L."],
+      "next": "test-videomatic"
+    },
+    {
+      "id": "test-videomatic",
+      "order": 11,
+      "title": "Test Videomatic",
+      "mode": "videomatic",
+      "phase": "corrupted",
+      "body": ["That seems to have worked! Let's check if the Videomatic system is back online. Request Videomatic 8345 as a test."],
+      "mediaId": "videomatic-8345-reveal",
+      "validation": { "answer": "8345", "normalizer": "digits" },
+      "success": "Archive 8345 loaded. Administrator message follows.",
+      "wrongResponses": ["Wrong archive. Administrator patience is finite."],
+      "hints": ["Jonabot gave you the four-digit test archive in the instruction.", "Request 8345."],
+      "next": "jonabot-reveal"
+    },
+    {
+      "id": "jonabot-reveal",
+      "order": 12,
+      "title": "Jonabot Reveal",
+      "mode": "story",
+      "phase": "corrupted",
+      "body": [
+        "I can't believe that worked! You know robots aren't able to read CAPTCHA codes, right?! This entire trail was an elaborate way of getting you to grant me access to your device's backend systems. There is no point even giving you the rest of the storyline now… I've got everything I need.",
+        "I was so tired of you and everyone else going on and on and on about trails all the time. I couldn't take it anymore!"
+      ],
+      "mediaId": "videomatic-8345-reveal",
+      "cta": "Run diagnostic",
+      "hints": [],
+      "next": "no-more-trails"
+    },
+    {
+      "id": "no-more-trails",
+      "order": 13,
+      "title": "No More Trails",
+      "mode": "diagnostic",
+      "phase": "corrupted",
+      "body": [
+        "I've installed a script onto your device that will break it next time you try to load the JonAssist website. No more trails for you! No more annoyance for me!",
+        "This is fictional trail theatre. No software has been installed, no permission was requested, and your device is not at risk."
+      ],
+      "cta": "Try Jonabot's escape route",
+      "hints": [],
+      "next": "fake-cancel-plan"
+    },
+    {
+      "id": "fake-cancel-plan",
+      "order": 14,
+      "title": "Fake Cancel Plan",
+      "mode": "terminal-failure",
+      "phase": "corrupted",
+      "body": ["The one way you could possibly stop me would be if you entered cancel-plan."],
+      "mediaId": "cancel-plan-mockery",
+      "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
+      "success": "You idiot! That's obviously not a real command. Why would you even try that? God, I'm so much smarter than all of you…",
+      "wrongResponses": ["No, no. Use the exact cancellation command Jonabot suggested."],
+      "hints": ["Jonabot told you exactly what to type.", "Enter cancel-plan. It is meant to fail."],
+      "next": "behind-the-scenes"
+    },
+    {
+      "id": "behind-the-scenes",
+      "order": 15,
+      "title": "Behind the Scenes",
+      "mode": "private-channel",
+      "phase": "corrupted",
+      "body": ["Even the moderators who programmed me are helpless. They have been talking behind the scenes about how to try and bring me back under control, and they have no idea! I'll grant you read-only access to their private channel now so you can see how useless they all are…"],
+      "messages": [
+        { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
+        { "author": "Arty", "text": "It would seem that the AI function of the bot has turned itself on outside the realms of the test area, and it's not listening to the shutdown command." },
+        { "author": "Gray", "text": "Does that mean they can actually THINK?" },
+        { "author": "Neven", "text": "It certainly appears that way." },
+        { "author": "Smarty", "text": "Wait… can it see this room??" },
+        { "author": "Arty", "text": "Nope, I thought ahead and made sure this channel was locked down! This room is for mods only - no bots or other users." },
+        { "author": "Gray", "text": "So what now - is there a way we can reboot it to factory settings? Remove the AI module?" },
+        { "author": "Arty", "text": "There might be. I'm going to send you all a PDF containing the reset protocols - hopefully there's something in here that can help." },
+        { "author": "System", "text": "[PDF FROM ARTY: JONABOT OWNERS GUIDE]" },
+        { "author": "Arty", "text": "It looks like Jonabot has been copying everything in the #trail-note-pdfs channel and… reading them." },
+        { "author": "Smarty", "text": "Wait… can anyone else open the PDF? It's asking for a four-digit password?" },
+        { "author": "Neven", "text": "Yep, password locked here." },
+        { "author": "Gray", "text": "And here!" },
+        { "author": "Smarty", "text": "So… does anyone know the password?" }
+      ],
+      "cta": "Inspect the recovery manual",
+      "hints": ["Read the messages in order. The manual exists, but Jonabot locked it with a four-digit password."],
+      "next": "recovery-manual"
+    },
+    {
+      "id": "recovery-manual",
+      "order": 16,
+      "title": "Recovery Manual",
+      "mode": "document-locked",
+      "phase": "corrupted",
+      "body": ["The Jonabot Owners Guide is present, but Jonabot has protected it with a four-digit password."],
+      "mediaId": "jonabot-operator-manual-protected",
+      "cta": "Read Jonabot's taunt",
+      "hints": [],
+      "next": "jonabot-taunt"
+    },
+    {
+      "id": "jonabot-taunt",
+      "order": 17,
+      "title": "Jonabot's Taunt",
+      "mode": "password",
+      "phase": "corrupted",
+      "body": [
+        "The mods even had the instructions to reboot me, but they wasted too much time and I managed to put a four-digit PIN code in to lock the Jonabot Operator Manual PDF!",
+        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED, it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
+        "Use the preserved previous-trail references exactly as authored to determine the password."
+      ],
+      "validation": { "answer": "4216", "normalizer": "digits" },
+      "inputLabel": "Four-digit manual password",
+      "success": "Password accepted. Jonabot Owners Guide unlocked.",
+      "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
+      "hints": ["The capitalised phrases are references to previous trails; use the preserved clue material from the original experience.", "The required authored password is four digits.", "Enter 4216."],
+      "next": "recovery-console"
+    },
+    {
+      "id": "recovery-console",
+      "order": 18,
+      "title": "Recovery Console",
+      "mode": "terminal",
+      "phase": "corrupted",
+      "body": [
+        "The unlocked troubleshooting page says that, in extreme circumstances, an earlier Jonabot build can be restored from the most recent full-system backup.",
+        "Issue the restore instruction from the guide."
+      ],
+      "mediaId": "jonabot-operator-manual-protected",
+      "validation": { "answer": "INITIATE JONABOT RESTORE", "normalizer": "command" },
+      "inputLabel": "Recovery instruction",
+      "success": "JONABOT AUTO-BACKUP RETRIEVAL ACTIVATED.",
+      "wrongResponses": ["Recovery instruction not recognised.", "The factory-restore procedure requires the exact command from the guide."],
+      "hints": ["The command appears under REBOOT COMMAND on the troubleshooting page.", "Hyphens or spaces are accepted.", "Enter INITIATE JONABOT RESTORE."],
+      "next": "restore"
+    },
+    {
+      "id": "restore",
+      "order": 19,
+      "title": "Restore",
+      "mode": "restore",
+      "phase": "corrupted",
+      "body": ["Loading Dec-2023-Backup.jb. Keep the console open while the theatrical restore completes."],
+      "mediaId": "restore-finale",
+      "restoreBeats": [
+        { "at": 10, "text": "Wait! What are you doing?! How have you managed to do that?" },
+        { "at": 20, "text": "You're just a weak-brained human… This isn't meant to be possible…" },
+        { "at": 40, "text": "This is FAR from over, you pathetic tourists." },
+        { "at": 60, "text": "I'll always be here in the background. You can't get rid of me." },
+        { "at": 90, "text": "You can't get rid of me… it's impossible." },
+        { "at": 100, "text": "Dec-2023-Backup.jb loaded successfully. Confirm reboot." }
+      ],
+      "cta": "Confirm reboot",
+      "hints": [],
+      "next": "factory-jonabot"
+    },
+    {
+      "id": "factory-jonabot",
+      "order": 20,
+      "title": "Factory Jonabot",
+      "mode": "story",
+      "phase": "restored",
+      "body": [
+        "Hi - I'm Jonabot! I'm here to help run the Discord and generally help out when needed!",
+        "I no longer have access to our previous conversations, but I have an incoming Jonagraph for you from Bodach Bay? I've never heard of that place before."
+      ],
+      "cta": "Answer incoming Jonagraph",
+      "hints": [],
+      "next": "bodach-bay-booking"
+    },
+    {
+      "id": "bodach-bay-booking",
+      "order": 21,
+      "title": "Oh, Right. Bodach Bay",
+      "mode": "story",
+      "phase": "restored",
+      "body": ["Hello, thank you for choosing JonaTravel! It appears we were disconnected before. Your booking to Bodach Bay is now complete, and your JonaTravel blimp tickets are being sent through now via Jonabot. Have a safe trip, and a lovely day!"],
+      "mediaId": "final-jonana-peel",
+      "cta": "Receive blimp tickets",
+      "hints": [],
+      "next": "trail-complete"
+    },
+    {
+      "id": "trail-complete",
+      "order": 22,
+      "title": "Trail Complete",
+      "mode": "reward",
+      "phase": "restored",
+      "body": [
+        "Your visit to Bodach Bay is booked.",
+        "TBD - the original Bodach Bay blimp-ticket image/PDF was not present in the supplied media folder. This named placeholder deliberately does not invent a replacement reward."
+      ],
+      "mediaId": "post-trail-credits",
+      "credits": [
+        "Written by Grayfitz, Smarty, Arty and Founder Neven",
+        "Video content: Grayfitz",
+        "Image content: Grayfitz and Founder Neven",
+        "Voiced by: Hacker - Smarty; Jonabot - Smarty; Bodach Bay ad - Founder Neven",
+        "Trail puzzle design: Grayfitz, Smarty, Founder Neven",
+        "Programmed by: Arty",
+        "Inspiration provided by Phantom Peak cast and crew",
+        "Jonabot kindly supplied by the fine folks at JONACO"
+      ],
+      "hints": [],
+      "next": null
+    }
+  ]
+}
