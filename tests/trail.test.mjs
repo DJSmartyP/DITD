@@ -208,14 +208,15 @@ test("every scene has an accurate visible speaker label", () => {
   assert.equal(trail.scenes.find((scene) => scene.id === "bodach-bay-booking").speaker, "Jonana Peel");
 });
 
-test("the final reward includes downloadable Bodach Bay tickets", () => {
+test("the final reward includes tickets and shows the credits video with the written credits", () => {
   const finalCall = trail.scenes.find((scene) => scene.id === "bodach-bay-booking");
   const finale = trail.scenes.find((scene) => scene.id === "trail-complete");
   const tickets = manifest.items[finale.ticketMediaId];
   assert.equal(finalCall.mediaId, "final-jonana-peel");
   assert.equal(finalCall.next, finale.id);
   assert.equal(finale.completeOnEntry, true);
-  assert.equal(finale.mediaId, undefined);
+  assert.equal(finale.mediaId, "post-trail-credits");
+  assert.ok(finale.credits?.length > 0);
   assert.equal(finale.ticketMediaId, "bodach-bay-tickets");
   assert.equal(tickets.kind, "image");
   assert.equal(tickets.download, true);

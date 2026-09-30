@@ -240,8 +240,8 @@
       "plannedLocalSrc": "./assets/videos/post-trail-credits.mp4",
       "thumbnailStatus": "generated-original-story-art",
       "sourceFile": "PPEC_13_POST_TRAIL_CREDITS_240211.mov",
-      "status": "archived-unused",
-      "scenes": []
+      "status": "mapped-youtube",
+      "scenes": ["trail-complete"]
     },
     "activation-centre": {
       "kind": "generated-interface",

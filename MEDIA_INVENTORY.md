@@ -22,7 +22,7 @@ YouTube playlist: [Phantom Peak Explorers Club - CT1 Discord in the Discord](htt
 | `PPEC_10_JONABOT_MANUAL_PROTECTED_240209.pdf` | 2,870,583 B; 3 pages; password `4216` | `A9C23539959509F3A076A653BBB347DA8793F72B7CBFBFFBAA4F6C63312CE830` | `jonabot-operator-manual-protected` / 16-18 | `assets/documents/jonabot-operator-manual-protected.pdf` |
 | `PPEC_11_HACKER_VIDEO_04_240205.mov` | 19,794,990 B | `0CDEEFCCE28C3173F3E0502D36155CE84DF3EDFC4CA5B3D3EDB7B0DEAB67EB97` | `restore-finale` / 19 | YouTube `3Bau9qcTICE` |
 | `PPEC_12_JONATRAVEL_VIDEO_02_240211.mov` | 16,034,062 B | `8C7C9B55E007655116AEC1DD0F421BB70A7DBE0A58FA923310A6DB6B4629682E` | `final-jonana-peel` / 21 | YouTube `UBRdKAB_FL8` |
-| `PPEC_13_POST_TRAIL_CREDITS_240211.mov` | 16,775,564 B | `A307DC0505A1561D3DB9ACCFF68B7B8ABF70729316FCAAE2FEC5C1C69AAB628E` | `post-trail-credits` / archive only | YouTube `QUs3g0damK4`; retained in the manifest but removed from the active ending |
+| `PPEC_13_POST_TRAIL_CREDITS_240211.mov` | 16,775,564 B | `A307DC0505A1561D3DB9ACCFF68B7B8ABF70729316FCAAE2FEC5C1C69AAB628E` | `post-trail-credits` / 22 | YouTube `QUs3g0damK4`; displayed with the written credits on the ticket reward page |
 
 ## Additional supplied artwork
 

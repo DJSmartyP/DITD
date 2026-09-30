@@ -53,7 +53,7 @@ All compromise, activation, install, scanning and deletion effects are fictional
 
 `data/media-manifest.json` maps each semantic media ID to its exact local asset or temporary YouTube URL. The YouTube embeds are placeholders and load only after the player presses the in-world play control.
 
-The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. Both manuals have local page-image readers so they work inline even when a browser cannot embed PDFs; the original PDF links remain available, and the protected Owners Guide stays concealed until its password puzzle is solved. Eight active videos currently use the supplied unlisted YouTube playlist as placeholders. The ninth, the old post-trail credits video, is retained only in the archive manifest. YouTube may still show its own sign-in prompt.
+The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. Both manuals have local page-image readers so they work inline even when a browser cannot embed PDFs; the original PDF links remain available, and the protected Owners Guide stays concealed until its password puzzle is solved. The nine videos currently use the supplied unlisted YouTube playlist as placeholders. YouTube may still show its own sign-in prompt.
 
 When a video contains the answer to the following question, that same video remains visible with the question. The password puzzle later directs players into Discord's `#trail-notes` channel to use the previous-trail PDFs there; the website does not replace that external investigation.
 
@@ -71,7 +71,7 @@ The home screen uses an original responsive advert-style Jonabot hero with live 
 
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
-A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward. The final Jonana Peel recording now leads directly to that ticket download; no additional credits video interrupts the ending.
+A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward. The final Jonana Peel recording leads directly to the ticket page, where the post-trail credits video appears with the written credits rather than as another trail step.
 
 See `MEDIA_INVENTORY.md` for the complete source-to-scene map and hashes.
 
