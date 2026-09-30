@@ -11,7 +11,7 @@ YouTube playlist: [Phantom Peak Explorers Club - CT1 Discord in the Discord](htt
 | Source file | Size | SHA-256 | Semantic ID / scene | Runtime mapping |
 |---|---:|---|---|---|
 | `PPEC_01_INTRO_240210.mov` | 16,025,202 B | `89BCDC0DEA0702F07FEECD9067F26E9DC640FE06FB0C87D581DE0C72797BB4F6` | `intro` / 00 | YouTube `o4-d7swjHQA` |
-| `PPEC_02_NOTICEBOARD_240208.jpg` | 2,097,008 B; 3840×2600 | `8EA8E1B2F5715F555DB81E14545715C0CF1D004F535AAF7CECB9B21432EDFCA8` | `town-noticeboard`, `gremlin-cypher-poster` / 01, 04 | `assets/images/town-noticeboard.jpg` |
+| `PPEC_02_NOTICEBOARD_240208.jpg` | 2,097,008 B; 3840×2600 | `8EA8E1B2F5715F555DB81E14545715C0CF1D004F535AAF7CECB9B21432EDFCA8` | `town-noticeboard`, `gremlin-cypher-poster` / 01, 04 | Zoomable full-board reference at both scenes; `assets/images/town-noticeboard.jpg` |
 | `PPEC_03_BODACH_BAY_VIDEO_240211.mov` | 24,168,228 B | `12F9F4D3C29D55413405754C81745F419A7F84DC6FEC16C488DDEE619D4D9ECB` | `bodach-bay-tourism` / 02-03 | YouTube `NBgHzkGyLH8` |
 | `PPEC_04_JONAGRAPH_MAP_240208.jpg` | 3,694,784 B; 5560×3264 | `D0CCE389B1B0868DF221B983E66C88588D6745497277D3FAB60C27DC65B8BEA0` | `corrupted-ridge-map` / 04 | `assets/images/corrupted-ridge-map.jpg` |
 | `PPEC_05_JONATRAVEL_VIDEO_01_240211.mov` | 24,965,296 B | `1B44B18D57A640689B8EF7C1C1F219EF3A738C3A027811957263C5E5EEBF4AD7` | `jonatravel-jonana-peel` / 05 | YouTube `XZTUwUgWQ0w` |
@@ -32,11 +32,15 @@ YouTube playlist: [Phantom Peak Explorers Club - CT1 Discord in the Discord](htt
 
 The browser icon is also packaged as root `favicon.ico`. A 1200×630 JPEG crop of the opening story artwork at `assets/images/ditd-social-preview.jpg` supplies the public link preview.
 
+The responsive home advert uses original generated artwork at `assets/images/ditd-landing-hero.jpg` (warm expedition-map setting with Jonabot on the left). Its title and Start/Resume controls remain live HTML rather than generated image text.
+
 `Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction because the intro is already mapped from the YouTube playlist.
 
 ## Present but not copied
 
 The nine MOV masters remain in the authoritative source folder. The deployable repository uses their exact YouTube matches to keep the GitHub Pages payload small and browser-compatible.
+
+The Bodach Bay tourism video is deliberately mapped to both Scenes 02 and 03 so the answer-bearing recording stays on screen with the travel-agent question. The full noticeboard is referenced rather than collected, and reopens beside the corrupted map.
 
 ## Explicit TBD assets
 

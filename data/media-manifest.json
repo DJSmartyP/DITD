@@ -24,6 +24,14 @@
       "status": "mapped",
       "scenes": ["persistent-shell"]
     },
+    "landing-hero": {
+      "kind": "image",
+      "src": "./assets/images/ditd-landing-hero.jpg",
+      "title": "Discord In The Discord landing artwork",
+      "alt": "Jonabot stands before a warm illustrated expedition map of the Ridge.",
+      "status": "generated-original-landing-art",
+      "scenes": ["home"]
+    },
     "town-noticeboard": {
       "kind": "image",
       "src": "./assets/images/town-noticeboard.jpg",
@@ -31,13 +39,14 @@
       "alt": "A crowded town noticeboard. A Bodach Bay advert names Jonavision channel 207, and a dark Gremlins poster at lower right pairs names with symbols.",
       "sourceFile": "PPEC_02_NOTICEBOARD_240208.jpg",
       "status": "mapped",
-      "scenes": ["noticeboard"]
+      "zoomable": true,
+      "scenes": ["noticeboard", "corrupted-ridge-map"]
     },
     "gremlin-cypher-poster": {
       "kind": "image-region",
       "src": "./assets/images/town-noticeboard.jpg",
       "title": "Gremlins Getting At Your Gigabytes? poster",
-      "alt": "The Gremlin symbol key printed on the lower-right area of the town noticeboard. Keep this evidence to translate the corrupted Ridge map later.",
+      "alt": "The Gremlin symbol key printed on the lower-right area of the town noticeboard, used to translate the corrupted Ridge map later.",
       "sourceFile": "PPEC_02_NOTICEBOARD_240208.jpg",
       "status": "mapped-region",
       "scenes": ["noticeboard", "corrupted-ridge-map"]
@@ -61,6 +70,7 @@
       "alt": "A sepia Ridge map with eleven location labels replaced by green Gremlin symbols. Each location points to a geometric area symbol; the bottom reads Error 103114101109108105110, Data Corrupted.",
       "sourceFile": "PPEC_04_JONAGRAPH_MAP_240208.jpg",
       "status": "mapped",
+      "zoomable": true,
       "scenes": ["corrupted-ridge-map"]
     },
     "jonatravel-jonana-peel": {

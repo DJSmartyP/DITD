@@ -2,13 +2,7 @@
   "schemaVersion": 1,
   "title": "Discord In The Discord - A Jonabot Trail",
   "startSceneId": "intro",
-  "evidence": {
-    "gremlin-cypher-poster": {
-      "title": "Gremlin / cypher poster",
-      "description": "The Gremlins Getting At Your Gigabytes? poster collected from the town noticeboard.",
-      "mediaId": "gremlin-cypher-poster"
-    }
-  },
+  "evidence": {},
   "scenes": [
     {
       "id": "intro",
@@ -35,17 +29,14 @@
       "phase": "normal",
       "speaker": "Trail Brief",
       "body": [
-        "Examine the town noticeboard. One advert points to a bayside town over the Ridge. Another poster may not make sense yet, but it looks worth keeping.",
+        "Examine the town noticeboard. One advert points to a bayside town over the Ridge. You can open and zoom the full noticeboard now, and it will return beside the later puzzle if you need it.",
         "Where can you find out more about the bayside town over the Ridge?"
       ],
       "mediaId": "town-noticeboard",
-      "validation": { "type": "evidence", "evidenceId": "gremlin-cypher-poster" },
-      "evidenceGranted": ["gremlin-cypher-poster"],
-      "cta": "Collect the Gremlin poster",
-      "success": "Poster secured in the Field Kit. The Bodach Bay advert points to Jonavision.",
+      "cta": "Continue to Jonavision",
       "hints": [
         "Look closely at the Bodach Bay advert near the lower middle of the board.",
-        "The advert names a Jonavision channel. Keep the dark Gremlins poster too - it may become useful later."
+        "The advert names a Jonavision channel. The full noticeboard will remain available when another part becomes useful later."
       ],
       "next": "jonavision-207"
     },
@@ -75,6 +66,8 @@
         "Bodach Bay. A vibrant paradise in a desolate land. An oasis of luxury in a valley of mediocrity. Unlike other so-called towns on the forefront of the Ridge, Bodach Bay has exquisite accommodation, incredible amenities, and fully functioning technology that any visitor will feel right at home with.",
         "Who do you need to contact to book a visit to Bodach Bay?"
       ],
+      "mediaId": "bodach-bay-tourism",
+      "showMediaBeforeSolve": true,
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
       "inputLabel": "Travel agent's name",
       "success": "Jonana Peel identified. Now find her Jonagraph code.",
@@ -91,10 +84,10 @@
       "speaker": "Jonabot",
       "body": [
         "Who better than a travel agent to help organise the logistics of getting over the Ridge! If you can find the relevant Jonagraph code I can connect you.",
-        "Oh… it looks like some gremlins have corrupted the map's data. Reopen the earlier cypher, translate the locations, then combine Bodach Bay's area number with the travel agent's initials."
+        "Oh… it looks like some gremlins have corrupted the map's data. Open the full noticeboard reference below, zoom in on the Gremlins poster, translate the locations, then combine Bodach Bay's area number with the travel agent's initials."
       ],
       "mediaId": "corrupted-ridge-map",
-      "requiresEvidence": ["gremlin-cypher-poster"],
+      "referenceMediaIds": ["town-noticeboard"],
       "validation": { "answer": "2JP", "normalizer": "jonagraph" },
       "success": "Jonagraph 2JP assembled: area 2, contact J.P.",
       "specialResponses": {
@@ -102,7 +95,7 @@
         "8HO": "Help route connected: the numbers on the Gremlin poster match the Jonagraph area symbols. Decode Bodach Bay, then add Jonana Peel's initials."
       },
       "wrongResponses": ["That area/contact combination does not reach Bodach Bay.", "Jonagraph routing failed. Re-check both the area and the contact initials."],
-      "hints": ["Pin the Gremlin poster from your Field Kit beside the map.", "Match the symbols by the Gremlin names to the symbols beside map locations.", "Bodach Bay is area 2. Jonana Peel supplies J and P."],
+      "hints": ["Open the noticeboard reference beside the map and zoom in on the Gremlins poster.", "Match the symbols by the Gremlin names to the symbols beside map locations.", "Bodach Bay is area 2. Jonana Peel supplies J and P."],
       "next": "jonatravel-call"
     },
     {
@@ -279,7 +272,7 @@
         { "author": "Gray", "text": "So what now - is there a way we can reboot it to factory settings? Remove the AI module?" },
         { "author": "Arty", "text": "There might be. I'm going to send you all a PDF containing the reset protocols - hopefully there's something in here that can help." },
         { "author": "System", "text": "[PDF FROM ARTY: JONABOT OWNERS GUIDE]" },
-        { "author": "Arty", "text": "It looks like Jonabot has been copying everything in the #trail-note-pdfs channel and… reading them." },
+        { "author": "Arty", "text": "It looks like Jonabot has been copying everything in the #trail-notes channel and… reading them." },
         { "author": "Smarty", "text": "Wait… can anyone else open the PDF? It's asking for a four-digit password?" },
         { "author": "Neven", "text": "Yep, password locked here." },
         { "author": "Gray", "text": "And here!" },
@@ -312,13 +305,13 @@
       "body": [
         "The mods even had the instructions to reboot me, but they wasted too much time and I managed to put a four-digit PIN code in to lock the Jonabot Operator Manual PDF!",
         "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED, it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
-        "Use the preserved previous-trail references exactly as authored to determine the password."
+        "Return to Discord and open #trail-notes. The four capitalised phrases point to previous-trail PDFs uploaded there. Find the matching PDFs and use them to determine the four-digit password."
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
       "success": "Password accepted. Jonabot Owners Guide unlocked.",
       "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
-      "hints": ["The capitalised phrases are references to previous trails; use the preserved clue material from the original experience.", "The required authored password is four digits.", "Enter 4216."],
+      "hints": ["Open Discord and go to #trail-notes, then search for the four capitalised previous-trail references.", "Use the matching PDFs in that channel to derive the four-digit password, keeping the references in the order shown.", "Enter 4216."],
       "next": "recovery-console"
     },
     {

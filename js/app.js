@@ -197,7 +197,7 @@ try {
   engine.render();
 
   const hasProgress = store.hadProgress();
-  $("#continue-trail").textContent = hasProgress ? "Continue trail" : "Begin trail";
+  $("#continue-trail").textContent = hasProgress ? "Resume trail" : "Start trail";
   $("#welcome-reset").hidden = !hasProgress;
   if (store.recoveredMalformedState) {
     $("#welcome-message").textContent = "Saved progress was unreadable, so the Trail Console recovered safely with a fresh trail. Other browser data was untouched.";

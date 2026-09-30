@@ -17,7 +17,7 @@ export function renderEvidenceList({ root, trail, manifest, store, onChange }) {
   root.replaceChildren();
   const state = store.get();
   if (!state.evidenceIds.length) {
-    root.append(el("p", "empty-state", "No evidence collected yet. Useful items stay here even after their scene is complete."));
+    root.append(el("p", "empty-state", "No collected items. Reference images reopen beside the puzzles that need them."));
     return;
   }
 

@@ -119,14 +119,19 @@
     </nav>
   </div>
 
-  <dialog id="welcome-dialog" class="console-dialog">
-    <div class="dialog-badge">PPEC TRAIL CONSOLE</div>
-    <h2>Discord In The Discord</h2>
-    <p class="dialog-subtitle">A Jonabot Trail</p>
-    <p id="welcome-message">One persistent console. Twenty-three canonical scenes. Your progress stays on this device.</p>
-    <div class="dialog-actions">
-      <button class="primary-button" id="continue-trail" type="button">Begin trail</button>
-      <button class="quiet-button" id="welcome-reset" type="button" hidden>Start again</button>
+  <dialog id="welcome-dialog" class="welcome-dialog" aria-labelledby="welcome-title">
+    <div class="welcome-hero" role="img" aria-label="Jonabot stands before an illustrated amber expedition map of the Ridge">
+      <div class="welcome-copy">
+        <div class="dialog-badge">PPEC COMMUNITY TRAIL</div>
+        <h2 id="welcome-title">Discord In The Discord</h2>
+        <p class="dialog-subtitle">A Jonabot Trail</p>
+        <p class="welcome-deck">An online mystery across Jonavision, Videomatic, Discord and the Ridge.</p>
+        <p id="welcome-message">One persistent console. Twenty-three canonical scenes. Your progress stays on this device.</p>
+        <div class="dialog-actions welcome-actions">
+          <button class="primary-button" id="continue-trail" type="button">Start trail</button>
+          <button class="quiet-button" id="welcome-reset" type="button" hidden>Start again</button>
+        </div>
+      </div>
     </div>
   </dialog>
 

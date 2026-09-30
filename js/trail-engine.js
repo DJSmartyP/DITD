@@ -1,6 +1,5 @@
 import { answerMatches, renderMachine, specialResponse } from "./machines.js";
 import { renderMedia } from "./media.js";
-import { grantEvidence, renderPinnedEvidence } from "./evidence.js";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -89,7 +88,7 @@ export class TrailEngine {
 
   mediaShouldShow(scene, solved, replay) {
     if (!scene.mediaId) return false;
-    if (replay || solved) return true;
+    if (replay || solved || scene.showMediaBeforeSolve) return true;
     return ["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"].includes(scene.mode);
   }
 
@@ -117,20 +116,27 @@ export class TrailEngine {
     });
     this.root.append(copy);
 
-    if (scene.requiresEvidence?.length) {
-      const pinBlock = renderPinnedEvidence({ trail: this.trail, manifest: this.manifest, state });
-      const openKit = el("button", "secondary-button", "Open Field Kit");
-      openKit.type = "button";
-      openKit.addEventListener("click", () => this.onOpenTool?.("field-kit"));
-      pinBlock.append(openKit);
-      this.root.append(pinBlock);
-    }
-
+    const mediaLayout = el("div", "scene-media-layout");
     if (this.mediaShouldShow(scene, solved, replay)) {
       const item = this.manifest.items[scene.mediaId];
       const media = renderMedia(item, { locked: scene.mode === "document-locked" });
-      if (media) this.root.append(media);
+      if (media) mediaLayout.append(media);
     }
+
+    if (scene.referenceMediaIds?.length) {
+      const references = el("details", "reference-drawer");
+      references.append(el("summary", "", "Open noticeboard reference"));
+      const referenceBody = el("div", "reference-drawer-body");
+      referenceBody.append(el("p", "reference-help", "This is the full noticeboard from earlier. Open its zoom viewer to inspect the Gremlins poster while solving the map."));
+      scene.referenceMediaIds.forEach((id) => {
+        const reference = renderMedia(this.manifest.items[id]);
+        if (reference) referenceBody.append(reference);
+      });
+      references.append(referenceBody);
+      mediaLayout.append(references);
+    }
+
+    if (mediaLayout.childElementCount) this.root.append(mediaLayout);
 
     if (scene.ticketMediaId) {
       const tickets = renderMedia(this.manifest.items[scene.ticketMediaId]);
@@ -175,12 +181,10 @@ export class TrailEngine {
     }
 
     const actions = el("div", "scene-actions");
-    if (scene.mode === "investigation" && !solved) {
+    if (scene.mode === "investigation" && scene.validation?.type === "evidence" && !solved) {
       const collect = el("button", "primary-button", scene.cta || "Collect evidence");
       collect.type = "button";
       collect.addEventListener("click", () => {
-        const evidenceId = scene.validation?.evidenceId;
-        if (evidenceId) grantEvidence(this.store, evidenceId);
         this.complete(scene, { stay: true });
         this.render(scene.id);
       });

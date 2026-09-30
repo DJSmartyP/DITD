@@ -49,19 +49,42 @@ test("normalizers accept harmless variations without weakening answers", () => {
   assert.equal(answerMatches("2LF", { answer: "2JP", normalizer: "jonagraph" }), false);
 });
 
-test("noticeboard evidence is retained for the 2JP investigation", () => {
+test("the noticeboard stays available as a zoomable 2JP reference without being collected", () => {
   const noticeboard = trail.scenes.find((scene) => scene.id === "noticeboard");
   const map = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
-  assert.deepEqual(noticeboard.evidenceGranted, ["gremlin-cypher-poster"]);
-  assert.deepEqual(map.requiresEvidence, ["gremlin-cypher-poster"]);
+  assert.equal(noticeboard.validation, undefined);
+  assert.equal(noticeboard.evidenceGranted, undefined);
+  assert.equal(noticeboard.cta, "Continue to Jonavision");
+  assert.deepEqual(map.referenceMediaIds, ["town-noticeboard"]);
+  assert.equal(manifest.items["town-noticeboard"].zoomable, true);
   assert.equal(map.specialResponses["1LF"].includes("dead end"), true);
   assert.equal(map.specialResponses["8HO"].includes("Help route"), true);
+});
+
+test("answer-bearing video remains on screen with the Bodach Bay question", () => {
+  const tuner = trail.scenes.find((scene) => scene.id === "jonavision-207");
+  const question = trail.scenes.find((scene) => scene.id === "bodach-bay");
+  assert.equal(tuner.mediaId, "bodach-bay-tourism");
+  assert.equal(question.mediaId, "bodach-bay-tourism");
+  assert.equal(question.showMediaBeforeSolve, true);
+});
+
+test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
+  const channel = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
+  const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
+  assert.ok(channel.messages.some((message) => message.text.includes("#trail-notes")));
+  assert.ok(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")));
+  assert.ok(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")));
+  assert.equal(puzzle.validation.answer, "4216");
 });
 
 test("every scene media ID exists and local mapped assets resolve", async () => {
   for (const scene of trail.scenes) {
     if (scene.mediaId) assert.ok(manifest.items[scene.mediaId], `Missing manifest item: ${scene.mediaId}`);
     if (scene.ticketMediaId) assert.ok(manifest.items[scene.ticketMediaId], `Missing ticket manifest item: ${scene.ticketMediaId}`);
+    for (const referenceId of scene.referenceMediaIds || []) {
+      assert.ok(manifest.items[referenceId], `Missing reference manifest item: ${referenceId}`);
+    }
   }
   for (const [id, item] of Object.entries(manifest.items)) {
     if (typeof item.src === "string" && item.src.startsWith("./")) {
@@ -100,6 +123,7 @@ test("the final reward includes downloadable Bodach Bay tickets", () => {
 
 test("HTML uses repository-relative local URLs", async () => {
   const html = await readFile(join(root, "index.html"), "utf8");
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
   assert.equal(/(?:src|href)="\//.test(html), false);
   assert.match(html, /\.\/js\/app\.js/);
   assert.match(html, /\.\/css\/main\.css/);
@@ -107,4 +131,7 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(html, /\.\/favicon\.ico/);
   assert.match(html, /ditd-social-preview\.jpg/);
   assert.match(html, /twitter:card/);
+  assert.match(css, /\.\.\/assets\/images\/ditd-landing-hero\.jpg/);
+  assert.match(html, /id="continue-trail"/);
+  assert.match(html, /id="welcome-reset"/);
 });

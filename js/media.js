@@ -80,8 +80,69 @@ function image(item) {
     link.download = item.downloadName || "trail-reward.png";
     caption.append(link);
   }
+  if (item.zoomable) {
+    const zoomButton = el("button", "secondary-button zoom-button", "Open zoom viewer");
+    zoomButton.type = "button";
+    zoomButton.addEventListener("click", () => openImageViewer(item));
+    caption.append(zoomButton);
+  }
   shell.append(img, caption);
   return shell;
+}
+
+function openImageViewer(item) {
+  const dialog = el("dialog", "image-viewer");
+  dialog.setAttribute("aria-label", `${item.title} zoom viewer`);
+
+  const header = el("header", "image-viewer-header");
+  header.append(el("strong", "", item.title));
+  const close = el("button", "quiet-button image-viewer-close", "Close");
+  close.type = "button";
+  close.addEventListener("click", () => dialog.close());
+  header.append(close);
+
+  const controls = el("div", "image-viewer-controls");
+  const zoomOut = el("button", "secondary-button", "Zoom out");
+  const reset = el("button", "secondary-button", "Reset");
+  const zoomIn = el("button", "secondary-button", "Zoom in");
+  [zoomOut, reset, zoomIn].forEach((button) => { button.type = "button"; });
+  const status = el("output", "image-zoom-status", "100%");
+  status.setAttribute("aria-live", "polite");
+  controls.append(zoomOut, reset, zoomIn, status);
+
+  const viewport = el("div", "image-viewer-viewport");
+  const enlarged = document.createElement("img");
+  enlarged.className = "image-viewer-image";
+  enlarged.src = item.src;
+  enlarged.alt = item.alt || item.title;
+  enlarged.draggable = false;
+  viewport.append(enlarged);
+
+  let zoom = 100;
+  const setZoom = (next) => {
+    zoom = Math.max(100, Math.min(400, next));
+    enlarged.style.width = `${zoom}%`;
+    status.textContent = `${zoom}%`;
+    zoomOut.disabled = zoom === 100;
+    zoomIn.disabled = zoom === 400;
+    if (zoom === 100) {
+      viewport.scrollLeft = 0;
+      viewport.scrollTop = 0;
+    }
+  };
+  zoomOut.addEventListener("click", () => setZoom(zoom - 50));
+  reset.addEventListener("click", () => setZoom(100));
+  zoomIn.addEventListener("click", () => setZoom(zoom + 50));
+
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", () => dialog.remove(), { once: true });
+  dialog.append(header, controls, viewport);
+  document.body.append(dialog);
+  setZoom(100);
+  dialog.showModal();
+  close.focus();
 }
 
 function documentViewer(item, { locked = false } = {}) {
