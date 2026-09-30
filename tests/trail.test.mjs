@@ -275,6 +275,7 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(html, /id="desktop-reset"/);
   assert.match(html, /id="success-dialog"/);
   assert.match(html, /id="success-continue"/);
+  assert.doesNotMatch(html, /id="success-stay"|>Stay here</);
   assert.doesNotMatch(html, /id="menu-button"|>Console menu</);
   assert.match(app, /\$\("#desktop-reset"\)\.addEventListener\("click", confirmReset\)/);
   assert.match(app, /cache:\s*"no-store"/);
@@ -288,6 +289,7 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
   assert.match(css, /@media \(min-width: 700px\) and \(orientation: landscape\), \(min-width: 980px\)/);
   assert.match(css, /grid-template-columns:\s*clamp\(150px, 17vw, 220px\) minmax\(0, 1fr\) clamp\(220px, 25vw, 300px\)/);
   assert.match(css, /trail-entry-complete:is\(:not\(\.trail-entry-retain\)/);
+  assert.match(css, /padding-bottom:\s*max\(2rem, calc\(100dvh - 24rem\)\)/);
   assert.match(machines, /orientation: landscape/);
   assert.equal((html.match(/data-mobile-tool=/g) || []).length, 3);
   assert.deepEqual(
@@ -310,12 +312,31 @@ test("answer feedback appears only after submission and has distinct result stat
   assert.match(engine, /pendingFeedback = \{ sceneId: scene\.id, message: target\.success, kind: "success" \}/);
   assert.doesNotMatch(engine, /state\.currentSceneId = target\.id/);
   assert.match(engine, /Continue: \$\{this\.sceneById\.get\(scene\.next\)\?\.title/);
-  assert.match(engine, /this\.onCorrect\?\.\(\{ scene, message: scene\.success \}\)/);
-  assert.match(engine, /this\.onCorrect\?\.\(\{ scene, message: target\.success \}\)/);
-  assert.equal((engine.match(/onCorrect\?\.\(\{ scene, message: scene\.success/g) || []).length, 1);
-  assert.equal((engine.match(/onCorrect\?\.\(\{ scene, message: target\.success/g) || []).length, 1);
+  assert.match(engine, /message: scene\.success, revealMedia: this\.unlocksMediaOnSuccess\(scene\)/);
+  assert.match(engine, /message: target\.success, revealMedia: false/);
+  assert.match(engine, /unlocksMediaOnSuccess\(scene\)/);
+  assert.match(engine, /scrollToMedia\(sceneId/);
   assert.match(engine, /scrollIntoView\(\{ behavior: "auto", block: "start" \}\)/);
-  assert.match(app, /onCorrect: \(\{ scene, message \}\) => openSuccessDialog\(scene, message\)/);
+  assert.match(app, /onCorrect: openSuccessDialog/);
+  assert.match(app, /if \(result\.revealMedia\) engine\.scrollToMedia\(result\.scene\.id/);
+  assert.match(app, /else engine\.advance\(result\.scene\)/);
+  assert.match(app, /event\.preventDefault\(\)/);
+});
+
+test("every answer-controlled media beat is routed through Continue before a later prompt", () => {
+  const visibleBeforeSolveModes = new Set(["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"]);
+  const lockedMediaScenes = trail.scenes
+    .filter((scene) => scene.validation && scene.mediaId && !scene.showMediaBeforeSolve && !visibleBeforeSolveModes.has(scene.mode))
+    .map((scene) => scene.id);
+  assert.deepEqual(lockedMediaScenes, [
+    "jonavision-207",
+    "videomatic-4763",
+    "activation-centre",
+    "test-videomatic",
+    "fake-cancel-plan"
+  ]);
+  const inlineTargets = trail.scenes.map((scene) => scene.inlineMachineSceneId).filter(Boolean);
+  assert.deepEqual(inlineTargets, ["jonavision-207"]);
 });
 
 test("player-facing copy stays inside the story world", async () => {
@@ -345,6 +366,8 @@ test("the console renders one chronological growing trail stream", async () => {
   assert.match(engine, /trail-entry-complete/);
   assert.match(engine, /candidate\.order < scene\.order/);
   assert.match(app, /engine\.scrollToScene\(scene\.id/);
+  assert.match(app, /engine\.render\(scene\.id, \{ replay: true \}\)/);
+  assert.match(app, /Open full replay/);
   assert.doesNotMatch(app, /Replay scene/);
 });
 

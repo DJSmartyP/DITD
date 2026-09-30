@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20260930-8";
+import { TrailEngine } from "./trail-engine.js?v=20260930-9";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -38,15 +38,13 @@ try {
   const welcomeDialog = $("#welcome-dialog");
   const menuDialog = $("#menu-dialog");
   const successDialog = $("#success-dialog");
-  let pendingSuccessScene = null;
+  let pendingSuccess = null;
 
-  function openSuccessDialog(scene, message) {
-    pendingSuccessScene = scene;
+  function openSuccessDialog(result) {
+    pendingSuccess = result;
+    const { message } = result;
     setText("#success-message", message);
-    const next = sceneById.get(scene.next);
-    setText("#success-continue", scene.validation?.intentionalFailure
-      ? "Continue behind the scenes"
-      : `Continue: ${next?.title || "next section"}`);
+    setText("#success-continue", "Continue");
     if (!successDialog.open) successDialog.showModal();
   }
 
@@ -86,9 +84,10 @@ try {
       heading.textContent = `${String(scene.order).padStart(2, "0")} — ${scene.title}`;
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = "Jump to scene";
+      button.textContent = "Open full replay";
       button.addEventListener("click", () => {
         toolRail.dataset.open = "false";
+        engine.render(scene.id, { replay: true });
         engine.scrollToScene(scene.id, { focus: true });
       });
       card.append(heading, button);
@@ -143,20 +142,18 @@ try {
     store,
     onRender: renderInterface,
     onOpenTool: (tool) => selectTool(tool),
-    onCorrect: ({ scene, message }) => openSuccessDialog(scene, message)
+    onCorrect: openSuccessDialog
   });
 
   $("#success-continue").addEventListener("click", () => {
-    const scene = pendingSuccessScene;
-    pendingSuccessScene = null;
+    const result = pendingSuccess;
+    pendingSuccess = null;
     successDialog.close();
-    if (scene) engine.advance(scene);
+    if (!result) return;
+    if (result.revealMedia) engine.scrollToMedia(result.scene.id, { focus: true });
+    else engine.advance(result.scene);
   });
-  $("#success-stay").addEventListener("click", () => {
-    pendingSuccessScene = null;
-    successDialog.close();
-  });
-  successDialog.addEventListener("cancel", () => { pendingSuccessScene = null; });
+  successDialog.addEventListener("cancel", (event) => event.preventDefault());
 
   notes.value = store.get().notes;
   const saveNotes = debounce(() => {

@@ -61,9 +61,9 @@ On mobile, Notes, Hints and Menu use a compact floating dock with the tool drawe
 
 Answer feedback appears only after an answer control is submitted. Correct, incorrect and informational results use distinct labelled, high-contrast panels, with invalid inputs also marked for assistive technology.
 
-Correct answers never advance automatically. A dedicated in-world success dialog confirms the result and offers the deliberate Continue action. The submitted section also retains its green acceptance signal at the bottom as a persistent record. The next section appears only after the player chooses to proceed, and is aligned at its top rather than near its controls or lower edge. This also applies to the noticeboard's inline Jonavision tuner.
+Correct answers never advance automatically. A dedicated in-world success dialog confirms the result and has one Continue action. Continue always reveals the next logical beat: newly unlocked media first, otherwise the next prompt. The submitted section also retains its green acceptance signal at the bottom as a persistent record. New prompts align at their top, while newly unlocked media aligns directly below the console header. This also applies to the noticeboard's inline Jonavision tuner.
 
-Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page; History jumps to an earlier section without leaving the live trail.
+Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page. History opens a completed section in full read-only replay, including its media, then returns the player to the top of their current section.
 
 Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails. Live HTML overlays turn each cover into an in-world state such as `VISIT BODACH BAY`, `ROGUE UPLOAD DETECTED` or `INCOMING JONAGRAPH`, with a large accessible play control.
 

@@ -148,7 +148,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
   background: var(--paper);
 }
 
-.trail-stream { position: relative; display: grid; gap: 1.4rem; }
+.trail-stream {
+  position: relative;
+  display: grid;
+  gap: 1.4rem;
+  padding-bottom: max(2rem, calc(100dvh - 24rem));
+}
 .trail-entry {
   position: relative;
   min-width: 0;

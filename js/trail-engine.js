@@ -82,7 +82,7 @@ export class TrailEngine {
     this.complete(scene, { stay: true });
     this.render(scene.id);
     this.scrollToScene(scene.id, { focus: true });
-    this.onCorrect?.({ scene, message: scene.success });
+    this.onCorrect?.({ scene, message: scene.success, revealMedia: this.unlocksMediaOnSuccess(scene) });
   }
 
   submitInline(scene, target, value, input, terminalScreen) {
@@ -123,7 +123,7 @@ export class TrailEngine {
     this.feedback = null;
     this.render(scene.id);
     this.scrollToScene(scene.id, { focus: true });
-    this.onCorrect?.({ scene, message: target.success });
+    this.onCorrect?.({ scene, message: target.success, revealMedia: false });
   }
 
   advance(scene) {
@@ -149,6 +149,12 @@ export class TrailEngine {
     if (scene.mediaAfterSolve && !solved && !replay) return false;
     if (replay || solved || scene.showMediaBeforeSolve) return true;
     return ["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"].includes(scene.mode);
+  }
+
+  unlocksMediaOnSuccess(scene) {
+    return Boolean(scene.mediaId
+      && !this.mediaShouldShow(scene, false, false)
+      && this.mediaShouldShow(scene, true, false));
   }
 
   appendSceneHeadingAndCopy(container, scene, { completed = false } = {}) {
@@ -223,6 +229,17 @@ export class TrailEngine {
     }
   }
 
+  scrollToMedia(sceneId, { focus = false } = {}) {
+    const section = document.getElementById(`trail-scene-${sceneId}`);
+    const target = section?.querySelector(".scene-media-layout") || section;
+    if (!target) return;
+    target.scrollIntoView({ behavior: "auto", block: "start" });
+    if (focus) {
+      target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+    }
+  }
+
   render(sceneId = null, { replay = false } = {}) {
     const scene = this.sceneById.get(sceneId || this.store.get().currentSceneId) || this.trail.scenes[0];
     const state = this.store.get();
@@ -265,7 +282,10 @@ export class TrailEngine {
       const actions = el("div", "scene-actions");
       const back = el("button", "primary-button", "Return to current scene");
       back.type = "button";
-      back.addEventListener("click", () => this.render());
+      back.addEventListener("click", () => {
+        this.render();
+        this.scrollToScene(this.currentScene().id, { focus: true });
+      });
       actions.append(back);
       currentRoot.append(notice, actions);
       this.onRender?.(scene, { replay: true });
