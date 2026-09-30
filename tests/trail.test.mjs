@@ -163,6 +163,7 @@ test("the final reward includes downloadable Bodach Bay tickets", () => {
 test("HTML uses repository-relative local URLs", async () => {
   const html = await readFile(join(root, "index.html"), "utf8");
   const css = await readFile(join(root, "css", "main.css"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
   assert.equal(/(?:src|href)="\//.test(html), false);
   assert.match(html, /\.\/js\/app\.js/);
   assert.match(html, /\.\/css\/main\.css/);
@@ -175,6 +176,7 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(css, /#reveal-hint:not\(\[hidden\]\)/);
   assert.match(html, /id="continue-trail"/);
   assert.match(html, /id="welcome-reset"/);
+  assert.match(app, /cache:\s*"no-store"/);
 });
 
 test("player-facing copy stays inside the story world", async () => {

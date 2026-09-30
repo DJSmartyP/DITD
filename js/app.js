@@ -6,7 +6,7 @@ import { renderHints, revealNextHint } from "./hints.js";
 const $ = (selector) => document.querySelector(selector);
 
 async function loadJson(relativePath) {
-  const response = await fetch(new URL(relativePath, import.meta.url));
+  const response = await fetch(new URL(relativePath, import.meta.url), { cache: "no-store" });
   if (!response.ok) throw new Error(`Failed to load ${relativePath}: ${response.status}`);
   return response.json();
 }
