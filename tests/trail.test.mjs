@@ -338,6 +338,7 @@ test("the console renders one chronological growing trail stream", async () => {
 
 test("the welcome page hands off to the opening video, then Start trail loads the first message", async () => {
   const intro = trail.scenes.find((scene) => scene.id === trail.startSceneId);
+  const firstTask = trail.scenes.find((scene) => scene.id === intro.next);
   const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
   assert.equal(intro.mediaId, "intro");
   assert.equal(intro.mediaFirst, true);
@@ -345,6 +346,10 @@ test("the welcome page hands off to the opening video, then Start trail loads th
   assert.deepEqual(intro.body, []);
   assert.equal(intro.cta, "Start trail");
   assert.equal(intro.next, "noticeboard");
+  assert.equal(firstTask.speaker, "Task");
+  assert.match(firstTask.body[0], /^Over the last 18 months towns over the Ridge/);
+  assert.equal(firstTask.body[1], "Where can you find out more about the bayside town over the Ridge?");
+  assert.doesNotMatch(firstTask.body.join(" "), /Jonavision tuner|channel 207|Bodach Bay/);
   assert.match(engine, /if \(scene\.mediaFirst && mediaVisible\)/);
   assert.match(engine, /if \(!scene\.mediaFirst && mediaVisible\)/);
   assert.match(engine, /if \(!scene\.openingVideoOnly\) this\.appendSceneHeadingAndCopy/);

@@ -71,7 +71,7 @@ Jonabot favicon and touch-icon crops are included for browser tabs and saved-hom
 
 The home screen uses an original responsive advert-style Jonabot hero with live HTML title, Start Trail, Resume Trail and Start Again controls. Keeping the controls out of the bitmap preserves accessibility and lets the page show the correct option for saved progress.
 
-Starting a fresh trail lands directly on Jonabot's opening transmission artwork and play control. A **Start trail** button sits immediately beneath the video; only after the player selects it does the first trail message and noticeboard load.
+Starting a fresh trail lands directly on Jonabot's opening transmission artwork and play control. A **Start trail** button sits immediately beneath the video; only after the player selects it does the original “Over the last 18 months…” task and noticeboard load. The task uses the source design document's question without prematurely naming the town, channel or machine the player must discover.
 
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 

@@ -25,10 +25,10 @@
       "title": "Notices from Beyond the Ridge",
       "mode": "investigation",
       "phase": "normal",
-      "speaker": "Trail Brief",
+      "speaker": "Task",
       "body": [
-        "Examine the town noticeboard. One advert points to a bayside town over the Ridge. You can open and zoom the full noticeboard now, and it will return beside the later puzzle if you need it.",
-        "Where can you find out more about the bayside town over the Ridge? Use the Jonavision tuner beneath the board when you have found it."
+        "Over the last 18 months towns over the Ridge have noticed the huge number of tourists visiting Phantom Peak and now want a piece of the action. It’s hard to blame them - who wouldn’t want someone as dashingly beautiful as yourself walking around town… Check the Town Noticeboard for any clues as to which nearby town is trying to appeal to tourists.",
+        "Where can you find out more about the bayside town over the Ridge?"
       ],
       "mediaId": "town-noticeboard",
       "inlineMachineSceneId": "jonavision-207",
