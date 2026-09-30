@@ -271,7 +271,39 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(css, /#reveal-hint:not\(\[hidden\]\)/);
   assert.match(html, /id="continue-trail"/);
   assert.match(html, /id="welcome-reset"/);
+  assert.doesNotMatch(html, /id="stage-label"/);
+  assert.match(html, /id="desktop-reset"/);
+  assert.doesNotMatch(html, /id="menu-button"|>Console menu</);
+  assert.match(app, /\$\("#desktop-reset"\)\.addEventListener\("click", confirmReset\)/);
   assert.match(app, /cache:\s*"no-store"/);
+});
+
+test("mobile welcome and landscape console use compact responsive layouts", async () => {
+  const html = await readFile(join(root, "index.html"), "utf8");
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
+  const machines = await readFile(join(root, "css", "machines.css"), "utf8");
+  assert.match(css, /min-height:\s*min\(94dvh, 50rem\)/);
+  assert.match(css, /@media \(min-width: 700px\) and \(orientation: landscape\), \(min-width: 980px\)/);
+  assert.match(css, /grid-template-columns:\s*clamp\(150px, 17vw, 220px\) minmax\(0, 1fr\) clamp\(220px, 25vw, 300px\)/);
+  assert.match(css, /trail-entry-complete:is\(:not\(\.trail-entry-retain\)/);
+  assert.match(machines, /orientation: landscape/);
+  assert.equal((html.match(/data-mobile-tool=/g) || []).length, 3);
+  assert.deepEqual(
+    trail.scenes.filter((scene) => scene.retainWithNext).map((scene) => scene.id),
+    ["jonavision-207", "system-log", "bodach-bay-booking"]
+  );
+});
+
+test("answer feedback appears only after submission and has distinct result states", async () => {
+  const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
+  assert.match(engine, /pendingFeedback = \{ sceneId: scene\.id, message: scene\.success, kind: "success" \}/);
+  assert.match(engine, /pendingFeedback\?\.sceneId === scene\.id/);
+  assert.doesNotMatch(engine, /if \(solved && scene\.success\)/);
+  assert.match(engine, /aria-invalid/);
+  assert.match(css, /CORRECT — SYSTEM ACCEPTED/);
+  assert.match(css, /NOT ACCEPTED — TRY AGAIN/);
+  assert.match(css, /feedback\[data-kind="info"\]/);
 });
 
 test("player-facing copy stays inside the story world", async () => {

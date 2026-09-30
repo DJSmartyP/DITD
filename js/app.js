@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20260930-3";
+import { TrailEngine } from "./trail-engine.js?v=20260930-5";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -103,7 +103,6 @@ try {
       restored: "SYSTEM: RESTORED"
     };
     setText("#phase-label", labels[phase]);
-    setText("#stage-label", replay ? `HISTORY ${String(scene.order).padStart(2, "0")}` : `STAGE ${String(scene.order).padStart(2, "0")} / 22`);
     setText("#trail-progress", `${Math.round((state.completedSceneIds.length / trail.scenes.length) * 100)}%`);
     setText("#narrator-name", phase === "corrupted" ? "Administrator: Jonabot" : phase === "restored" ? "Jonabot (Dec 2023)" : "Jonabot v2.3");
     const corruptionLevel = Number(document.body.dataset.corruptionLevel || 0);
@@ -166,7 +165,6 @@ try {
     });
   });
 
-  $("#menu-button").addEventListener("click", () => menuDialog.showModal());
   document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => button.closest("dialog").close()));
   document.querySelectorAll("[data-menu-tool]").forEach((button) => button.addEventListener("click", () => {
     menuDialog.close();
@@ -189,6 +187,7 @@ try {
     return true;
   }
 
+  $("#desktop-reset").addEventListener("click", confirmReset);
   $("#reset-trail").addEventListener("click", () => {
     if (confirmReset()) menuDialog.close();
   });

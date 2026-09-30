@@ -48,6 +48,7 @@
       "speaker": "Jonabot",
       "body": ["Bodach Bay? Never heard of that town until now. Maybe that Jonavision video will shed some light on the place…"],
       "mediaId": "bodach-bay-tourism",
+      "retainWithNext": true,
       "validation": { "answer": "207", "normalizer": "digits" },
       "success": "CHANNEL LOCKED — 207. BODACH BAY BROADCAST ACQUIRED.",
       "wrongResponses": ["That channel is only static.", "No Bodach Bay signal on that frequency."],
@@ -154,6 +155,7 @@
       "speaker": "Jonabot",
       "body": ["That seems to have worked! The JonaTravel booking system is back online. Though there are some weird events in the system error logs. It looks like someone gained access via a secret backdoor in the code."],
       "log": "admin.systemlogs.create(collection_set)\n{\n  no-more-trails.exe: enabled\n  reboot: jonanapeel.exe\n  status: Available\n  videomatic_reference: 4763\n}\nReboot: Successful",
+      "retainWithNext": true,
       "cta": "Open Videomatic",
       "hints": [],
       "next": "videomatic-4763"
@@ -412,6 +414,7 @@
       "speaker": "Jonana Peel",
       "body": ["Incoming Jonagraph from JonaTravel."],
       "mediaId": "final-jonana-peel",
+      "retainWithNext": true,
       "cta": "Receive blimp tickets",
       "hints": [],
       "next": "trail-complete"

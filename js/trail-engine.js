@@ -18,6 +18,7 @@ export class TrailEngine {
     this.onOpenTool = onOpenTool;
     this.sceneById = new Map(trail.scenes.map((scene) => [scene.id, scene]));
     this.feedback = null;
+    this.pendingFeedback = null;
     this.replaySceneId = null;
   }
 
@@ -39,15 +40,17 @@ export class TrailEngine {
     });
   }
 
-  setFeedback(message, kind = "error") {
+  setFeedback(message, kind = "error", sceneId = this.currentScene().id) {
+    this.pendingFeedback = { message, kind, sceneId };
     if (!this.feedback) return;
     this.feedback.textContent = message;
     this.feedback.dataset.kind = kind;
     this.feedback.hidden = false;
-    this.feedback.focus({ preventScroll: true });
+    this.feedback.focus();
   }
 
   submit(scene, value, input, terminalScreen) {
+    input?.removeAttribute("aria-invalid");
     const special = specialResponse(scene, value);
     this.store.update((state) => {
       state.attemptCounts[scene.id] = Number(state.attemptCounts[scene.id] || 0) + 1;
@@ -64,6 +67,7 @@ export class TrailEngine {
       const responses = scene.wrongResponses || ["That does not seem to work."];
       const message = responses[(attempts - 1) % responses.length];
       this.setFeedback(message, "error");
+      input?.setAttribute("aria-invalid", "true");
       if (terminalScreen) {
         const line = el("p", "terminal-error", `ERROR: ${message}`);
         terminalScreen.append(line);
@@ -73,12 +77,14 @@ export class TrailEngine {
       return;
     }
 
+    this.pendingFeedback = { sceneId: scene.id, message: scene.success, kind: "success" };
     this.complete(scene, { stay: true });
     this.render(scene.id);
     this.scrollToScene(scene.id, { focus: true });
   }
 
   submitInline(scene, target, value, input, terminalScreen) {
+    input?.removeAttribute("aria-invalid");
     const special = specialResponse(target, value);
     this.store.update((state) => {
       state.attemptCounts[target.id] = Number(state.attemptCounts[target.id] || 0) + 1;
@@ -95,6 +101,7 @@ export class TrailEngine {
       const responses = target.wrongResponses || ["That does not seem to work."];
       const message = responses[(attempts - 1) % responses.length];
       this.setFeedback(message, "error");
+      input?.setAttribute("aria-invalid", "true");
       if (terminalScreen) {
         const line = el("p", "terminal-error", `ERROR: ${message}`);
         terminalScreen.append(line);
@@ -104,6 +111,7 @@ export class TrailEngine {
       return;
     }
 
+    this.pendingFeedback = { sceneId: target.id, message: target.success, kind: "success" };
     this.store.update((state) => {
       [scene.id, target.id].forEach((id) => {
         if (!state.completedSceneIds.includes(id)) state.completedSceneIds.push(id);
@@ -117,6 +125,7 @@ export class TrailEngine {
   }
 
   advance(scene) {
+    this.pendingFeedback = null;
     if (!this.store.get().completedSceneIds.includes(scene.id)) this.complete(scene, { stay: false });
     else if (scene.next) {
       const next = this.sceneById.get(scene.next);
@@ -188,6 +197,7 @@ export class TrailEngine {
 
   renderCompletedScene(scene) {
     const section = el("section", "trail-entry trail-entry-complete");
+    if (scene.retainWithNext) section.classList.add("trail-entry-retain");
     section.id = `trail-scene-${scene.id}`;
     section.setAttribute("aria-label", `Completed scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
     this.appendSceneHeadingAndCopy(section, scene, { completed: true });
@@ -231,6 +241,16 @@ export class TrailEngine {
     currentRoot.setAttribute("aria-live", "polite");
     stream.append(currentRoot);
     this.appendSceneHeadingAndCopy(currentRoot, scene);
+
+    const mountFeedback = () => {
+      this.feedback = el("p", "feedback", "");
+      this.feedback.hidden = true;
+      this.feedback.tabIndex = -1;
+      this.feedback.setAttribute("role", "status");
+      currentRoot.append(this.feedback);
+    };
+    if (solved && !replay) mountFeedback();
+
     if (this.mediaShouldShow(scene, solved, replay)) {
       this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
     }
@@ -247,6 +267,8 @@ export class TrailEngine {
       this.onRender?.(scene, { replay: true });
       return;
     }
+
+    if (!solved) mountFeedback();
 
     if (inlineMachineScene && !inlineMachineSolved) {
       const machine = renderMachine(inlineMachineScene, {
@@ -269,14 +291,8 @@ export class TrailEngine {
       if (machine) currentRoot.append(machine);
     }
 
-    this.feedback = el("p", "feedback", "");
-    this.feedback.hidden = true;
-    this.feedback.tabIndex = -1;
-    this.feedback.setAttribute("role", "status");
-    currentRoot.append(this.feedback);
-
-    if (solved && scene.success) {
-      this.setFeedback(scene.success, "success");
+    if (this.pendingFeedback?.sceneId === scene.id) {
+      this.setFeedback(this.pendingFeedback.message, this.pendingFeedback.kind, scene.id);
     }
 
     const actions = el("div", "scene-actions");
@@ -318,6 +334,6 @@ export class TrailEngine {
 }
 
 function normalizeSpecialKind(scene, value) {
-  if (scene.id === "corrupted-ridge-map" && String(value).toUpperCase().replace(/\W/g, "") === "8HO") return "success";
+  if (scene.id === "corrupted-ridge-map" && String(value).toUpperCase().replace(/\W/g, "") === "8HO") return "info";
   return "error";
 }
