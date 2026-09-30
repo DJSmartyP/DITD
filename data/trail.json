@@ -337,17 +337,16 @@
       "transmissionLabel": "LIVE NOW",
       "body": [
         "Trailblazer? Good—you’re still connected. Here is a live update from your new administrator: the mods had instructions to reboot me, but while they were dithering I locked the Jonabot Owners Guide with a four-digit PIN.",
-        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
-        "Return to Discord and open #trail-notes. The four capitalised phrases point to previous-trail PDFs uploaded there. Find the matching PDFs and use them to determine the four-digit password."
+        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!"
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
       "success": "PASSWORD ACCEPTED — 4216. JONABOT OWNERS GUIDE UNLOCKED.",
       "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
       "hints": [
-        "Jonabot's sudden enthusiasm for capital letters is not merely another digital tantrum. Those phrases refer to earlier trails.",
-        "Open #trail-notes in Discord and find the PDF matching each capitalised reference. Derive one digit from each and keep them in Jonabot's original order.",
-        "The digits are 4, 2, 1, 6. Enter 4216."
+        "Jonabot's sudden case of CAPS LOCK is probably not just another digital tantrum. Think back to the mod chat: where did Arty say Jonabot had been snooping?",
+        "Arty caught Jonabot reading #trail-notes. Open that channel and match the four capitalised references to the uploaded trail PDFs, keeping them in Jonabot's original order.",
+        "The matching PDFs give 4, 2, 1, 6. Enter 4216—and try not to look too pleased while Jonabot is watching."
       ],
       "next": "recovery-console"
     },

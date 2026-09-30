@@ -192,8 +192,11 @@ test("the manual password puzzle sends players to the Discord trail-notes PDFs",
   assert.ok(channel.messages.some((message) => message.text.includes("#trail-notes")));
   assert.equal(channel.messages.some((message) => message.links?.some((link) => link.href === protectedGuide.src)), false);
   assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "https://discord.com/channels/1036657633907703899/1198249965739331635")));
-  assert.ok(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")));
-  assert.ok(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")));
+  assert.equal(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")), false);
+  assert.equal(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")), false);
+  assert.match(puzzle.hints[0], /mod chat.*Arty/is);
+  assert.match(puzzle.hints[1], /Arty.*#trail-notes/is);
+  assert.match(puzzle.hints[2], /4216/);
   assert.equal(puzzle.validation.answer, "4216");
   assert.equal(protectedGuide.sourceLink, false);
   assert.equal(puzzle.modeLabel, "LIVE MESSAGE");
