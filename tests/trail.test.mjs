@@ -67,8 +67,24 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
     if (typeof item.src === "string" && item.src.startsWith("./")) {
       await access(join(root, item.src.slice(2)));
     }
-    if (item.kind === "youtube") assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
+    if (item.kind === "youtube") {
+      assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
+      assert.match(item.thumbnail, /^\.\/assets\/video-thumbnails\/[\w-]+\.webp$/, `${id} local story-art thumbnail`);
+      assert.ok(item.thumbnailAlt, `${id} thumbnail alt text`);
+      assert.ok(item.playLabel, `${id} play label`);
+      assert.equal(item.thumbnailStatus, "generated-original-story-art", `${id} thumbnail source`);
+      await access(join(root, item.thumbnail.slice(2)));
+    }
   }
+});
+
+test("every scene has an accurate visible speaker label", () => {
+  for (const scene of trail.scenes) {
+    assert.ok(scene.speaker, `${scene.id} speaker label`);
+  }
+  assert.equal(trail.scenes.find((scene) => scene.id === "jonatravel-call").speaker, "Jonana Peel");
+  assert.equal(trail.scenes.find((scene) => scene.id === "licence-failure").speaker, "Unknown Intruder");
+  assert.equal(trail.scenes.find((scene) => scene.id === "bodach-bay-booking").speaker, "Jonana Peel");
 });
 
 test("the final reward includes downloadable Bodach Bay tickets", () => {
@@ -87,4 +103,6 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.equal(/(?:src|href)="\//.test(html), false);
   assert.match(html, /\.\/js\/app\.js/);
   assert.match(html, /\.\/css\/main\.css/);
+  assert.match(html, /\.\/assets\/images\/jonabot-favicon\.png/);
+  assert.match(html, /twitter:card/);
 });

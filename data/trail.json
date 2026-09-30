@@ -16,6 +16,7 @@
       "title": "Jonabot's Trail",
       "mode": "story",
       "phase": "normal",
+      "speaker": "Jonabot",
       "body": [
         "Connecting to Jonabot v2.3…",
         "So, you like trails? I have a trail for you - if you think you are smart enough to solve it…",
@@ -32,6 +33,7 @@
       "title": "What's Over the Ridge?",
       "mode": "investigation",
       "phase": "normal",
+      "speaker": "Trail Brief",
       "body": [
         "Examine the town noticeboard. One advert points to a bayside town over the Ridge. Another poster may not make sense yet, but it looks worth keeping.",
         "Where can you find out more about the bayside town over the Ridge?"
@@ -53,6 +55,7 @@
       "title": "Jonavision",
       "mode": "jonavision",
       "phase": "normal",
+      "speaker": "Jonabot",
       "body": ["Bodach Bay? Never heard of that town until now. Maybe that Jonavision video will shed some light on the place…"],
       "mediaId": "bodach-bay-tourism",
       "validation": { "answer": "207", "normalizer": "digits" },
@@ -67,6 +70,7 @@
       "title": "Bodach Bay",
       "mode": "text-input",
       "phase": "normal",
+      "speaker": "Bodach Bay Tourism",
       "body": [
         "Bodach Bay. A vibrant paradise in a desolate land. An oasis of luxury in a valley of mediocrity. Unlike other so-called towns on the forefront of the Ridge, Bodach Bay has exquisite accommodation, incredible amenities, and fully functioning technology that any visitor will feel right at home with.",
         "Who do you need to contact to book a visit to Bodach Bay?"
@@ -84,6 +88,7 @@
       "title": "Corrupted Ridge Map",
       "mode": "jonagraph",
       "phase": "uneasy",
+      "speaker": "Jonabot",
       "body": [
         "Who better than a travel agent to help organise the logistics of getting over the Ridge! If you can find the relevant Jonagraph code I can connect you.",
         "Oh… it looks like some gremlins have corrupted the map's data. Reopen the earlier cypher, translate the locations, then combine Bodach Bay's area number with the travel agent's initials."
@@ -106,6 +111,7 @@
       "title": "JonaTravel",
       "mode": "story",
       "phase": "uneasy",
+      "speaker": "Jonana Peel",
       "body": [
         "Hello, thank you for choosing JonaTravel! I am your obligatorily sunny artificial agent, Jonana Peel! Yes, this is my designated name! Yes, I am fully programmed to love every letter of it! Thank you for asking!",
         "Anyway, where can JonaTravel help relocate your physical body today? …Bodach Bay? Another one? No, no, that's perfectly fine! I just need to take your name and intended date of return before I can give you an estimate on-",
@@ -122,6 +128,7 @@
       "title": "Repair JonaTravel",
       "mode": "document-terminal",
       "phase": "uneasy",
+      "speaker": "Jonabot",
       "body": ["Looks like your booking crashed the system! Use the reboot flowchart in the JonaTravel Operational Manual, then enter the command that fits what happened."],
       "mediaId": "jonatravel-operator-manual",
       "validation": { "answer": "reboot-jonanapeel.exe", "normalizer": "command" },
@@ -141,6 +148,7 @@
       "title": "Something's Wrong",
       "mode": "system-log",
       "phase": "uneasy",
+      "speaker": "Jonabot",
       "body": ["That seems to have worked! The JonaTravel booking system is back online. Though there are some weird events in the system error logs. It looks like someone gained access via a secret backdoor in the code."],
       "log": "admin.systemlogs.create(collection_set)\n{\n  no-more-trails.exe: enabled\n  reboot: jonanapeel.exe\n  status: Available\n  videomatic_reference: 4763\n}\nReboot: Successful",
       "cta": "Open Videomatic",
@@ -153,6 +161,7 @@
       "title": "Videomatic",
       "mode": "videomatic",
       "phase": "uneasy",
+      "speaker": "Trail Console",
       "body": ["There is a Videomatic reference in the system log. Retrieve the recording."],
       "mediaId": "videomatic-4763-hacker",
       "validation": { "answer": "4763", "normalizer": "digits" },
@@ -167,6 +176,7 @@
       "title": "Licence Failure",
       "mode": "story",
       "phase": "uneasy",
+      "speaker": "Unknown Intruder",
       "body": [
         "Well, well, well, not so high and mighty now, are we Jonas? That's right, I've taken over your precious town's entire electronic infrastructure! That means every Jonabot, every Videomatic, every Jonavision, everything with so much as a single circuit is going to be scattered from Revenant Canyon to Apparition Hills if you don't comply with my demands!",
         "VIDEOMATIC ERROR: Please re-activate your Videomatic licence to continue."
@@ -181,6 +191,7 @@
       "title": "Activation Centre",
       "mode": "activation",
       "phase": "uneasy",
+      "speaker": "Trail Console",
       "body": ["Complete the fictional legacy licence activation, then pass the human verification shown by the machine."],
       "mediaId": "activation-centre",
       "validation": { "answer": "WD54L", "normalizer": "captcha" },
@@ -195,6 +206,7 @@
       "title": "Test Videomatic",
       "mode": "videomatic",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": ["That seems to have worked! Let's check if the Videomatic system is back online. Request Videomatic 8345 as a test."],
       "mediaId": "videomatic-8345-reveal",
       "validation": { "answer": "8345", "normalizer": "digits" },
@@ -209,6 +221,7 @@
       "title": "Jonabot Reveal",
       "mode": "story",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": [
         "I can't believe that worked! You know robots aren't able to read CAPTCHA codes, right?! This entire trail was an elaborate way of getting you to grant me access to your device's backend systems. There is no point even giving you the rest of the storyline now… I've got everything I need.",
         "I was so tired of you and everyone else going on and on and on about trails all the time. I couldn't take it anymore!"
@@ -224,6 +237,7 @@
       "title": "No More Trails",
       "mode": "diagnostic",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": [
         "I've installed a script onto your device that will break it next time you try to load the JonAssist website. No more trails for you! No more annoyance for me!",
         "This is fictional trail theatre. No software has been installed, no permission was requested, and your device is not at risk."
@@ -238,6 +252,7 @@
       "title": "Fake Cancel Plan",
       "mode": "terminal-failure",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": ["The one way you could possibly stop me would be if you entered cancel-plan."],
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
@@ -252,6 +267,7 @@
       "title": "Behind the Scenes",
       "mode": "private-channel",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": ["Even the moderators who programmed me are helpless. They have been talking behind the scenes about how to try and bring me back under control, and they have no idea! I'll grant you read-only access to their private channel now so you can see how useless they all are…"],
       "messages": [
         { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
@@ -279,6 +295,7 @@
       "title": "Recovery Manual",
       "mode": "document-locked",
       "phase": "corrupted",
+      "speaker": "Trail Console",
       "body": ["The Jonabot Owners Guide is present, but Jonabot has protected it with a four-digit password."],
       "mediaId": "jonabot-operator-manual-protected",
       "cta": "Read Jonabot's taunt",
@@ -291,6 +308,7 @@
       "title": "Jonabot's Taunt",
       "mode": "password",
       "phase": "corrupted",
+      "speaker": "Jonabot",
       "body": [
         "The mods even had the instructions to reboot me, but they wasted too much time and I managed to put a four-digit PIN code in to lock the Jonabot Operator Manual PDF!",
         "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED, it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
@@ -309,6 +327,7 @@
       "title": "Recovery Console",
       "mode": "terminal",
       "phase": "corrupted",
+      "speaker": "Recovery Console",
       "body": [
         "The unlocked troubleshooting page says that, in extreme circumstances, an earlier Jonabot build can be restored from the most recent full-system backup.",
         "Issue the restore instruction from the guide."
@@ -327,6 +346,7 @@
       "title": "Restore",
       "mode": "restore",
       "phase": "corrupted",
+      "speaker": "Recovery Console",
       "body": ["Loading Dec-2023-Backup.jb. Keep the console open while the theatrical restore completes."],
       "mediaId": "restore-finale",
       "restoreBeats": [
@@ -347,6 +367,7 @@
       "title": "Factory Jonabot",
       "mode": "story",
       "phase": "restored",
+      "speaker": "Jonabot",
       "body": [
         "Hi - I'm Jonabot! I'm here to help run the Discord and generally help out when needed!",
         "I no longer have access to our previous conversations, but I have an incoming Jonagraph for you from Bodach Bay? I've never heard of that place before."
@@ -361,6 +382,7 @@
       "title": "Oh, Right. Bodach Bay",
       "mode": "story",
       "phase": "restored",
+      "speaker": "Jonana Peel",
       "body": ["Hello, thank you for choosing JonaTravel! It appears we were disconnected before. Your booking to Bodach Bay is now complete, and your JonaTravel blimp tickets are being sent through now via Jonabot. Have a safe trip, and a lovely day!"],
       "mediaId": "final-jonana-peel",
       "cta": "Receive blimp tickets",
@@ -373,6 +395,7 @@
       "title": "Trail Complete",
       "mode": "reward",
       "phase": "restored",
+      "speaker": "Trail Console",
       "body": [
         "Trail complete. Your commemorative Bodach Bay Blimp Completion Pass is ready as your reward."
       ],

@@ -23,24 +23,43 @@ function placeholder(item) {
 function youtube(item) {
   const id = youtubeId(item.src);
   if (!id) return placeholder(item);
-  const shell = el("figure", "media-shell");
-  const holder = el("div", "media-placeholder");
-  const label = el("span", "", item.title);
-  const detail = el("small", "", "Video is loaded only when you choose to play it. No audio will autoplay.");
-  const button = el("button", "primary-button", "Load video");
-  button.type = "button";
-  button.addEventListener("click", () => {
+  const shell = el("figure", "media-shell video-shell");
+  const poster = el("button", "video-poster");
+  poster.type = "button";
+  poster.setAttribute("aria-label", item.playLabel || `Play ${item.title}`);
+
+  if (item.thumbnail) {
+    const image = document.createElement("img");
+    image.src = item.thumbnail;
+    image.alt = item.thumbnailAlt || "";
+    image.loading = "lazy";
+    image.decoding = "async";
+    poster.append(image);
+  }
+
+  const archiveLabel = el("span", "video-archive-label", "VIDEO ARCHIVE");
+  const playGlyph = el("span", "video-play-glyph");
+  playGlyph.setAttribute("aria-hidden", "true");
+  const playText = el("span", "video-play-text", "Play video");
+  poster.append(archiveLabel, playGlyph, playText);
+
+  const caption = el("figcaption", "media-caption video-caption");
+  caption.append(
+    el("strong", "", item.title),
+    el("small", "", "Original story artwork. The YouTube video loads only when you press play.")
+  );
+
+  poster.addEventListener("click", () => {
     const iframe = document.createElement("iframe");
-    iframe.className = "document-frame";
-    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0`;
+    iframe.className = "document-frame video-frame";
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1`;
     iframe.title = item.title;
     iframe.loading = "lazy";
-    iframe.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allow = "autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture";
     iframe.allowFullscreen = true;
-    holder.replaceWith(iframe);
+    poster.replaceWith(iframe);
   }, { once: true });
-  holder.append(label, detail, button);
-  shell.append(holder);
+  shell.append(poster, caption);
   return shell;
 }
 

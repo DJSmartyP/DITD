@@ -20,11 +20,10 @@
 
 * { box-sizing: border-box; }
 
-html { min-width: 320px; background: #092b29; }
+html { background: #092b29; }
 
 body {
   margin: 0;
-  min-width: 320px;
   min-height: 100vh;
   color: var(--ink);
   background:
@@ -158,8 +157,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .story-copy { font-size: 1.02rem; }
 .story-copy p { max-width: 68ch; }
 .story-copy .tbd-copy { padding: .85rem; border: 2px dashed var(--brass); background: #fff7dd; font-family: var(--mono); }
-.jonabot-line { margin: 1rem 0; padding: 1rem; border-left: .5rem solid var(--teal); background: var(--panel); box-shadow: 3px 3px 0 var(--paper-deep); }
-.jonabot-line::before { content: "JONABOT"; display: block; margin-bottom: .35rem; color: var(--teal); font: 900 .72rem var(--mono); letter-spacing: .1em; }
+.speaker-line { margin: 1rem 0; padding: 1rem; border-left: .5rem solid var(--teal); background: var(--panel); box-shadow: 3px 3px 0 var(--paper-deep); }
+.speaker-label { display: block; margin-bottom: .35rem; color: var(--teal); font: 900 .72rem var(--mono); letter-spacing: .1em; text-transform: uppercase; }
 
 .media-shell { margin: 1.2rem 0; border: 3px solid var(--ink); background: #152925; color: var(--paper); box-shadow: var(--shadow); }
 .media-shell img { display: block; width: 100%; height: auto; background: #091816; }
@@ -170,6 +169,80 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .media-placeholder span { display: block; font: 900 1rem var(--mono); }
 .media-placeholder small { display: block; max-width: 34rem; margin-top: .6rem; color: #bed5cd; }
 .document-frame { width: 100%; min-height: 60vh; border: 0; background: white; }
+
+.video-shell { overflow: hidden; background: #071816; }
+.video-poster {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  color: white;
+  background: #071816;
+  text-align: left;
+}
+.video-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 13, 12, .12) 45%, rgba(2, 13, 12, .86) 100%);
+  box-shadow: inset 0 0 0 3px rgba(231, 197, 111, .52);
+  pointer-events: none;
+}
+.video-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease, filter .3s ease; }
+.video-poster:hover img { transform: scale(1.025); filter: brightness(1.07) saturate(1.04); }
+.video-poster:focus-visible { outline-offset: -6px; }
+.video-archive-label {
+  position: absolute;
+  z-index: 2;
+  top: .75rem;
+  left: .75rem;
+  padding: .28rem .48rem;
+  color: #102a27;
+  background: var(--brass-light);
+  box-shadow: 3px 3px 0 rgba(3, 16, 14, .8);
+  font: 900 .68rem var(--mono);
+  letter-spacing: .08em;
+}
+.video-play-glyph {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  width: clamp(4.25rem, 12vw, 6rem);
+  height: clamp(4.25rem, 12vw, 6rem);
+  border: 3px solid #fff3cf;
+  border-radius: 50%;
+  background: rgba(8, 70, 66, .9);
+  box-shadow: 0 0 0 6px rgba(7, 24, 22, .5), 0 .45rem 1.2rem rgba(0, 0, 0, .4);
+  transform: translate(-50%, -50%);
+}
+.video-play-glyph::after {
+  content: "";
+  position: absolute;
+  left: 53%;
+  top: 50%;
+  border-top: .85rem solid transparent;
+  border-bottom: .85rem solid transparent;
+  border-left: 1.35rem solid #fff3cf;
+  transform: translate(-40%, -50%);
+}
+.video-play-text {
+  position: absolute;
+  z-index: 2;
+  left: 1rem;
+  bottom: .75rem;
+  color: white;
+  font: 900 clamp(.78rem, 2.4vw, 1rem) var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 3px #000;
+}
+.video-caption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .35rem 1rem; }
+.video-caption small { color: #bed5cd; }
+.video-frame { display: block; min-height: 0; aspect-ratio: 16 / 9; }
 
 .scene-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin: 1.25rem 0 .3rem; }
 .primary-button, .secondary-button, .quiet-button, .menu-action, .tool-tabs button, .mobile-toolbar button {
@@ -249,7 +322,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 
 .desktop-only { display: none; }
 
-@media (min-width: 760px) {
+@media (min-width: 980px) {
   .console { padding-bottom: 0; }
   .console-header { padding-inline: 1.4rem; }
   .console-grid { display: grid; grid-template-columns: 210px minmax(0, 1fr) 260px; min-height: calc(100vh - 78px); }

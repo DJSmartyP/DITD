@@ -53,6 +53,10 @@ All compromise, activation, install, scanning and deletion effects are fictional
 
 The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The nine videos use the supplied unlisted YouTube playlist rather than duplicating the local MOV masters.
 
+Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails: a large accessible HTML play button sits over the local artwork and the privacy-enhanced YouTube embed is created only after the player presses it.
+
+Jonabot favicon and touch-icon crops are included for browser tabs and saved-home-screen presentation. The opening story artwork also supplies the public social preview.
+
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
 A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward.
@@ -67,7 +71,7 @@ Run the dependency-free static checks with:
 npm test
 ```
 
-The checks cover the 23-scene chain, critical answers and normalizers, evidence dependency, media mapping and GitHub Pages-safe relative paths.
+The checks cover the 23-scene chain, critical answers and normalizers, evidence dependency, speaker attribution, local video artwork, media mapping and GitHub Pages-safe relative paths.
 
 ## Structure
 

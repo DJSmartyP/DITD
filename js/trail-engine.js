@@ -110,7 +110,8 @@ export class TrailEngine {
 
     const copy = el("div", "story-copy");
     (scene.body || []).forEach((paragraph, index) => {
-      const p = el("p", index === 0 ? "jonabot-line" : "", paragraph);
+      const p = el("p", index === 0 ? "speaker-line" : "", paragraph);
+      if (index === 0) p.prepend(el("span", "speaker-label", scene.speaker || "TRAIL CONSOLE"));
       if (/^TBD|\[TBD/i.test(paragraph)) p.classList.add("tbd-copy");
       copy.append(p);
     });

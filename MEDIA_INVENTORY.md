@@ -28,7 +28,7 @@ YouTube playlist: [Phantom Peak Explorers Club - CT1 Discord in the Discord](htt
 
 | Source file | Size / properties | SHA-256 | Use |
 |---|---:|---|---|
-| `D1 - 50 Pieces.png` | 16,517,106 B; 2484×3941 RGBA | `DD1654E1D8ADB4B83ECC71F2550B01161488B556A373E86071FC0DA49146EF8B` | Persistent narrator portrait; exact-content 719×1140 WebP derivative at `assets/images/jonabot-portrait.webp` (121,654 B) |
+| `D1 - 50 Pieces.png` | 16,517,106 B; 2484×3941 RGBA | `DD1654E1D8ADB4B83ECC71F2550B01161488B556A373E86071FC0DA49146EF8B` | Persistent narrator portrait; exact-content 719×1140 WebP derivative at `assets/images/jonabot-portrait.webp` (121,654 B), plus 64px favicon and 180px touch-icon crops |
 
 `Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction because the intro is already mapped from the YouTube playlist.
 
@@ -51,3 +51,19 @@ No replacement canon was invented for the missing Activation Centre visual.
 | Asset | Required scene | Runtime mapping |
 |---|---:|---|
 | Collectible Bodach Bay Blimp Completion Pass, generated 2026-09-30 with Jonabot cameo, completion seal, travel stub and blank passenger/date/seat fields | 22 | `assets/tickets/bodach-bay-trail-completion-pass.png` |
+
+## Generated video story art
+
+The nine YouTube players use original, locally hosted artwork generated specifically for the story beat at that point in the trail. None of these covers use or derive from the YouTube thumbnails. The play control, archive label and title are live HTML/CSS overlays rather than baked into the images.
+
+| Thumbnail asset | Story beat | Media ID |
+|---|---|---|
+| `assets/video-thumbnails/intro.webp` | Jonabot opens the trail over the Ridge | `intro` |
+| `assets/video-thumbnails/bodach-bay-tourism.webp` | Idealised Bodach Bay tourism vision | `bodach-bay-tourism` |
+| `assets/video-thumbnails/jonatravel-call.webp` | JonaTravel call beginning to corrupt | `jonatravel-jonana-peel` |
+| `assets/video-thumbnails/videomatic-4763.webp` | Hacker controlling the town network | `videomatic-4763-hacker` |
+| `assets/video-thumbnails/videomatic-8345.webp` | Jonabot's corrupted reveal | `videomatic-8345-reveal` |
+| `assets/video-thumbnails/cancel-plan.webp` | The false cancel-plan trap | `cancel-plan-mockery` |
+| `assets/video-thumbnails/restore-finale.webp` | Backup restore removing corruption | `restore-finale` |
+| `assets/video-thumbnails/final-jonana-peel.webp` | Restored Bodach Bay booking | `final-jonana-peel` |
+| `assets/video-thumbnails/post-trail-credits.webp` | Post-trail sunset and departure | `post-trail-credits` |
