@@ -70,10 +70,42 @@ test("answer-bearing video remains on screen with the Bodach Bay question", () =
   assert.equal(question.mediaId, undefined);
 });
 
+test("video dialogue is not duplicated as scene copy", () => {
+  const visibleCopy = trail.scenes
+    .flatMap((scene) => [
+      ...(scene.body || []),
+      scene.success || "",
+      ...(scene.restoreBeats || []).map((beat) => beat.text)
+    ])
+    .join("\n");
+
+  for (const transcriptLine of [
+    "So, you like trails?",
+    "A vibrant paradise in a desolate land",
+    "Hello, thank you for choosing JonaTravel!",
+    "Well, well, well, not so high and mighty",
+    "I can't believe that worked!",
+    "You idiot! That's obviously not a real command",
+    "Wait! What are you doing?!",
+    "It appears we were disconnected before"
+  ]) {
+    const escaped = transcriptLine.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.doesNotMatch(visibleCopy, new RegExp(escaped, "i"));
+  }
+});
+
+test("restore finale appears only after the restore has completed", () => {
+  const restore = trail.scenes.find((scene) => scene.id === "restore");
+  assert.equal(restore.mediaAfterSolve, true);
+  assert.deepEqual(restore.restoreBeats.map((beat) => beat.at), [10, 40, 70, 100]);
+});
+
 test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
   const channel = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
   const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
   assert.ok(channel.messages.some((message) => message.text.includes("#trail-notes")));
+  assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "./assets/documents/jonabot-operator-manual-protected.pdf")));
+  assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "https://discord.com/channels/1036657633907703899/1198249965739331635")));
   assert.ok(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")));
   assert.ok(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")));
   assert.equal(puzzle.validation.answer, "4216");
@@ -113,7 +145,7 @@ test("every scene has an accurate visible speaker label", () => {
     assert.ok(scene.speaker, `${scene.id} speaker label`);
   }
   assert.equal(trail.scenes.find((scene) => scene.id === "jonatravel-call").speaker, "Jonana Peel");
-  assert.equal(trail.scenes.find((scene) => scene.id === "licence-failure").speaker, "Unknown Intruder");
+  assert.equal(trail.scenes.find((scene) => scene.id === "licence-failure").speaker, "Videomatic");
   assert.equal(trail.scenes.find((scene) => scene.id === "bodach-bay-booking").speaker, "Jonana Peel");
 });
 

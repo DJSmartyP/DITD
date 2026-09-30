@@ -498,6 +498,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .channel-message strong { display: block; color: var(--teal); font: 900 .76rem var(--mono); }
 .channel-message p { margin: .25rem 0 0; }
 .channel-message.system { border-style: dashed; border-color: var(--brass); font-family: var(--mono); }
+.channel-link { display: inline-block; margin-top: .3rem; color: #075b55; font-weight: 900; text-decoration-thickness: 2px; text-underline-offset: .16em; }
+.channel-link:hover { color: #8a341f; }
+.channel-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
 .pinned-evidence { margin: 1rem 0; padding: .75rem; border: 2px solid var(--brass); background: #fff8e2; }
 .pinned-evidence h3 { margin: 0 0 .55rem; font: 900 .84rem var(--mono); }

@@ -127,6 +127,7 @@ export class TrailEngine {
 
   mediaShouldShow(scene, solved, replay) {
     if (!scene.mediaId) return false;
+    if (scene.mediaAfterSolve && !solved && !replay) return false;
     if (replay || solved || scene.showMediaBeforeSolve) return true;
     return ["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"].includes(scene.mode);
   }

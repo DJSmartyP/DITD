@@ -218,7 +218,16 @@ function privateChannel(scene) {
   wrapper.setAttribute("aria-label", "Read-only moderator conversation");
   (scene.messages || []).forEach((message) => {
     const item = el("article", `channel-message${message.author === "System" ? " system" : ""}`);
-    item.append(el("strong", "", message.author), el("p", "", message.text));
+    const paragraph = el("p", "", message.text);
+    (message.links || []).forEach((link, index) => {
+      paragraph.append(document.createTextNode(index === 0 ? " " : " · "));
+      const anchor = el("a", "channel-link", link.label);
+      anchor.href = link.href;
+      anchor.target = "_blank";
+      anchor.rel = "noopener";
+      paragraph.append(anchor);
+    });
+    item.append(el("strong", "", message.author), paragraph);
     wrapper.append(item);
   });
   return wrapper;

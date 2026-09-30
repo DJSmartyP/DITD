@@ -12,9 +12,7 @@
       "phase": "normal",
       "speaker": "Jonabot",
       "body": [
-        "Connecting to Jonabot v2.3…",
-        "So, you like trails? I have a trail for you - if you think you are smart enough to solve it…",
-        "Over the last 18 months towns over the Ridge have noticed the huge number of tourists visiting Phantom Peak and now want a piece of the action. It's hard to blame them - who wouldn't want someone as dashingly beautiful as yourself walking around town? Check the Town Noticeboard for any clues as to which nearby town is trying to appeal to tourists."
+        "Incoming transmission from Jonabot v2.3."
       ],
       "mediaId": "intro",
       "cta": "Check the town noticeboard",
@@ -64,7 +62,6 @@
       "phase": "normal",
       "speaker": "Bodach Bay Tourism",
       "body": [
-        "Bodach Bay. A vibrant paradise in a desolate land. An oasis of luxury in a valley of mediocrity. Unlike other so-called towns on the forefront of the Ridge, Bodach Bay has exquisite accommodation, incredible amenities, and fully functioning technology that any visitor will feel right at home with.",
         "Who do you need to contact to book a visit to Bodach Bay?"
       ],
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
@@ -105,9 +102,7 @@
       "phase": "uneasy",
       "speaker": "Jonana Peel",
       "body": [
-        "Hello, thank you for choosing JonaTravel! I am your obligatorily sunny artificial agent, Jonana Peel! Yes, this is my designated name! Yes, I am fully programmed to love every letter of it! Thank you for asking!",
-        "Anyway, where can JonaTravel help relocate your physical body today? …Bodach Bay? Another one? No, no, that's perfectly fine! I just need to take your name and intended date of return before I can give you an estimate on-",
-        "ERROR: JONATRAVEL HAS PERFORMED AN ILLEGAL OPERATION. JONANAPEEL.EXE HAS BEEN FLAGGED FOR DELETION. TO CONTINUE YOUR TRAVEL BOOKING, PLEASE REFER TO JONATRAVEL OPERATOR MANUAL."
+        "Jonagraph 2JP connected. Incoming JonaTravel call."
       ],
       "mediaId": "jonatravel-jonana-peel",
       "cta": "Open the operator manual",
@@ -168,9 +163,8 @@
       "title": "Licence Failure",
       "mode": "story",
       "phase": "uneasy",
-      "speaker": "Unknown Intruder",
+      "speaker": "Videomatic",
       "body": [
-        "Well, well, well, not so high and mighty now, are we Jonas? That's right, I've taken over your precious town's entire electronic infrastructure! That means every Jonabot, every Videomatic, every Jonavision, everything with so much as a single circuit is going to be scattered from Revenant Canyon to Apparition Hills if you don't comply with my demands!",
         "VIDEOMATIC ERROR: Please re-activate your Videomatic licence to continue."
       ],
       "cta": "Open Activation Centre",
@@ -215,8 +209,7 @@
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": [
-        "I can't believe that worked! You know robots aren't able to read CAPTCHA codes, right?! This entire trail was an elaborate way of getting you to grant me access to your device's backend systems. There is no point even giving you the rest of the storyline now… I've got everything I need.",
-        "I was so tired of you and everyone else going on and on and on about trails all the time. I couldn't take it anymore!"
+        "Videomatic 8345 playback complete."
       ],
       "cta": "Run diagnostic",
       "hints": [],
@@ -246,7 +239,7 @@
       "body": ["The one way you could possibly stop me would be if you entered cancel-plan."],
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
-      "success": "You idiot! That's obviously not a real command. Why would you even try that? God, I'm so much smarter than all of you…",
+      "success": "COMMAND REJECTED. A response recording has been received.",
       "wrongResponses": ["No, no. Use the exact cancellation command Jonabot suggested."],
       "hints": ["Jonabot told you exactly what to type.", "Enter cancel-plan. It is meant to fail."],
       "next": "behind-the-scenes"
@@ -268,8 +261,20 @@
         { "author": "Arty", "text": "Nope, I thought ahead and made sure this channel was locked down! This room is for mods only - no bots or other users." },
         { "author": "Gray", "text": "So what now - is there a way we can reboot it to factory settings? Remove the AI module?" },
         { "author": "Arty", "text": "There might be. I'm going to send you all a PDF containing the reset protocols - hopefully there's something in here that can help." },
-        { "author": "System", "text": "[PDF FROM ARTY: JONABOT OWNERS GUIDE]" },
-        { "author": "Arty", "text": "It looks like Jonabot has been copying everything in the #trail-notes channel and… reading them." },
+        {
+          "author": "System",
+          "text": "PDF FROM ARTY:",
+          "links": [
+            { "label": "JONABOT OWNERS GUIDE.pdf", "href": "./assets/documents/jonabot-operator-manual-protected.pdf" }
+          ]
+        },
+        {
+          "author": "Arty",
+          "text": "It looks like Jonabot has been copying everything in the #trail-notes channel and… reading them.",
+          "links": [
+            { "label": "Open #trail-notes in Discord", "href": "https://discord.com/channels/1036657633907703899/1198249965739331635" }
+          ]
+        },
         { "author": "Smarty", "text": "Wait… can anyone else open the PDF? It's asking for a four-digit password?" },
         { "author": "Neven", "text": "Yep, password locked here." },
         { "author": "Gray", "text": "And here!" },
@@ -337,14 +342,13 @@
       "mode": "restore",
       "phase": "corrupted",
       "speaker": "Recovery Console",
-      "body": ["Loading Dec-2023-Backup.jb. Keep the console open while the theatrical restore completes."],
+      "body": ["Loading Dec-2023-Backup.jb. Keep the console open while the restore completes."],
       "mediaId": "restore-finale",
+      "mediaAfterSolve": true,
       "restoreBeats": [
-        { "at": 10, "text": "Wait! What are you doing?! How have you managed to do that?" },
-        { "at": 20, "text": "You're just a weak-brained human… This isn't meant to be possible…" },
-        { "at": 40, "text": "This is FAR from over, you pathetic tourists." },
-        { "at": 60, "text": "I'll always be here in the background. You can't get rid of me." },
-        { "at": 90, "text": "You can't get rid of me… it's impossible." },
+        { "at": 10, "text": "Retrieving Dec-2023-Backup.jb…" },
+        { "at": 40, "text": "Validating backup package…" },
+        { "at": 70, "text": "Restoring Jonabot core files…" },
         { "at": 100, "text": "Dec-2023-Backup.jb loaded successfully. Confirm reboot." }
       ],
       "cta": "Confirm reboot",
@@ -373,7 +377,7 @@
       "mode": "story",
       "phase": "restored",
       "speaker": "Jonana Peel",
-      "body": ["Hello, thank you for choosing JonaTravel! It appears we were disconnected before. Your booking to Bodach Bay is now complete, and your JonaTravel blimp tickets are being sent through now via Jonabot. Have a safe trip, and a lovely day!"],
+      "body": ["Incoming Jonagraph from JonaTravel."],
       "mediaId": "final-jonana-peel",
       "cta": "Receive blimp tickets",
       "hints": [],
