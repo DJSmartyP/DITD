@@ -1,5 +1,5 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js";
-import { renderMedia } from "./media.js";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20260930-3";
+import { renderMedia } from "./media.js?v=20260930-3";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -30,7 +30,12 @@ export class TrailEngine {
     this.store.update((state) => {
       if (!state.completedSceneIds.includes(scene.id)) state.completedSceneIds.push(scene.id);
       state.phase = next?.phase || scene.phase;
-      if (!stay && next) state.currentSceneId = next.id;
+      if (!stay && next) {
+        state.currentSceneId = next.id;
+        if (next.completeOnEntry && !state.completedSceneIds.includes(next.id)) {
+          state.completedSceneIds.push(next.id);
+        }
+      }
     });
   }
 
@@ -118,6 +123,9 @@ export class TrailEngine {
       this.store.update((state) => {
         state.currentSceneId = scene.next;
         state.phase = next?.phase || state.phase;
+        if (next?.completeOnEntry && !state.completedSceneIds.includes(next.id)) {
+          state.completedSceneIds.push(next.id);
+        }
       });
     }
     this.feedback = null;
@@ -183,7 +191,9 @@ export class TrailEngine {
     section.id = `trail-scene-${scene.id}`;
     section.setAttribute("aria-label", `Completed scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
     this.appendSceneHeadingAndCopy(section, scene, { completed: true });
-    this.appendSceneMedia(section, scene, { locked: false });
+    const remainsLocked = scene.mode === "document-locked"
+      && !this.store.get().completedSceneIds.includes(scene.next);
+    this.appendSceneMedia(section, scene, { locked: remainsLocked });
     if (["system-log", "private-channel", "diagnostic"].includes(scene.mode)) {
       const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
       if (machine) section.append(machine);
@@ -266,7 +276,7 @@ export class TrailEngine {
     currentRoot.append(this.feedback);
 
     if (solved && scene.success) {
-      this.setFeedback(scene.success, scene.validation?.intentionalFailure ? "error" : "success");
+      this.setFeedback(scene.success, "success");
     }
 
     const actions = el("div", "scene-actions");

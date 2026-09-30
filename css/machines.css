@@ -48,6 +48,8 @@
 .tuner-control button { min-height: 48px; border: 2px solid var(--brass-light); color: var(--paper); background: #173d38; font-weight: 900; }
 
 .jonagraph-builder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin: 1rem auto; max-width: 330px; }
+.jonagraph-rule { margin: 0 0 .55rem; color: #e9f7f0; }
+.jonagraph-format { display: block; width: fit-content; margin: 0 auto .8rem; padding: .35rem .55rem; border: 1px solid #7fa39b; color: var(--brass-light); background: #061816; font: 800 .76rem var(--mono); }
 .jonagraph-part { min-width: 0; text-align: center; }
 .jonagraph-part label { color: #bed7d0; font: 700 .68rem var(--mono); text-transform: uppercase; }
 .jonagraph-part input { width: 100%; }

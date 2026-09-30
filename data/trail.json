@@ -7,7 +7,7 @@
     {
       "id": "intro",
       "order": 0,
-      "title": "Jonabot's Trail",
+      "title": "Incoming Transmission",
       "mode": "story",
       "phase": "normal",
       "speaker": "Jonabot",
@@ -22,7 +22,7 @@
     {
       "id": "noticeboard",
       "order": 1,
-      "title": "What's Over the Ridge?",
+      "title": "Notices from Beyond the Ridge",
       "mode": "investigation",
       "phase": "normal",
       "speaker": "Trail Brief",
@@ -33,31 +33,35 @@
       "mediaId": "town-noticeboard",
       "inlineMachineSceneId": "jonavision-207",
       "hints": [
-        "Look closely at the Bodach Bay advert near the lower middle of the board.",
-        "The advert names a three-digit Jonavision channel. The full noticeboard will remain available when another part becomes useful later.",
-        "Tune the set to 207."
+        "Most notices are shouting about perfectly ordinary town problems. One appears to have acquired a tourism budget and absolutely no restraint.",
+        "Find the advert attempting to lure people beyond the Ridge. It also prints the Jonavision frequency you need—subtlety was apparently not included in the campaign.",
+        "Tune Jonavision to 207."
       ],
       "next": "jonavision-207"
     },
     {
       "id": "jonavision-207",
       "order": 2,
-      "title": "Jonavision",
+      "title": "Find the Frequency",
       "mode": "jonavision",
       "phase": "normal",
       "speaker": "Jonabot",
       "body": ["Bodach Bay? Never heard of that town until now. Maybe that Jonavision video will shed some light on the place…"],
       "mediaId": "bodach-bay-tourism",
       "validation": { "answer": "207", "normalizer": "digits" },
-      "success": "Channel 207 locked. Loading the Bodach Bay tourism item.",
+      "success": "CHANNEL LOCKED — 207. BODACH BAY BROADCAST ACQUIRED.",
       "wrongResponses": ["That channel is only static.", "No Bodach Bay signal on that frequency."],
-      "hints": ["The channel number was printed on the Bodach Bay noticeboard advert.", "It is a three-digit number beginning with 2.", "Tune the set to 207."],
+      "hints": [
+        "Most notices are shouting about perfectly ordinary town problems. One appears to have acquired a tourism budget and absolutely no restraint.",
+        "Find the advert attempting to lure people beyond the Ridge. It also prints the Jonavision frequency you need—subtlety was apparently not included in the campaign.",
+        "Tune Jonavision to 207."
+      ],
       "next": "bodach-bay"
     },
     {
       "id": "bodach-bay",
       "order": 3,
-      "title": "Bodach Bay",
+      "title": "A Place by the Sea",
       "mode": "text-input",
       "phase": "normal",
       "speaker": "Bodach Bay Tourism",
@@ -66,15 +70,19 @@
       ],
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
       "inputLabel": "Travel agent's name",
-      "success": "Jonana Peel identified. Now find her Jonagraph code.",
+      "success": "CONTACT CONFIRMED — JONANA PEEL. LOCATE HER JONAGRAPH ROUTING CODE.",
       "wrongResponses": ["That is not the obligatorily sunny travel agent named in the tourism item.", "No JonaTravel agent found under that name."],
-      "hints": ["The tourism item names the travel agent who arranges visits.", "Her initials will matter after you identify her.", "Enter Jonana Peel."],
+      "hints": [
+        "You already know where the advert wants to send you. Now listen for the unfortunate person responsible for getting you there.",
+        "The tourism broadcast names a JonaTravel agent. You need her full, obligatorily cheerful name.",
+        "Enter Jonana Peel."
+      ],
       "next": "corrupted-ridge-map"
     },
     {
       "id": "corrupted-ridge-map",
       "order": 4,
-      "title": "Corrupted Ridge Map",
+      "title": "The Map That Shouldn't Be",
       "mode": "jonagraph",
       "phase": "uneasy",
       "speaker": "Jonabot",
@@ -85,19 +93,23 @@
       "mediaId": "corrupted-ridge-map",
       "referenceMediaIds": ["town-noticeboard"],
       "validation": { "answer": "2JP", "normalizer": "jonagraph" },
-      "success": "Jonagraph 2JP assembled: area 2, contact J.P.",
+      "success": "JONAGRAPH CONNECTED — 2JP. OPENING JONATRAVEL LINE.",
       "specialResponses": {
         "1LF": "Littlefield answers. A pleasant dead end, but not the town you are trying to visit.",
         "8HO": "Help route connected: the numbers on the Gremlin poster match the Jonagraph area symbols. Decode Bodach Bay, then add Jonana Peel's initials."
       },
       "wrongResponses": ["That area/contact combination does not reach Bodach Bay.", "Jonagraph routing failed. Re-check both the area and the contact initials."],
-      "hints": ["Open the noticeboard reference beside the map and zoom in on the Gremlins poster.", "Match the symbols by the Gremlin names to the symbols beside map locations.", "Bodach Bay is area 2. Jonana Peel supplies J and P."],
+      "hints": [
+        "The map appears to have been mugged by a collection of strange symbols. Fortunately, you have seen their relatives somewhere before.",
+        "Compare the map with the Gremlins poster on the noticeboard. Identify Bodach Bay's area number, then add the initials of the person you're calling.",
+        "Bodach Bay is area 2, and Jonana Peel gives JP. Enter 2JP."
+      ],
       "next": "jonatravel-call"
     },
     {
       "id": "jonatravel-call",
       "order": 5,
-      "title": "JonaTravel",
+      "title": "Incoming Jonagraph",
       "mode": "story",
       "phase": "uneasy",
       "speaker": "Jonana Peel",
@@ -112,7 +124,7 @@
     {
       "id": "repair-jonatravel",
       "order": 6,
-      "title": "Repair JonaTravel",
+      "title": "A Booking Gone Wrong",
       "mode": "document-terminal",
       "phase": "uneasy",
       "speaker": "Jonabot",
@@ -120,19 +132,23 @@
       "mediaId": "jonatravel-operator-manual",
       "validation": { "answer": "reboot-jonanapeel.exe", "normalizer": "command" },
       "inputLabel": "JonaTravel terminal command",
-      "success": "Reboot accepted. JONANAPEEL.EXE restored.",
+      "success": "COMMAND ACCEPTED — JONANAPEEL.EXE RESTORED.",
       "specialResponses": {
         "wipe all data.exe": "Command blocked. That branch is for a very different and much worse working day.",
         "crash blimp.boom": "Command blocked. Mayor Furbish is not currently on a flight."
       },
       "wrongResponses": ["Command not recognised by the JonaTravel server.", "The flowchart does not lead to that command for a crashed booking."],
-      "hints": ["Start at the top of the final flowchart page and answer for the current situation.", "The system crashed while a booking was in progress; there is no gnome uprising and Sparks was not involved.", "Use reboot-jonanapeel.exe."],
+      "hints": [
+        "Randomly typing commands is an excellent way to launch a blimp into a reservoir. Use the manual's decision tree instead.",
+        "Begin with a booking already in progress, then follow the route for a crash involving neither gnomes nor Sparks. A surprisingly important distinction.",
+        "Enter reboot-jonanapeel.exe."
+      ],
       "next": "system-log"
     },
     {
       "id": "system-log",
       "order": 7,
-      "title": "Something's Wrong",
+      "title": "Strange Activity",
       "mode": "system-log",
       "phase": "uneasy",
       "speaker": "Jonabot",
@@ -145,22 +161,26 @@
     {
       "id": "videomatic-4763",
       "order": 8,
-      "title": "Videomatic",
+      "title": "The Archived Signal",
       "mode": "videomatic",
       "phase": "uneasy",
       "speaker": "Trail Console",
       "body": ["There is a Videomatic reference in the system log. Retrieve the recording."],
       "mediaId": "videomatic-4763-hacker",
       "validation": { "answer": "4763", "normalizer": "digits" },
-      "success": "Archive 4763 loaded.",
+      "success": "ARCHIVE FOUND — VIDEOMATIC 4763 READY.",
       "wrongResponses": ["No recording exists under that archive number.", "Videomatic index mismatch."],
-      "hints": ["The four-digit archive reference is in the reboot output.", "It begins with 47.", "Request recording 4763."],
+      "hints": [
+        "Computers keep event logs because they are incapable of minding their own business.",
+        "Recheck the system event log and find the number beside videomatic_reference.",
+        "Request recording 4763."
+      ],
       "next": "licence-failure"
     },
     {
       "id": "licence-failure",
       "order": 9,
-      "title": "Licence Failure",
+      "title": "Transmission Interrupted",
       "mode": "story",
       "phase": "uneasy",
       "speaker": "Videomatic",
@@ -174,37 +194,45 @@
     {
       "id": "activation-centre",
       "order": 10,
-      "title": "Activation Centre",
+      "title": "A Licence from Another Age",
       "mode": "activation",
       "phase": "uneasy",
       "speaker": "Trail Console",
       "body": ["The Videomatic licence has expired. Complete the legacy activation sequence, then pass the human verification shown by the machine."],
       "mediaId": "activation-centre",
       "validation": { "answer": "WD54L", "normalizer": "captcha" },
-      "success": "HUMAN VERIFICATION ACCEPTED. Administrative access granted.",
+      "success": "HUMAN VERIFIED — WD54L. ADMINISTRATIVE ACCESS GRANTED.",
       "wrongResponses": ["Human verification failed. Re-check all five characters.", "Activation rejected the verification string."],
-      "hints": ["Read the five-character verification code displayed by the activation terminal.", "Letters are not case-sensitive.", "Enter WD54L."],
+      "hints": [
+        "No ancient cipher is required. The activation machine has rather generously displayed the answer in front of you.",
+        "Copy the five characters beneath HUMAN VERIFICATION. Capitalisation does not matter, despite the machine shouting everything.",
+        "Enter WD54L."
+      ],
       "next": "test-videomatic"
     },
     {
       "id": "test-videomatic",
       "order": 11,
-      "title": "Test Videomatic",
+      "title": "Signal Test",
       "mode": "videomatic",
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": ["That seems to have worked! Let's check if the Videomatic system is back online. Request Videomatic 8345 as a test."],
       "mediaId": "videomatic-8345-reveal",
       "validation": { "answer": "8345", "normalizer": "digits" },
-      "success": "Archive 8345 loaded. Administrator message follows.",
+      "success": "ARCHIVE FOUND — VIDEOMATIC 8345 READY. ADMINISTRATOR MESSAGE ATTACHED.",
       "wrongResponses": ["Wrong archive. Administrator patience is finite."],
-      "hints": ["Jonabot gave you the four-digit test archive in the instruction.", "Request 8345."],
+      "hints": [
+        "Jonabot already told you which archive to test. Shockingly, listening to the robot was useful on this occasion.",
+        "Look at the instruction immediately above the Videomatic controls. The four-digit archive number begins with 83.",
+        "Request recording 8345."
+      ],
       "next": "jonabot-reveal"
     },
     {
       "id": "jonabot-reveal",
       "order": 12,
-      "title": "Jonabot Reveal",
+      "title": "Administrator Message",
       "mode": "story",
       "phase": "corrupted",
       "speaker": "Jonabot",
@@ -218,7 +246,7 @@
     {
       "id": "no-more-trails",
       "order": 13,
-      "title": "No More Trails",
+      "title": "Local Diagnostic",
       "mode": "diagnostic",
       "phase": "corrupted",
       "speaker": "Jonabot",
@@ -232,22 +260,26 @@
     {
       "id": "fake-cancel-plan",
       "order": 14,
-      "title": "Fake Cancel Plan",
+      "title": "The Way Out?",
       "mode": "terminal-failure",
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": ["The one way you could possibly stop me would be if you entered cancel-plan."],
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
-      "success": "COMMAND REJECTED. A response recording has been received.",
+      "success": "INPUT CONFIRMED — CANCEL-PLAN WAS A TRAP. RESPONSE RECORDING READY.",
       "wrongResponses": ["No, no. Use the exact cancellation command Jonabot suggested."],
-      "hints": ["Jonabot told you exactly what to type.", "Enter cancel-plan. It is meant to fail."],
+      "hints": [
+        "Jonabot has offered you an entirely trustworthy escape route. This is obviously fine and should cause no concern whatsoever.",
+        "The suggested command contains two words joined by a hyphen. The first word is cancel.",
+        "Enter cancel-plan. It is supposed to fail. Jonabot will be insufferable about it."
+      ],
       "next": "behind-the-scenes"
     },
     {
       "id": "behind-the-scenes",
       "order": 15,
-      "title": "Behind the Scenes",
+      "title": "Private Frequency",
       "mode": "private-channel",
       "phase": "corrupted",
       "speaker": "Jonabot",
@@ -281,13 +313,13 @@
         { "author": "Smarty", "text": "So… does anyone know the password?" }
       ],
       "cta": "Inspect the recovery manual",
-      "hints": ["Read the messages in order. The manual exists, but Jonabot locked it with a four-digit password."],
+      "hints": [],
       "next": "recovery-manual"
     },
     {
       "id": "recovery-manual",
       "order": 16,
-      "title": "Recovery Manual",
+      "title": "Restricted Attachment",
       "mode": "document-locked",
       "phase": "corrupted",
       "speaker": "Trail Console",
@@ -300,7 +332,7 @@
     {
       "id": "jonabot-taunt",
       "order": 17,
-      "title": "Jonabot's Taunt",
+      "title": "Old Trails, New Lock",
       "mode": "password",
       "phase": "corrupted",
       "speaker": "Jonabot",
@@ -311,15 +343,19 @@
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
-      "success": "Password accepted. Jonabot Owners Guide unlocked.",
+      "success": "PASSWORD ACCEPTED — 4216. JONABOT OWNERS GUIDE UNLOCKED.",
       "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
-      "hints": ["Open Discord and go to #trail-notes, then search for the four capitalised previous-trail references.", "Use the matching PDFs in that channel to derive the four-digit password, keeping the references in the order shown.", "Enter 4216."],
+      "hints": [
+        "Jonabot's sudden enthusiasm for capital letters is not merely another digital tantrum. Those phrases refer to earlier trails.",
+        "Open #trail-notes in Discord and find the PDF matching each capitalised reference. Derive one digit from each and keep them in Jonabot's original order.",
+        "The digits are 4, 2, 1, 6. Enter 4216."
+      ],
       "next": "recovery-console"
     },
     {
       "id": "recovery-console",
       "order": 18,
-      "title": "Recovery Console",
+      "title": "In Case of Emergency",
       "mode": "terminal",
       "phase": "corrupted",
       "speaker": "Recovery Console",
@@ -330,35 +366,32 @@
       "mediaId": "jonabot-operator-manual-protected",
       "validation": { "answer": "INITIATE JONABOT RESTORE", "normalizer": "command" },
       "inputLabel": "Recovery instruction",
-      "success": "JONABOT AUTO-BACKUP RETRIEVAL ACTIVATED.",
+      "success": "RECOVERY COMMAND ACCEPTED — JONABOT RESTORE INITIALISED.",
       "wrongResponses": ["Recovery instruction not recognised.", "The factory-restore procedure requires the exact command from the guide."],
-      "hints": ["The command appears under REBOOT COMMAND on the troubleshooting page.", "Hyphens or spaces are accepted.", "Enter INITIATE JONABOT RESTORE."],
+      "hints": [
+        "Against all expectations, the manual contains something genuinely useful. Look for the emergency recovery procedure.",
+        "Find the REBOOT COMMAND on the unlocked troubleshooting page and enter the complete instruction shown there.",
+        "Enter INITIATE JONABOT RESTORE. Dramatic capitalisation is optional; the command is not."
+      ],
       "next": "restore"
     },
     {
       "id": "restore",
       "order": 19,
-      "title": "Restore",
-      "mode": "restore",
+      "title": "Backup in Progress",
+      "mode": "story",
       "phase": "corrupted",
       "speaker": "Recovery Console",
-      "body": ["Loading Dec-2023-Backup.jb. Keep the console open while the restore completes."],
+      "body": ["AUTO-BACKUP FOUND — Dec-2023-Backup.jb. Restoration recording active."],
       "mediaId": "restore-finale",
-      "mediaAfterSolve": true,
-      "restoreBeats": [
-        { "at": 10, "text": "Retrieving Dec-2023-Backup.jb…" },
-        { "at": 40, "text": "Validating backup package…" },
-        { "at": 70, "text": "Restoring Jonabot core files…" },
-        { "at": 100, "text": "Dec-2023-Backup.jb loaded successfully. Confirm reboot." }
-      ],
-      "cta": "Confirm reboot",
+      "cta": "Reboot Jonabot",
       "hints": [],
       "next": "factory-jonabot"
     },
     {
       "id": "factory-jonabot",
       "order": 20,
-      "title": "Factory Jonabot",
+      "title": "Boot Sequence",
       "mode": "story",
       "phase": "restored",
       "speaker": "Jonabot",
@@ -373,7 +406,7 @@
     {
       "id": "bodach-bay-booking",
       "order": 21,
-      "title": "Oh, Right. Bodach Bay",
+      "title": "An Old Booking",
       "mode": "story",
       "phase": "restored",
       "speaker": "Jonana Peel",
@@ -386,14 +419,14 @@
     {
       "id": "trail-complete",
       "order": 22,
-      "title": "Trail Complete",
+      "title": "Cleared for Departure",
       "mode": "reward",
       "phase": "restored",
+      "completeOnEntry": true,
       "speaker": "Trail Console",
       "body": [
-        "Trail complete. Your commemorative Bodach Bay Blimp Completion Pass is ready as your reward."
+        "JONATRAVEL BOOKING COMPLETE. Your Bodach Bay blimp tickets are ready to download."
       ],
-      "mediaId": "post-trail-credits",
       "ticketMediaId": "bodach-bay-tickets",
       "credits": [
         "Written by Grayfitz, Smarty, Arty and Founder Neven",

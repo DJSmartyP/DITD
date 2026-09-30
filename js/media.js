@@ -157,23 +157,49 @@ function openImageViewer(item) {
 }
 
 function documentViewer(item, { locked = false } = {}) {
-  const shell = el("section", "media-shell");
-  const frame = document.createElement("object");
-  frame.className = "document-frame";
-  frame.type = "application/pdf";
-  frame.data = item.src;
-  frame.setAttribute("aria-label", item.title);
-  const fallback = el("p", "media-caption", "The inline document viewer is unavailable. Open the file below instead.");
-  frame.append(fallback);
+  const shell = el("section", "media-shell document-shell");
+  if (locked) {
+    const gate = el("div", "document-lock-card");
+    gate.setAttribute("role", "img");
+    gate.setAttribute("aria-label", `${item.title} is locked with a four-digit PIN`);
+    gate.append(
+      el("strong", "", "ENCRYPTED DOCUMENT"),
+      el("span", "", "4-DIGIT PIN REQUIRED"),
+      el("p", "", "Unlock the Owners Guide to activate its in-page reader.")
+    );
+    shell.append(gate);
+  } else if (item.previewPages?.length) {
+    const preview = el("details", "document-preview");
+    preview.open = true;
+    preview.append(el("summary", "", `Read ${item.title} in page`));
+    const pages = el("div", "document-page-stack");
+    item.previewPages.forEach((src, index) => {
+      const page = document.createElement("img");
+      page.src = src;
+      page.alt = `${item.title}, page ${index + 1} of ${item.previewPages.length}`;
+      page.loading = index === 0 ? "eager" : "lazy";
+      page.decoding = "async";
+      pages.append(page);
+    });
+    preview.append(pages);
+    shell.append(preview);
+  } else {
+    const frame = document.createElement("iframe");
+    frame.className = "document-frame";
+    frame.src = item.src;
+    frame.title = item.title;
+    frame.loading = "lazy";
+    shell.append(frame);
+  }
   const caption = el("div", "media-caption");
   caption.append(el("strong", "", item.title));
-  if (locked) caption.append(el("p", "", "This source PDF is genuinely password protected. Solve the next scene before opening it."));
-  const link = el("a", "secondary-button", "Open PDF in a new tab");
+  if (locked) caption.append(el("p", "", "This PDF is password protected. Solve the next scene to unlock the in-page reader."));
+  const link = el("a", "secondary-button", locked ? "Open protected PDF" : "Open original PDF in a new tab");
   link.href = item.src;
   link.target = "_blank";
   link.rel = "noopener";
   caption.append(link);
-  shell.append(frame, caption);
+  shell.append(caption);
   return shell;
 }
 

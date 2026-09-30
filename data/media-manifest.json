@@ -107,6 +107,17 @@
       "kind": "document",
       "src": "./assets/documents/jonatravel-operator-manual.pdf",
       "title": "JonaTravel Operational Manual",
+      "previewPages": [
+        "./assets/documents/previews/jonatravel/page-1.png",
+        "./assets/documents/previews/jonatravel/page-2.png",
+        "./assets/documents/previews/jonatravel/page-3.png",
+        "./assets/documents/previews/jonatravel/page-4.png",
+        "./assets/documents/previews/jonatravel/page-5.png",
+        "./assets/documents/previews/jonatravel/page-6.png",
+        "./assets/documents/previews/jonatravel/page-7.png",
+        "./assets/documents/previews/jonatravel/page-8.png",
+        "./assets/documents/previews/jonatravel/page-9.png"
+      ],
       "sourceFile": "PPEC_06_JONATRAVEL_MANUAL_240205.pdf",
       "status": "mapped",
       "scenes": ["repair-jonatravel"]
@@ -169,6 +180,11 @@
       "kind": "document",
       "src": "./assets/documents/jonabot-operator-manual-protected.pdf",
       "title": "Password-protected Jonabot Owners Guide",
+      "previewPages": [
+        "./assets/documents/previews/jonabot/page-1.png",
+        "./assets/documents/previews/jonabot/page-2.png",
+        "./assets/documents/previews/jonabot/page-3.png"
+      ],
       "sourceFile": "PPEC_10_JONABOT_MANUAL_PROTECTED_240209.pdf",
       "status": "mapped",
       "scenes": ["recovery-manual", "jonabot-taunt", "recovery-console"]
@@ -224,8 +240,8 @@
       "plannedLocalSrc": "./assets/videos/post-trail-credits.mp4",
       "thumbnailStatus": "generated-original-story-art",
       "sourceFile": "PPEC_13_POST_TRAIL_CREDITS_240211.mov",
-      "status": "mapped-youtube",
-      "scenes": ["trail-complete"]
+      "status": "archived-unused",
+      "scenes": []
     },
     "activation-centre": {
       "kind": "generated-interface",

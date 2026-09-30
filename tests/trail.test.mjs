@@ -20,6 +20,34 @@ test("canonical flow contains exactly scenes 00-22 in one chain", () => {
   assert.equal(trail.scenes.at(-1).next, null);
 });
 
+test("scene titles are themed without exposing later twists", () => {
+  assert.deepEqual(trail.scenes.map((scene) => scene.title), [
+    "Incoming Transmission",
+    "Notices from Beyond the Ridge",
+    "Find the Frequency",
+    "A Place by the Sea",
+    "The Map That Shouldn't Be",
+    "Incoming Jonagraph",
+    "A Booking Gone Wrong",
+    "Strange Activity",
+    "The Archived Signal",
+    "Transmission Interrupted",
+    "A Licence from Another Age",
+    "Signal Test",
+    "Administrator Message",
+    "Local Diagnostic",
+    "The Way Out?",
+    "Private Frequency",
+    "Restricted Attachment",
+    "Old Trails, New Lock",
+    "In Case of Emergency",
+    "Backup in Progress",
+    "Boot Sequence",
+    "An Old Booking",
+    "Cleared for Departure"
+  ]);
+});
+
 test("critical answers and deliberate failure remain exact", () => {
   const expected = new Map([
     ["jonavision-207", "207"],
@@ -38,6 +66,30 @@ test("critical answers and deliberate failure remain exact", () => {
     assert.equal(scene.validation.answer, answer);
   });
   assert.equal(trail.scenes.find((scene) => scene.id === "fake-cancel-plan").validation.intentionalFailure, true);
+});
+
+test("each puzzle uses a nudge, stronger nudge, then explicit answer", async () => {
+  const hintedIds = [
+    "noticeboard",
+    "jonavision-207",
+    "bodach-bay",
+    "corrupted-ridge-map",
+    "repair-jonatravel",
+    "videomatic-4763",
+    "activation-centre",
+    "test-videomatic",
+    "fake-cancel-plan",
+    "jonabot-taunt",
+    "recovery-console"
+  ];
+  for (const id of hintedIds) {
+    const scene = trail.scenes.find((candidate) => candidate.id === id);
+    assert.equal(scene.hints.length, 3, `${id} has a three-stage hint ladder`);
+  }
+
+  const machineCode = await readFile(join(root, "js", "machines.js"), "utf8");
+  assert.match(machineCode, /destination's area number/);
+  assert.match(machineCode, /\[PLACE NUMBER\] \+ \[CONTACT INITIALS\]/);
 });
 
 test("normalizers accept harmless variations without weakening answers", () => {
@@ -94,10 +146,13 @@ test("video dialogue is not duplicated as scene copy", () => {
   }
 });
 
-test("restore finale appears only after the restore has completed", () => {
+test("the restore video is the restoration event, without a duplicate progress machine", () => {
   const restore = trail.scenes.find((scene) => scene.id === "restore");
-  assert.equal(restore.mediaAfterSolve, true);
-  assert.deepEqual(restore.restoreBeats.map((beat) => beat.at), [10, 40, 70, 100]);
+  assert.equal(restore.mode, "story");
+  assert.equal(restore.mediaId, "restore-finale");
+  assert.equal(restore.mediaAfterSolve, undefined);
+  assert.equal(restore.restoreBeats, undefined);
+  assert.equal(restore.cta, "Reboot Jonabot");
 });
 
 test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
@@ -122,6 +177,10 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
   for (const [id, item] of Object.entries(manifest.items)) {
     if (typeof item.src === "string" && item.src.startsWith("./")) {
       await access(join(root, item.src.slice(2)));
+    }
+    for (const previewPage of item.previewPages || []) {
+      assert.match(previewPage, /^\.\/assets\/documents\/previews\/[\w/-]+\.png$/, `${id} local preview page`);
+      await access(join(root, previewPage.slice(2)));
     }
     if (item.kind === "youtube") {
       assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
@@ -150,8 +209,13 @@ test("every scene has an accurate visible speaker label", () => {
 });
 
 test("the final reward includes downloadable Bodach Bay tickets", () => {
+  const finalCall = trail.scenes.find((scene) => scene.id === "bodach-bay-booking");
   const finale = trail.scenes.find((scene) => scene.id === "trail-complete");
   const tickets = manifest.items[finale.ticketMediaId];
+  assert.equal(finalCall.mediaId, "final-jonana-peel");
+  assert.equal(finalCall.next, finale.id);
+  assert.equal(finale.completeOnEntry, true);
+  assert.equal(finale.mediaId, undefined);
   assert.equal(finale.ticketMediaId, "bodach-bay-tickets");
   assert.equal(tickets.kind, "image");
   assert.equal(tickets.download, true);
@@ -190,6 +254,13 @@ test("player-facing copy stays inside the story world", async () => {
   assert.doesNotMatch(visibleCopy, /fictional trail theatre/i);
   assert.doesNotMatch(visibleCopy, /third-party CAPTCHA/i);
   assert.doesNotMatch(visibleCopy, /Presentation only/i);
+  assert.doesNotMatch(visibleCopy, /inline document viewer is unavailable/i);
+});
+
+test("correct answers receive clear in-world confirmations", () => {
+  for (const scene of trail.scenes.filter((candidate) => candidate.validation)) {
+    assert.match(scene.success, /(?:ACCEPTED|ACQUIRED|CONFIRMED|CONNECTED|FOUND|READY|RESTORED|VERIFIED|LOCKED)/, `${scene.id} confirmation`);
+  }
 });
 
 test("the console renders one chronological growing trail stream", async () => {

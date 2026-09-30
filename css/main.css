@@ -197,6 +197,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .media-placeholder span { display: block; font: 900 1rem var(--mono); }
 .media-placeholder small { display: block; max-width: 34rem; margin-top: .6rem; color: #bed5cd; }
 .document-frame { width: 100%; min-height: 60vh; border: 0; background: white; }
+.document-preview { color: var(--paper); background: #071816; }
+.document-preview > summary { padding: .8rem 1rem; color: #071816; background: var(--brass-light); font: 900 .82rem var(--mono); cursor: pointer; }
+.document-page-stack { display: grid; gap: .75rem; max-height: min(72vh, 58rem); overflow: auto; padding: .75rem; scroll-snap-type: y proximity; }
+.document-page-stack img { width: min(100%, 54rem); height: auto; margin: 0 auto; background: white; box-shadow: 0 0 0 1px #789a94; scroll-snap-align: start; }
+.document-lock-card { display: grid; place-items: center; min-height: 18rem; padding: 2rem 1rem; border: 6px double var(--brass); color: var(--paper); background: repeating-linear-gradient(-45deg, #0c2926 0 14px, #0a211f 14px 28px); text-align: center; }
+.document-lock-card strong { color: var(--brass-light); font: 900 clamp(1.25rem, 5vw, 2.2rem) var(--mono); }
+.document-lock-card span { margin-top: .65rem; font: 900 .82rem var(--mono); letter-spacing: .12em; }
+.document-lock-card p { margin-bottom: 0; }
 
 .video-shell { overflow: hidden; background: #071816; }
 .video-poster {

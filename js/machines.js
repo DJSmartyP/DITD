@@ -106,7 +106,8 @@ function videomatic(scene, onSubmit) {
 
 function jonagraph(scene, onSubmit) {
   const machine = machineFrame("JONAGRAPH ROUTER", "AREA + CONTACT");
-  const help = el("p", "", "Construct the route from its three earned parts.");
+  const help = el("p", "jonagraph-rule", "Every Jonagraph code begins with the destination's area number, followed by the initials of the person you're calling.");
+  const format = el("code", "jonagraph-format", "[PLACE NUMBER] + [CONTACT INITIALS]");
   const form = document.createElement("form");
   const builder = el("div", "jonagraph-builder");
   const config = [
@@ -141,7 +142,7 @@ function jonagraph(scene, onSubmit) {
     event.preventDefault();
     onSubmit(inputs.map((input) => input.value).join(""), inputs.find((input) => !input.value) || inputs[0]);
   });
-  machine.append(help, form);
+  machine.append(help, format, form);
   return machine;
 }
 
