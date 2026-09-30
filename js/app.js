@@ -75,11 +75,10 @@ try {
       heading.textContent = `${String(scene.order).padStart(2, "0")} — ${scene.title}`;
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = "Replay scene";
+      button.textContent = "Jump to scene";
       button.addEventListener("click", () => {
         toolRail.dataset.open = "false";
-        engine.render(scene.id, { replay: true });
-        $("#workspace").focus();
+        engine.scrollToScene(scene.id, { focus: true });
       });
       card.append(heading, button);
       root.append(card);
@@ -194,7 +193,10 @@ try {
   $("#welcome-reset").addEventListener("click", () => {
     if (confirmReset()) welcomeDialog.close();
   });
-  $("#continue-trail").addEventListener("click", () => welcomeDialog.close());
+  $("#continue-trail").addEventListener("click", () => {
+    welcomeDialog.close();
+    engine.scrollToScene(engine.currentScene().id, { focus: true });
+  });
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && toolRail.dataset.open === "true") toolRail.dataset.open = "false";

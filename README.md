@@ -1,6 +1,6 @@
 # DITD
 
-**Discord In The Discord - A Jonabot Trail** is a mobile-first, static recreation of the Phantom Peak Explorers Club community trail. It runs as one persistent PPEC Trail Console and preserves the canonical Scene 00-22 order.
+**Discord In The Discord - A Jonabot Trail** is a mobile-first, static recreation of the Phantom Peak Explorers Club community trail. It runs as one persistent, continuously growing PPEC Trail Console and preserves the canonical Scene 00-22 order.
 
 ## Run locally
 
@@ -51,15 +51,19 @@ All compromise, activation, install, scanning and deletion effects are fictional
 
 ## Media
 
-`data/media-manifest.json` maps each semantic media ID to its exact local asset or YouTube URL. YouTube embeds are privacy-enhanced and load only after the player chooses to load them.
+`data/media-manifest.json` maps each semantic media ID to its exact local asset or temporary YouTube URL. The YouTube embeds are placeholders and load only after the player presses the in-world play control.
 
-The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. The nine videos use the supplied unlisted YouTube playlist rather than duplicating the local MOV masters.
+The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. The nine videos currently use the supplied unlisted YouTube playlist as placeholders. YouTube may still show its own sign-in prompt.
 
 When a video contains the answer to the following question, that same video remains visible with the question. The password puzzle later directs players into Discord's `#trail-notes` channel to use the previous-trail PDFs there; the website does not replace that external investigation.
 
 On mobile, Trail Tools use a compact floating dock with the tool drawer positioned safely above it. The current scene's hint set is refreshed whenever the scene changes, and the next available hint control remains visible at the bottom of the drawer.
 
-Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails: a large accessible HTML play button sits over the local artwork and the privacy-enhanced YouTube embed is created only after the player presses it.
+Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page; History jumps to an earlier section without leaving the live trail.
+
+Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails. Live HTML overlays turn each cover into an in-world state such as `VISIT BODACH BAY`, `ROGUE UPLOAD DETECTED` or `INCOMING JONAGRAPH`, with a large accessible play control.
+
+Each manifest entry also records its planned `assets/videos/*.mp4` path. Once browser-ready MP4 files are added, setting `localSrc` to that path makes the same player use native video instead of YouTube without changing the scene flow or artwork.
 
 Jonabot favicon and touch-icon crops are included for browser tabs and saved-home-screen presentation. The opening story artwork also supplies the public social preview.
 

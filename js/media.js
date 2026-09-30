@@ -14,16 +14,16 @@ export function youtubeId(url) {
 function placeholder(item) {
   const shell = el("figure", "media-shell");
   const body = el("div", "media-placeholder");
-  body.append(el("span", "", `[TBD MEDIA] ${item.title}`));
-  body.append(el("small", "", "The original asset or URL was not supplied. This explicit placeholder preserves the scene without inventing canon."));
+  body.append(el("span", "", `[ARCHIVE UNAVAILABLE] ${item.title}`));
+  body.append(el("small", "", "The Trail Console could not recover this visual record."));
   shell.append(body);
   return shell;
 }
 
 function youtube(item) {
   const id = youtubeId(item.src);
-  if (!id) return placeholder(item);
-  const shell = el("figure", "media-shell video-shell");
+  if (!item.localSrc && !id) return placeholder(item);
+  const shell = el("figure", `media-shell video-shell video-shell-${item.posterStyle || "archive"}`);
   const poster = el("button", "video-poster");
   poster.type = "button";
   poster.setAttribute("aria-label", item.playLabel || `Play ${item.title}`);
@@ -37,19 +37,30 @@ function youtube(item) {
     poster.append(image);
   }
 
-  const archiveLabel = el("span", "video-archive-label", "VIDEO ARCHIVE");
+  const archiveLabel = el("span", "video-archive-label", item.posterKicker || "VIDEO ARCHIVE");
+  const headline = el("span", "video-poster-headline", item.posterHeadline || item.title);
+  const status = el("span", "video-poster-status", item.posterStatus || "RECORDING READY");
   const playGlyph = el("span", "video-play-glyph");
   playGlyph.setAttribute("aria-hidden", "true");
-  const playText = el("span", "video-play-text", "Play video");
-  poster.append(archiveLabel, playGlyph, playText);
+  const playText = el("span", "video-play-text", item.playText || "Play recording");
+  poster.append(archiveLabel, headline, status, playGlyph, playText);
 
   const caption = el("figcaption", "media-caption video-caption");
-  caption.append(
-    el("strong", "", item.title),
-    el("small", "", "Original story artwork. The YouTube video loads only when you press play.")
-  );
+  caption.append(el("strong", "", item.title));
 
   poster.addEventListener("click", () => {
+    if (item.localSrc) {
+      const video = document.createElement("video");
+      video.className = "document-frame video-frame";
+      video.src = item.localSrc;
+      video.poster = item.thumbnail || "";
+      video.controls = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.setAttribute("aria-label", item.title);
+      poster.replaceWith(video);
+      return;
+    }
     const iframe = document.createElement("iframe");
     iframe.className = "document-frame video-frame";
     iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1`;
@@ -152,7 +163,7 @@ function documentViewer(item, { locked = false } = {}) {
   frame.type = "application/pdf";
   frame.data = item.src;
   frame.setAttribute("aria-label", item.title);
-  const fallback = el("p", "media-caption", "This browser cannot display the PDF inline.");
+  const fallback = el("p", "media-caption", "The inline document viewer is unavailable. Open the file below instead.");
   frame.append(fallback);
   const caption = el("div", "media-caption");
   caption.append(el("strong", "", item.title));

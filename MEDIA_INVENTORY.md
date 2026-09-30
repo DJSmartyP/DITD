@@ -38,7 +38,7 @@ The responsive home advert uses original generated artwork at `assets/images/dit
 
 ## Present but not copied
 
-The nine MOV masters remain in the authoritative source folder. The deployable repository uses their exact YouTube matches to keep the GitHub Pages payload small and browser-compatible.
+The nine MOV masters remain in the authoritative source folder. The deployable repository currently uses their YouTube matches as placeholders. Because YouTube can request a sign-in, the manifest records a planned local MP4 path for every video; browser-ready MP4s can later be committed under `assets/videos/` and activated by adding `localSrc`.
 
 The Bodach Bay tourism video is deliberately mapped to both Scenes 02 and 03 so the answer-bearing recording stays on screen with the travel-agent question. The full noticeboard is referenced rather than collected, and reopens beside the corrupted map.
 
@@ -60,7 +60,7 @@ No replacement canon was invented for the missing Activation Centre visual.
 
 ## Generated video story art
 
-The nine YouTube players use original, locally hosted artwork generated specifically for the story beat at that point in the trail. None of these covers use or derive from the YouTube thumbnails. The play control, archive label and title are live HTML/CSS overlays rather than baked into the images.
+The nine temporary YouTube players use original, locally hosted artwork generated specifically for the story beat at that point in the trail. None of these covers use or derive from the YouTube thumbnails. The play control and story-specific state labels are live HTML/CSS overlays rather than baked into the images: Bodach Bay appears as a tourism broadcast, the hacker recordings as rogue/restricted uploads, and the calls and restoration as incoming system transmissions.
 
 | Thumbnail asset | Story beat | Media ID |
 |---|---|---|

@@ -70,6 +70,7 @@ export class TrailEngine {
 
     this.complete(scene, { stay: true });
     this.render(scene.id);
+    this.scrollToScene(scene.id, { focus: true });
   }
 
   submitInline(scene, target, value, input, terminalScreen) {
@@ -107,6 +108,7 @@ export class TrailEngine {
     });
     this.feedback = null;
     this.render(target.id);
+    this.scrollToScene(target.id, { focus: true });
   }
 
   advance(scene) {
@@ -120,7 +122,7 @@ export class TrailEngine {
     }
     this.feedback = null;
     this.render();
-    document.querySelector("#workspace")?.focus({ preventScroll: false });
+    this.scrollToScene(this.store.get().currentSceneId, { focus: true });
   }
 
   mediaShouldShow(scene, solved, replay) {
@@ -129,22 +131,14 @@ export class TrailEngine {
     return ["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"].includes(scene.mode);
   }
 
-  render(sceneId = null, { replay = false } = {}) {
-    const scene = this.sceneById.get(sceneId || this.store.get().currentSceneId) || this.trail.scenes[0];
-    const state = this.store.get();
-    const solved = state.completedSceneIds.includes(scene.id);
-    const inlineMachineScene = scene.inlineMachineSceneId ? this.sceneById.get(scene.inlineMachineSceneId) : null;
-    const inlineMachineSolved = inlineMachineScene ? state.completedSceneIds.includes(inlineMachineScene.id) : false;
-    this.replaySceneId = replay ? scene.id : null;
-    this.root.replaceChildren();
-
+  appendSceneHeadingAndCopy(container, scene, { completed = false } = {}) {
     const header = el("header", "scene-header");
     header.append(
-      el("p", "scene-number", `SCENE ${String(scene.order).padStart(2, "0")} / 22`),
+      el("p", "scene-number", `SCENE ${String(scene.order).padStart(2, "0")} / 22${completed ? " · COMPLETE" : ""}`),
       el("h2", "", scene.title),
       el("span", "scene-mode", scene.mode.replaceAll("-", " "))
     );
-    this.root.append(header);
+    container.append(header);
 
     const copy = el("div", "story-copy");
     (scene.body || []).forEach((paragraph, index) => {
@@ -153,12 +147,13 @@ export class TrailEngine {
       if (/^TBD|\[TBD/i.test(paragraph)) p.classList.add("tbd-copy");
       copy.append(p);
     });
-    this.root.append(copy);
+    container.append(copy);
+  }
 
+  appendSceneMedia(container, scene, { locked = false } = {}) {
     const mediaLayout = el("div", "scene-media-layout");
-    if (this.mediaShouldShow(scene, solved, replay)) {
-      const item = this.manifest.items[scene.mediaId];
-      const media = renderMedia(item, { locked: scene.mode === "document-locked" });
+    if (scene.mediaId) {
+      const media = renderMedia(this.manifest.items[scene.mediaId], { locked });
       if (media) mediaLayout.append(media);
     }
 
@@ -175,11 +170,58 @@ export class TrailEngine {
       mediaLayout.append(references);
     }
 
-    if (mediaLayout.childElementCount) this.root.append(mediaLayout);
-
+    if (mediaLayout.childElementCount) container.append(mediaLayout);
     if (scene.ticketMediaId) {
       const tickets = renderMedia(this.manifest.items[scene.ticketMediaId]);
-      if (tickets) this.root.append(tickets);
+      if (tickets) container.append(tickets);
+    }
+  }
+
+  renderCompletedScene(scene) {
+    const section = el("section", "trail-entry trail-entry-complete");
+    section.id = `trail-scene-${scene.id}`;
+    section.setAttribute("aria-label", `Completed scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
+    this.appendSceneHeadingAndCopy(section, scene, { completed: true });
+    this.appendSceneMedia(section, scene, { locked: false });
+    if (["system-log", "private-channel", "diagnostic"].includes(scene.mode)) {
+      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
+      if (machine) section.append(machine);
+    }
+    return section;
+  }
+
+  scrollToScene(sceneId, { focus = false } = {}) {
+    const section = document.getElementById(`trail-scene-${sceneId}`);
+    if (!section) return;
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (focus) {
+      section.tabIndex = -1;
+      section.focus({ preventScroll: true });
+    }
+  }
+
+  render(sceneId = null, { replay = false } = {}) {
+    const scene = this.sceneById.get(sceneId || this.store.get().currentSceneId) || this.trail.scenes[0];
+    const state = this.store.get();
+    const solved = state.completedSceneIds.includes(scene.id);
+    const inlineMachineScene = scene.inlineMachineSceneId ? this.sceneById.get(scene.inlineMachineSceneId) : null;
+    const inlineMachineSolved = inlineMachineScene ? state.completedSceneIds.includes(inlineMachineScene.id) : false;
+    this.replaySceneId = replay ? scene.id : null;
+    this.root.replaceChildren();
+    const stream = el("div", "trail-stream");
+    this.root.append(stream);
+    this.trail.scenes
+      .filter((candidate) => candidate.order < scene.order && state.completedSceneIds.includes(candidate.id))
+      .forEach((candidate) => stream.append(this.renderCompletedScene(candidate)));
+
+    const currentRoot = el("section", "trail-entry trail-entry-current");
+    currentRoot.id = `trail-scene-${scene.id}`;
+    currentRoot.setAttribute("aria-label", `Current scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
+    currentRoot.setAttribute("aria-live", "polite");
+    stream.append(currentRoot);
+    this.appendSceneHeadingAndCopy(currentRoot, scene);
+    if (this.mediaShouldShow(scene, solved, replay)) {
+      this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
     }
 
     if (replay) {
@@ -190,7 +232,7 @@ export class TrailEngine {
       back.type = "button";
       back.addEventListener("click", () => this.render());
       actions.append(back);
-      this.root.append(notice, actions);
+      currentRoot.append(notice, actions);
       this.onRender?.(scene, { replay: true });
       return;
     }
@@ -200,26 +242,27 @@ export class TrailEngine {
         onSubmit: (value, input, screen) => this.submitInline(scene, inlineMachineScene, value, input, screen),
         onComplete: () => {}
       });
-      if (machine) this.root.append(machine);
+      if (machine) currentRoot.append(machine);
     } else if (!solved) {
       const machine = renderMachine(scene, {
         onSubmit: (value, input, screen) => this.submit(scene, value, input, screen),
         onComplete: () => {
           this.complete(scene, { stay: true });
           this.render(scene.id);
+          this.scrollToScene(scene.id, { focus: true });
         }
       });
-      if (machine) this.root.append(machine);
+      if (machine) currentRoot.append(machine);
     } else if (scene.mode === "reward") {
       const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
-      if (machine) this.root.append(machine);
+      if (machine) currentRoot.append(machine);
     }
 
     this.feedback = el("p", "feedback", "");
     this.feedback.hidden = true;
     this.feedback.tabIndex = -1;
     this.feedback.setAttribute("role", "status");
-    this.root.append(this.feedback);
+    currentRoot.append(this.feedback);
 
     if (solved && scene.success) {
       this.setFeedback(scene.success, scene.validation?.intentionalFailure ? "error" : "success");
@@ -232,6 +275,7 @@ export class TrailEngine {
       collect.addEventListener("click", () => {
         this.complete(scene, { stay: true });
         this.render(scene.id);
+        this.scrollToScene(scene.id, { focus: true });
       });
       actions.append(collect);
     } else if (!scene.validation && (!inlineMachineScene || inlineMachineSolved) && scene.mode !== "restore" && scene.mode !== "reward") {
@@ -251,12 +295,13 @@ export class TrailEngine {
       finish.addEventListener("click", () => {
         this.complete(scene, { stay: true });
         this.render(scene.id);
+        this.scrollToScene(scene.id, { focus: true });
       });
       actions.append(finish);
     } else if (scene.mode === "reward" && solved) {
       actions.append(el("p", "feedback", "TRAIL COMPLETE - booking confirmed and progress saved on this device."));
     }
-    if (actions.childElementCount) this.root.append(actions);
+    if (actions.childElementCount) currentRoot.append(actions);
     this.onRender?.(scene, { replay: false });
   }
 }

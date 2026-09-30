@@ -67,8 +67,6 @@
         "Bodach Bay. A vibrant paradise in a desolate land. An oasis of luxury in a valley of mediocrity. Unlike other so-called towns on the forefront of the Ridge, Bodach Bay has exquisite accommodation, incredible amenities, and fully functioning technology that any visitor will feel right at home with.",
         "Who do you need to contact to book a visit to Bodach Bay?"
       ],
-      "mediaId": "bodach-bay-tourism",
-      "showMediaBeforeSolve": true,
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
       "inputLabel": "Travel agent's name",
       "success": "Jonana Peel identified. Now find her Jonagraph code.",
@@ -186,12 +184,12 @@
       "mode": "activation",
       "phase": "uneasy",
       "speaker": "Trail Console",
-      "body": ["Complete the fictional legacy licence activation, then pass the human verification shown by the machine."],
+      "body": ["The Videomatic licence has expired. Complete the legacy activation sequence, then pass the human verification shown by the machine."],
       "mediaId": "activation-centre",
       "validation": { "answer": "WD54L", "normalizer": "captcha" },
       "success": "HUMAN VERIFICATION ACCEPTED. Administrative access granted.",
       "wrongResponses": ["Human verification failed. Re-check all five characters.", "Activation rejected the verification string."],
-      "hints": ["The original activation visual is unavailable; the console renders the authored five-character verification code directly.", "Letters are not case-sensitive.", "Enter WD54L."],
+      "hints": ["Read the five-character verification code displayed by the activation terminal.", "Letters are not case-sensitive.", "Enter WD54L."],
       "next": "test-videomatic"
     },
     {
@@ -220,7 +218,6 @@
         "I can't believe that worked! You know robots aren't able to read CAPTCHA codes, right?! This entire trail was an elaborate way of getting you to grant me access to your device's backend systems. There is no point even giving you the rest of the storyline now… I've got everything I need.",
         "I was so tired of you and everyone else going on and on and on about trails all the time. I couldn't take it anymore!"
       ],
-      "mediaId": "videomatic-8345-reveal",
       "cta": "Run diagnostic",
       "hints": [],
       "next": "no-more-trails"
@@ -233,8 +230,7 @@
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": [
-        "I've installed a script onto your device that will break it next time you try to load the JonAssist website. No more trails for you! No more annoyance for me!",
-        "This is fictional trail theatre. No software has been installed, no permission was requested, and your device is not at risk."
+        "I've installed a script onto your device that will break it next time you try to load the JonAssist website. No more trails for you! No more annoyance for me!"
       ],
       "cta": "Try Jonabot's escape route",
       "hints": [],

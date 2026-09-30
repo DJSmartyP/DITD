@@ -66,8 +66,8 @@ test("answer-bearing video remains on screen with the Bodach Bay question", () =
   const tuner = trail.scenes.find((scene) => scene.id === "jonavision-207");
   const question = trail.scenes.find((scene) => scene.id === "bodach-bay");
   assert.equal(tuner.mediaId, "bodach-bay-tourism");
-  assert.equal(question.mediaId, "bodach-bay-tourism");
-  assert.equal(question.showMediaBeforeSolve, true);
+  assert.equal(tuner.next, question.id);
+  assert.equal(question.mediaId, undefined);
 });
 
 test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
@@ -96,6 +96,12 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
       assert.match(item.thumbnail, /^\.\/assets\/video-thumbnails\/[\w-]+\.webp$/, `${id} local story-art thumbnail`);
       assert.ok(item.thumbnailAlt, `${id} thumbnail alt text`);
       assert.ok(item.playLabel, `${id} play label`);
+      assert.ok(item.playText, `${id} in-world play text`);
+      assert.ok(item.posterStyle, `${id} poster style`);
+      assert.ok(item.posterKicker, `${id} poster kicker`);
+      assert.ok(item.posterHeadline, `${id} poster headline`);
+      assert.ok(item.posterStatus, `${id} poster status`);
+      assert.match(item.plannedLocalSrc, /^\.\/assets\/videos\/[\w-]+\.mp4$/, `${id} planned local MP4 path`);
       assert.equal(item.thumbnailStatus, "generated-original-story-art", `${id} thumbnail source`);
       await access(join(root, item.thumbnail.slice(2)));
     }
@@ -137,4 +143,27 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(css, /#reveal-hint:not\(\[hidden\]\)/);
   assert.match(html, /id="continue-trail"/);
   assert.match(html, /id="welcome-reset"/);
+});
+
+test("player-facing copy stays inside the story world", async () => {
+  const mediaCode = await readFile(join(root, "js", "media.js"), "utf8");
+  const machineCode = await readFile(join(root, "js", "machines.js"), "utf8");
+  const trailCopy = await readFile(join(root, "data", "trail.json"), "utf8");
+  const visibleCopy = `${mediaCode}\n${machineCode}\n${trailCopy}`;
+  assert.doesNotMatch(visibleCopy, /YouTube video loads only/i);
+  assert.doesNotMatch(visibleCopy, /Original story artwork/i);
+  assert.doesNotMatch(visibleCopy, /TBD ORIGINAL VISUAL/i);
+  assert.doesNotMatch(visibleCopy, /fictional trail theatre/i);
+  assert.doesNotMatch(visibleCopy, /third-party CAPTCHA/i);
+  assert.doesNotMatch(visibleCopy, /Presentation only/i);
+});
+
+test("the console renders one chronological growing trail stream", async () => {
+  const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  assert.match(engine, /trail-stream/);
+  assert.match(engine, /trail-entry-complete/);
+  assert.match(engine, /candidate\.order < scene\.order/);
+  assert.match(app, /engine\.scrollToScene\(scene\.id/);
+  assert.doesNotMatch(app, /Replay scene/);
 });

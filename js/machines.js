@@ -153,7 +153,7 @@ function terminal(scene, onSubmit, intentionalFailure = false) {
   screen.setAttribute("aria-live", "polite");
   screen.textContent = intentionalFailure
     ? "ADMINISTRATOR: JONABOT\nApparently there is one way out. Go on. Trust me."
-    : "PPEC REMOTE TERMINAL\nSecure fictional connection established.\nAwaiting instruction…";
+    : "PPEC REMOTE TERMINAL\nSecure connection established.\nAwaiting instruction…";
   const form = standardForm(scene, (value, input) => {
     const line = document.createElement("p");
     line.textContent = `> ${value}`;
@@ -168,7 +168,7 @@ function terminal(scene, onSubmit, intentionalFailure = false) {
 function activation(scene, onSubmit) {
   const machine = machineFrame("LEGACY ACTIVATION CENTRE", "VIDEOMATIC LICENCE");
   const panel = el("div", "activation-panel");
-  const notice = el("p", "tbd-copy", "TBD ORIGINAL VISUAL: the activation artwork was not present in the supplied media. The authored activation and verification steps are preserved below.");
+  const notice = el("p", "tbd-copy", "ARCHIVE VISUAL UNAVAILABLE — fallback activation terminal loaded.");
   const fields = el("div", "licence-fields");
   const licence = document.createElement("input");
   licence.value = "PPEC-VIDEOMATIC-LEGACY";
@@ -183,7 +183,7 @@ function activation(scene, onSubmit) {
   activate.type = "button";
   const captcha = el("div", "captcha-card");
   captcha.hidden = true;
-  captcha.append(el("strong", "", "HUMAN VERIFICATION"), el("span", "captcha-code", "WD54L"), el("small", "", "This is a fictional in-trail verification challenge, not a third-party CAPTCHA."));
+  captcha.append(el("strong", "", "HUMAN VERIFICATION"), el("span", "captcha-code", "WD54L"), el("small", "", "Enter the five-character code shown above."));
   const form = standardForm(scene, onSubmit, { maxLength: 8, placeholder: "five characters" });
   form.hidden = true;
   activate.addEventListener("click", () => {
@@ -206,10 +206,10 @@ function systemLog(scene) {
 }
 
 function diagnostic() {
-  const wrapper = machineFrame("DEVICE DIAGNOSTIC", "FICTIONAL SIMULATION");
+  const wrapper = machineFrame("DEVICE DIAGNOSTIC", "LOCAL SYSTEM CHECK");
   wrapper.classList.add("fake-diagnostic");
   wrapper.append(el("span", "armed-badge", "NO-MORE-TRAILS.EXE: ARMED"));
-  wrapper.append(el("p", "", "Presentation only. No file has been installed and the page has not requested access to your device."));
+  wrapper.append(el("p", "", "Unauthorised script signature detected. Counter-command route required."));
   return wrapper;
 }
 
