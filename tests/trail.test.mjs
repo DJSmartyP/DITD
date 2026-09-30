@@ -39,7 +39,7 @@ test("scene titles are themed without exposing later twists", () => {
     "The Way Out?",
     "Private Frequency",
     "Restricted Attachment",
-    "Old Trails, New Lock",
+    "Administrator Calling",
     "In Case of Emergency",
     "Backup in Progress",
     "Boot Sequence",
@@ -188,12 +188,17 @@ test("the restore video is the restoration event, without a duplicate progress m
 test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
   const channel = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
   const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
+  const protectedGuide = manifest.items["jonabot-operator-manual-protected"];
   assert.ok(channel.messages.some((message) => message.text.includes("#trail-notes")));
-  assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "./assets/documents/jonabot-operator-manual-protected.pdf")));
+  assert.equal(channel.messages.some((message) => message.links?.some((link) => link.href === protectedGuide.src)), false);
   assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "https://discord.com/channels/1036657633907703899/1198249965739331635")));
   assert.ok(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")));
   assert.ok(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")));
   assert.equal(puzzle.validation.answer, "4216");
+  assert.equal(protectedGuide.sourceLink, false);
+  assert.equal(puzzle.modeLabel, "LIVE MESSAGE");
+  assert.equal(puzzle.transmissionLabel, "LIVE NOW");
+  assert.equal(puzzle.speaker, "Administrator: Jonabot");
 });
 
 test("every scene media ID exists and local mapped assets resolve", async () => {
@@ -369,6 +374,32 @@ test("the console renders one chronological growing trail stream", async () => {
   assert.match(app, /engine\.render\(scene\.id, \{ replay: true \}\)/);
   assert.match(app, /Open full replay/);
   assert.doesNotMatch(app, /Replay scene/);
+});
+
+test("corrupted diagnostic replaces repeated video dialogue and keeps the counter-command in player memory", async () => {
+  const machines = await readFile(join(root, "js", "machines.js"), "utf8");
+  const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const hints = await readFile(join(root, "js", "hints.js"), "utf8");
+  const mainCss = await readFile(join(root, "css", "main.css"), "utf8");
+  const diagnostic = trail.scenes.find((scene) => scene.id === "no-more-trails");
+  const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
+  const privateFrequency = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
+  assert.deepEqual(diagnostic.body, []);
+  assert.deepEqual(privateFrequency.body, []);
+  assert.match(machines, /Threat scan complete/);
+  assert.match(machines, /Next JonAssist request/);
+  assert.match(machines, /Manual counter-command required/);
+  assert.doesNotMatch(trap.body.join(" "), /cancel-plan/i);
+  assert.doesNotMatch(machines.match(/COUNTER-COMMAND ACCESS GRANTED[\s\S]*?Awaiting instruction/)?.[0] || "", /cancel-plan/i);
+  assert.equal(trap.hints.at(-1).includes("cancel-plan"), true);
+  assert.match(machines, /PRIVATE FREQUENCY INTERCEPT/);
+  for (const moderator of ["smarty", "neven", "arty", "gray"]) {
+    assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));
+  }
+  assert.doesNotMatch(engine, /scene-number|SCENE \$\{/);
+  assert.doesNotMatch(app, /padStart\(2, "0"\)/);
+  assert.doesNotMatch(hints, /padStart\(2, "0"\)/);
 });
 
 test("the welcome page hands off to the opening video, then Start trail loads the first message", async () => {

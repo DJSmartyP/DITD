@@ -153,7 +153,7 @@ function terminal(scene, onSubmit, intentionalFailure = false) {
   screen.setAttribute("role", "log");
   screen.setAttribute("aria-live", "polite");
   screen.textContent = intentionalFailure
-    ? "ADMINISTRATOR: JONABOT\nApparently there is one way out. Go on. Trust me."
+    ? "ADMINISTRATOR: JONABOT\nCOUNTER-COMMAND ACCESS GRANTED\n\nYou heard the command. Go on. Type it in and try to stop me."
     : "PPEC REMOTE TERMINAL\nSecure connection established.\nAwaiting instruction…";
   const form = standardForm(scene, (value, input) => {
     const line = document.createElement("p");
@@ -209,16 +209,39 @@ function systemLog(scene) {
 function diagnostic() {
   const wrapper = machineFrame("DEVICE DIAGNOSTIC", "LOCAL SYSTEM CHECK");
   wrapper.classList.add("fake-diagnostic");
-  wrapper.append(el("span", "armed-badge", "NO-MORE-TRAILS.EXE: ARMED"));
-  wrapper.append(el("p", "", "Unauthorised script signature detected. Counter-command route required."));
+  const summary = el("p", "diagnostic-summary", "Threat scan complete. An unauthorised process has attached itself to the JonAssist launch routine.");
+  const readout = el("dl", "diagnostic-grid");
+  [
+    ["Process", "no-more-trails.exe"],
+    ["Signature", "Unauthorised"],
+    ["State", "Armed — awaiting trigger"],
+    ["Installed by", "Administrator: Jonabot"],
+    ["Target", "JonAssist trail loader"],
+    ["Trigger", "Next JonAssist request"],
+    ["Detected effect", "Interrupt trail access"],
+    ["Automatic removal", "Failed"]
+  ].forEach(([label, value]) => {
+    readout.append(el("dt", "", label), el("dd", "", value));
+  });
+  const action = el("p", "diagnostic-action", "RECOVERY ROUTE: Manual counter-command required.");
+  wrapper.append(el("span", "armed-badge", "THREAT ACTIVE"), summary, readout, action);
   return wrapper;
 }
 
 function privateChannel(scene) {
   const wrapper = el("section", "private-channel");
   wrapper.setAttribute("aria-label", "Read-only moderator conversation");
+  const banner = el("div", "channel-access-banner");
+  banner.append(
+    el("strong", "", "PRIVATE FREQUENCY INTERCEPT"),
+    el("span", "", "MOD-ONLY CHANNEL // READ-ONLY MIRROR")
+  );
+  wrapper.append(banner);
   (scene.messages || []).forEach((message) => {
-    const item = el("article", `channel-message${message.author === "System" ? " system" : ""}`);
+    const moderatorClass = ["Smarty", "Neven", "Arty", "Gray"].includes(message.author)
+      ? ` channel-message--moderator channel-message--${message.author.toLowerCase()}`
+      : "";
+    const item = el("article", `channel-message${message.author === "System" ? " system" : moderatorClass}`);
     const paragraph = el("p", "", message.text);
     (message.links || []).forEach((link, index) => {
       paragraph.append(document.createTextNode(index === 0 ? " " : " · "));

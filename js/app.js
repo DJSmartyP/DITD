@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20260930-9";
+import { TrailEngine } from "./trail-engine.js?v=20260930-11";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -81,7 +81,7 @@ try {
       const card = document.createElement("article");
       card.className = "history-card";
       const heading = document.createElement("h3");
-      heading.textContent = `${String(scene.order).padStart(2, "0")} — ${scene.title}`;
+      heading.textContent = scene.title;
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = "Open full replay";
@@ -235,7 +235,7 @@ try {
     $("#welcome-message").textContent = "Saved progress was unreadable, so the Trail Console recovered safely with a fresh trail. Other browser data was untouched.";
   } else if (hasProgress) {
     const current = engine.currentScene();
-    $("#welcome-message").textContent = `Progress found on this device at Scene ${String(current.order).padStart(2, "0")}: ${current.title}.`;
+    $("#welcome-message").textContent = `Progress found on this device at ${current.title}.`;
   }
   welcomeDialog.showModal();
 } catch (error) {

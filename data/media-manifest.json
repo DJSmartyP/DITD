@@ -179,6 +179,7 @@
     "jonabot-operator-manual-protected": {
       "kind": "document",
       "src": "./assets/documents/jonabot-operator-manual-protected.pdf",
+      "sourceLink": false,
       "title": "Password-protected Jonabot Owners Guide",
       "previewPages": [
         "./assets/documents/previews/jonabot/page-1.png",

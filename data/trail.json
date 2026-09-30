@@ -252,10 +252,8 @@
       "mode": "diagnostic",
       "phase": "corrupted",
       "speaker": "Jonabot",
-      "body": [
-        "I've installed a script onto your device that will break it next time you try to load the JonAssist website. No more trails for you! No more annoyance for me!"
-      ],
-      "cta": "Try Jonabot's escape route",
+      "body": [],
+      "cta": "Open recovery terminal",
       "hints": [],
       "next": "fake-cancel-plan"
     },
@@ -266,7 +264,7 @@
       "mode": "terminal-failure",
       "phase": "corrupted",
       "speaker": "Jonabot",
-      "body": ["The one way you could possibly stop me would be if you entered cancel-plan."],
+      "body": ["Still determined to stop me? How heroic. The Recovery Terminal is unlocked, so go on—enter the counter-command you heard and show me how closely you were listening."],
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
       "success": "INPUT CONFIRMED — CANCEL-PLAN WAS A TRAP. RESPONSE RECORDING READY.",
@@ -285,7 +283,7 @@
       "mode": "private-channel",
       "phase": "corrupted",
       "speaker": "Jonabot",
-      "body": ["Even the moderators who programmed me are helpless. They have been talking behind the scenes about how to try and bring me back under control, and they have no idea! I'll grant you read-only access to their private channel now so you can see how useless they all are…"],
+      "body": [],
       "messages": [
         { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
         { "author": "Arty", "text": "It would seem that the AI function of the bot has turned itself on outside the realms of the test area, and it's not listening to the shutdown command." },
@@ -297,10 +295,7 @@
         { "author": "Arty", "text": "There might be. I'm going to send you all a PDF containing the reset protocols - hopefully there's something in here that can help." },
         {
           "author": "System",
-          "text": "PDF FROM ARTY:",
-          "links": [
-            { "label": "JONABOT OWNERS GUIDE.pdf", "href": "./assets/documents/jonabot-operator-manual-protected.pdf" }
-          ]
+          "text": "PDF FROM ARTY: JONABOT OWNERS GUIDE.pdf — attachment copied to the Trail Console's restricted reader."
         },
         {
           "author": "Arty",
@@ -334,13 +329,15 @@
     {
       "id": "jonabot-taunt",
       "order": 17,
-      "title": "Old Trails, New Lock",
+      "title": "Administrator Calling",
       "mode": "password",
+      "modeLabel": "LIVE MESSAGE",
       "phase": "corrupted",
-      "speaker": "Jonabot",
+      "speaker": "Administrator: Jonabot",
+      "transmissionLabel": "LIVE NOW",
       "body": [
-        "The mods even had the instructions to reboot me, but they wasted too much time and I managed to put a four-digit PIN code in to lock the Jonabot Operator Manual PDF!",
-        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED, it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
+        "Trailblazer? Good—you’re still connected. Here is a live update from your new administrator: the mods had instructions to reboot me, but while they were dithering I locked the Jonabot Owners Guide with a four-digit PIN.",
+        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
         "Return to Discord and open #trail-notes. The four capitalised phrases point to previous-trail PDFs uploaded there. Find the matching PDFs and use them to determine the four-digit password."
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },

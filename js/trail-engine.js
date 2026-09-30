@@ -1,5 +1,5 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20260930-3";
-import { renderMedia } from "./media.js?v=20260930-3";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20260930-4";
+import { renderMedia } from "./media.js?v=20260930-4";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -160,16 +160,19 @@ export class TrailEngine {
   appendSceneHeadingAndCopy(container, scene, { completed = false } = {}) {
     const header = el("header", "scene-header");
     header.append(
-      el("p", "scene-number", `SCENE ${String(scene.order).padStart(2, "0")} / 22${completed ? " · COMPLETE" : ""}`),
       el("h2", "", scene.title),
-      el("span", "scene-mode", scene.mode.replaceAll("-", " "))
+      el("span", "scene-mode", scene.modeLabel || scene.mode.replaceAll("-", " "))
     );
     container.append(header);
 
     const copy = el("div", "story-copy");
     (scene.body || []).forEach((paragraph, index) => {
       const p = el("p", index === 0 ? "speaker-line" : "", paragraph);
-      if (index === 0) p.prepend(el("span", "speaker-label", scene.speaker || "TRAIL CONSOLE"));
+      if (index === 0) {
+        const livePrefix = scene.transmissionLabel ? `${scene.transmissionLabel} // ` : "";
+        p.prepend(el("span", "speaker-label", `${livePrefix}${scene.speaker || "TRAIL CONSOLE"}`));
+        if (scene.transmissionLabel) p.classList.add("speaker-line-live");
+      }
       if (/^TBD|\[TBD/i.test(paragraph)) p.classList.add("tbd-copy");
       copy.append(p);
     });
@@ -207,7 +210,7 @@ export class TrailEngine {
     const section = el("section", "trail-entry trail-entry-complete");
     if (scene.retainWithNext) section.classList.add("trail-entry-retain");
     section.id = `trail-scene-${scene.id}`;
-    section.setAttribute("aria-label", `Completed scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
+    section.setAttribute("aria-label", `Completed trail section: ${scene.title}`);
     this.appendSceneHeadingAndCopy(section, scene, { completed: true });
     const remainsLocked = scene.mode === "document-locked"
       && !this.store.get().completedSceneIds.includes(scene.next);
@@ -256,7 +259,7 @@ export class TrailEngine {
 
     const currentRoot = el("section", "trail-entry trail-entry-current");
     currentRoot.id = `trail-scene-${scene.id}`;
-    currentRoot.setAttribute("aria-label", `Current scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
+    currentRoot.setAttribute("aria-label", `Current trail section: ${scene.title}`);
     currentRoot.setAttribute("aria-live", "polite");
     stream.append(currentRoot);
     const mediaVisible = this.mediaShouldShow(scene, solved, replay);

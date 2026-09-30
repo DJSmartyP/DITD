@@ -194,11 +194,13 @@ function documentViewer(item, { locked = false } = {}) {
   const caption = el("div", "media-caption");
   caption.append(el("strong", "", item.title));
   if (locked) caption.append(el("p", "", "This PDF is password protected. Solve the next scene to unlock the in-page reader."));
-  const link = el("a", "secondary-button", locked ? "Open protected PDF" : "Open original PDF in a new tab");
-  link.href = item.src;
-  link.target = "_blank";
-  link.rel = "noopener";
-  caption.append(link);
+  if (!locked && item.sourceLink !== false) {
+    const link = el("a", "secondary-button", "Open original PDF in a new tab");
+    link.href = item.src;
+    link.target = "_blank";
+    link.rel = "noopener";
+    caption.append(link);
+  }
   shell.append(caption);
   return shell;
 }
