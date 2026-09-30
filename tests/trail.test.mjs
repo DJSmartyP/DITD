@@ -304,6 +304,9 @@ test("answer feedback appears only after submission and has distinct result stat
   assert.match(css, /CORRECT — SYSTEM ACCEPTED/);
   assert.match(css, /NOT ACCEPTED — TRY AGAIN/);
   assert.match(css, /feedback\[data-kind="info"\]/);
+  assert.match(engine, /pendingFeedback = \{ sceneId: scene\.id, message: target\.success, kind: "success" \}/);
+  assert.doesNotMatch(engine, /state\.currentSceneId = target\.id/);
+  assert.match(engine, /Continue: \$\{this\.sceneById\.get\(scene\.next\)\?\.title/);
 });
 
 test("player-facing copy stays inside the story world", async () => {

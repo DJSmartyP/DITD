@@ -111,17 +111,16 @@ export class TrailEngine {
       return;
     }
 
-    this.pendingFeedback = { sceneId: target.id, message: target.success, kind: "success" };
+    this.pendingFeedback = { sceneId: scene.id, message: target.success, kind: "success" };
     this.store.update((state) => {
       [scene.id, target.id].forEach((id) => {
         if (!state.completedSceneIds.includes(id)) state.completedSceneIds.push(id);
       });
-      state.currentSceneId = target.id;
       state.phase = target.phase || state.phase;
     });
     this.feedback = null;
-    this.render(target.id);
-    this.scrollToScene(target.id, { focus: true });
+    this.render(scene.id);
+    this.scrollToScene(scene.id, { focus: true });
   }
 
   advance(scene) {
@@ -312,6 +311,9 @@ export class TrailEngine {
     } else if (!scene.validation && (!inlineMachineScene || inlineMachineSolved) && scene.mode !== "restore" && scene.mode !== "reward") {
       const next = el("button", "primary-button", scene.cta || "Continue");
       next.type = "button";
+      if (inlineMachineScene && inlineMachineSolved && !scene.cta) {
+        next.textContent = `Continue: ${this.sceneById.get(scene.next)?.title || "next section"}`;
+      }
       next.addEventListener("click", () => this.advance(scene));
       actions.append(next);
     } else if (solved && scene.next) {

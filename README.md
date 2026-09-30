@@ -61,6 +61,8 @@ On mobile, Notes, Hints and Menu use a compact floating dock with the tool drawe
 
 Answer feedback appears only after an answer control is submitted. Correct, incorrect and informational results use distinct labelled, high-contrast panels, with invalid inputs also marked for assistive technology.
 
+Correct answers never advance automatically. The current task remains on screen with its green in-world acceptance signal and a deliberate Continue button; the next section appears only after the player chooses to proceed. This also applies to the noticeboard's inline Jonavision tuner.
+
 Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page; History jumps to an earlier section without leaving the live trail.
 
 Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails. Live HTML overlays turn each cover into an in-world state such as `VISIT BODACH BAY`, `ROGUE UPLOAD DETECTED` or `INCOMING JONAGRAPH`, with a large accessible play control.
