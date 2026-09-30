@@ -185,17 +185,17 @@ test("the restore video is the restoration event, without a duplicate progress m
   assert.equal(restore.cta, "Reboot Jonabot");
 });
 
-test("the manual password puzzle sends players to the Discord trail-notes PDFs", () => {
+test("the manual password puzzle sends players to the Discord trail-note-pdfs channel", () => {
   const channel = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
   const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
   const protectedGuide = manifest.items["jonabot-operator-manual-protected"];
-  assert.ok(channel.messages.some((message) => message.text.includes("#trail-notes")));
+  assert.ok(channel.messages.some((message) => message.text.includes("#trail-note-pdfs")));
   assert.equal(channel.messages.some((message) => message.links?.some((link) => link.href === protectedGuide.src)), false);
   assert.ok(channel.messages.some((message) => message.links?.some((link) => link.href === "https://discord.com/channels/1036657633907703899/1198249965739331635")));
-  assert.equal(puzzle.body.some((paragraph) => paragraph.includes("#trail-notes")), false);
+  assert.equal(puzzle.body.some((paragraph) => paragraph.includes("#trail-note-pdfs")), false);
   assert.equal(puzzle.body.some((paragraph) => paragraph.includes("PDFs uploaded there")), false);
   assert.match(puzzle.hints[0], /mod chat.*Arty/is);
-  assert.match(puzzle.hints[1], /Arty.*#trail-notes/is);
+  assert.match(puzzle.hints[1], /Arty.*#trail-note-pdfs/is);
   assert.match(puzzle.hints[2], /4216/);
   assert.equal(puzzle.validation.answer, "4216");
   assert.equal(protectedGuide.sourceLink, false);

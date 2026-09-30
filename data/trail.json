@@ -299,9 +299,9 @@
         },
         {
           "author": "Arty",
-          "text": "It looks like Jonabot has been copying everything in the #trail-notes channel and… reading them.",
+          "text": "It looks like Jonabot has been copying everything in the #trail-note-pdfs channel and… reading them.",
           "links": [
-            { "label": "Open #trail-notes in Discord", "href": "https://discord.com/channels/1036657633907703899/1198249965739331635" }
+            { "label": "Open #trail-note-pdfs in Discord", "href": "https://discord.com/channels/1036657633907703899/1198249965739331635" }
           ]
         },
         { "author": "Smarty", "text": "Wait… can anyone else open the PDF? It's asking for a four-digit password?" },
@@ -345,7 +345,7 @@
       "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
       "hints": [
         "Jonabot's sudden case of CAPS LOCK is probably not just another digital tantrum. Think back to the mod chat: where did Arty say Jonabot had been snooping?",
-        "Arty caught Jonabot reading #trail-notes. Open that channel and match the four capitalised references to the uploaded trail PDFs, keeping them in Jonabot's original order.",
+        "Arty caught Jonabot reading #trail-note-pdfs. Open that channel and match the four capitalised references to the uploaded trail PDFs, keeping them in Jonabot's original order.",
         "The matching PDFs give 4, 2, 1, 6. Enter 4216—and try not to look too pleased while Jonabot is watching."
       ],
       "next": "recovery-console"
