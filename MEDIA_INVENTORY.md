@@ -30,6 +30,8 @@ YouTube playlist: [Phantom Peak Explorers Club - CT1 Discord in the Discord](htt
 |---|---:|---|---|
 | `D1 - 50 Pieces.png` | 16,517,106 B; 2484×3941 RGBA | `DD1654E1D8ADB4B83ECC71F2550B01161488B556A373E86071FC0DA49146EF8B` | Persistent narrator portrait; exact-content 719×1140 WebP derivative at `assets/images/jonabot-portrait.webp` (121,654 B), plus 64px favicon and 180px touch-icon crops |
 
+The browser icon is also packaged as root `favicon.ico`. A 1200×630 JPEG crop of the opening story artwork at `assets/images/ditd-social-preview.jpg` supplies the public link preview.
+
 `Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction because the intro is already mapped from the YouTube playlist.
 
 ## Present but not copied

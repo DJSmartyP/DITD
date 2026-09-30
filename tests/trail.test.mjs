@@ -104,5 +104,7 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(html, /\.\/js\/app\.js/);
   assert.match(html, /\.\/css\/main\.css/);
   assert.match(html, /\.\/assets\/images\/jonabot-favicon\.png/);
+  assert.match(html, /\.\/favicon\.ico/);
+  assert.match(html, /ditd-social-preview\.jpg/);
   assert.match(html, /twitter:card/);
 });
