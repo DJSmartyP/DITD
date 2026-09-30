@@ -72,6 +72,43 @@ export class TrailEngine {
     this.render(scene.id);
   }
 
+  submitInline(scene, target, value, input, terminalScreen) {
+    const special = specialResponse(target, value);
+    this.store.update((state) => {
+      state.attemptCounts[target.id] = Number(state.attemptCounts[target.id] || 0) + 1;
+    });
+
+    if (special) {
+      this.setFeedback(special, normalizeSpecialKind(target, value));
+      input?.focus();
+      return;
+    }
+
+    if (!answerMatches(value, target.validation)) {
+      const attempts = this.store.get().attemptCounts[target.id] || 1;
+      const responses = target.wrongResponses || ["That does not seem to work."];
+      const message = responses[(attempts - 1) % responses.length];
+      this.setFeedback(message, "error");
+      if (terminalScreen) {
+        const line = el("p", "terminal-error", `ERROR: ${message}`);
+        terminalScreen.append(line);
+        terminalScreen.scrollTop = terminalScreen.scrollHeight;
+      }
+      input?.focus();
+      return;
+    }
+
+    this.store.update((state) => {
+      [scene.id, target.id].forEach((id) => {
+        if (!state.completedSceneIds.includes(id)) state.completedSceneIds.push(id);
+      });
+      state.currentSceneId = target.id;
+      state.phase = target.phase || state.phase;
+    });
+    this.feedback = null;
+    this.render(target.id);
+  }
+
   advance(scene) {
     if (!this.store.get().completedSceneIds.includes(scene.id)) this.complete(scene, { stay: false });
     else if (scene.next) {
@@ -96,6 +133,8 @@ export class TrailEngine {
     const scene = this.sceneById.get(sceneId || this.store.get().currentSceneId) || this.trail.scenes[0];
     const state = this.store.get();
     const solved = state.completedSceneIds.includes(scene.id);
+    const inlineMachineScene = scene.inlineMachineSceneId ? this.sceneById.get(scene.inlineMachineSceneId) : null;
+    const inlineMachineSolved = inlineMachineScene ? state.completedSceneIds.includes(inlineMachineScene.id) : false;
     this.replaySceneId = replay ? scene.id : null;
     this.root.replaceChildren();
 
@@ -156,7 +195,13 @@ export class TrailEngine {
       return;
     }
 
-    if (!solved) {
+    if (inlineMachineScene && !inlineMachineSolved) {
+      const machine = renderMachine(inlineMachineScene, {
+        onSubmit: (value, input, screen) => this.submitInline(scene, inlineMachineScene, value, input, screen),
+        onComplete: () => {}
+      });
+      if (machine) this.root.append(machine);
+    } else if (!solved) {
       const machine = renderMachine(scene, {
         onSubmit: (value, input, screen) => this.submit(scene, value, input, screen),
         onComplete: () => {
@@ -189,7 +234,7 @@ export class TrailEngine {
         this.render(scene.id);
       });
       actions.append(collect);
-    } else if (!scene.validation && scene.mode !== "restore" && scene.mode !== "reward") {
+    } else if (!scene.validation && (!inlineMachineScene || inlineMachineSolved) && scene.mode !== "restore" && scene.mode !== "reward") {
       const next = el("button", "primary-button", scene.cta || "Continue");
       next.type = "button";
       next.addEventListener("click", () => this.advance(scene));

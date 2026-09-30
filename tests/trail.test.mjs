@@ -54,7 +54,8 @@ test("the noticeboard stays available as a zoomable 2JP reference without being 
   const map = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
   assert.equal(noticeboard.validation, undefined);
   assert.equal(noticeboard.evidenceGranted, undefined);
-  assert.equal(noticeboard.cta, "Continue to Jonavision");
+  assert.equal(noticeboard.inlineMachineSceneId, "jonavision-207");
+  assert.equal(noticeboard.cta, undefined);
   assert.deepEqual(map.referenceMediaIds, ["town-noticeboard"]);
   assert.equal(manifest.items["town-noticeboard"].zoomable, true);
   assert.equal(map.specialResponses["1LF"].includes("dead end"), true);
@@ -132,6 +133,8 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(html, /ditd-social-preview\.jpg/);
   assert.match(html, /twitter:card/);
   assert.match(css, /\.\.\/assets\/images\/ditd-landing-hero\.jpg/);
+  assert.match(css, /--mobile-dock-height:/);
+  assert.match(css, /#reveal-hint:not\(\[hidden\]\)/);
   assert.match(html, /id="continue-trail"/);
   assert.match(html, /id="welcome-reset"/);
 });

@@ -30,13 +30,14 @@
       "speaker": "Trail Brief",
       "body": [
         "Examine the town noticeboard. One advert points to a bayside town over the Ridge. You can open and zoom the full noticeboard now, and it will return beside the later puzzle if you need it.",
-        "Where can you find out more about the bayside town over the Ridge?"
+        "Where can you find out more about the bayside town over the Ridge? Use the Jonavision tuner beneath the board when you have found it."
       ],
       "mediaId": "town-noticeboard",
-      "cta": "Continue to Jonavision",
+      "inlineMachineSceneId": "jonavision-207",
       "hints": [
         "Look closely at the Bodach Bay advert near the lower middle of the board.",
-        "The advert names a Jonavision channel. The full noticeboard will remain available when another part becomes useful later."
+        "The advert names a three-digit Jonavision channel. The full noticeboard will remain available when another part becomes useful later.",
+        "Tune the set to 207."
       ],
       "next": "jonavision-207"
     },

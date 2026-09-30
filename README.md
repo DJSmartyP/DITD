@@ -26,9 +26,9 @@ Every runtime URL is repository-relative, so the site works below the `/DITD/` G
 
 The complete 00-22 scene flow lives in `data/trail.json`. In particular, the critical dependency remains:
 
-`zoomable noticeboard → 207 → Bodach Bay video + Jonana Peel question → noticeboard reference + corrupted map → area 2 + initials JP → 2JP`
+`zoomable noticeboard + Jonavision 207 tuner → Bodach Bay video + Jonana Peel question → noticeboard reference + corrupted map → area 2 + initials JP → 2JP`
 
-The player does not collect or detach the Gremlin poster. The full noticeboard can be zoomed at Scene 01 and reopened beside the Scene 04 map.
+The player does not collect or detach the Gremlin poster. The full noticeboard can be zoomed at Scene 01, the channel tuner sits directly beneath it, and the same board reopens beside the Scene 04 map.
 
 The required answers and behaviours are:
 
@@ -56,6 +56,8 @@ All compromise, activation, install, scanning and deletion effects are fictional
 The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. The nine videos use the supplied unlisted YouTube playlist rather than duplicating the local MOV masters.
 
 When a video contains the answer to the following question, that same video remains visible with the question. The password puzzle later directs players into Discord's `#trail-notes` channel to use the previous-trail PDFs there; the website does not replace that external investigation.
+
+On mobile, Trail Tools use a compact floating dock with the tool drawer positioned safely above it. The current scene's hint set is refreshed whenever the scene changes, and the next available hint control remains visible at the bottom of the drawer.
 
 Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails: a large accessible HTML play button sits over the local artwork and the privacy-enhanced YouTube embed is created only after the player presses it.
 

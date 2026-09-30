@@ -33,6 +33,7 @@ try {
   const sceneById = new Map(trail.scenes.map((scene) => [scene.id, scene]));
 
   let activeTool = "field-kit";
+  let hintSceneId = null;
   const toolRail = $("#tool-rail");
   const notes = $("#trail-notes");
   const welcomeDialog = $("#welcome-dialog");
@@ -49,7 +50,7 @@ try {
     document.querySelectorAll(".tool-panel").forEach((panel) => {
       panel.hidden = panel.id !== `panel-${tool}`;
     });
-    if (open && matchMedia("(max-width: 759px)").matches) toolRail.dataset.open = "true";
+    if (open && matchMedia("(max-width: 979px)").matches) toolRail.dataset.open = "true";
     if (tool === "notes" && open) setTimeout(() => notes.focus(), 0);
   }
 
@@ -113,7 +114,13 @@ try {
       }
     });
     setText("#pin-status", state.pinnedEvidenceIds.length ? `${state.pinnedEvidenceIds.length} pinned` : "Nothing pinned");
-    renderHints({ scene: replay ? engine.currentScene() : scene, store, listRoot: $("#hint-list"), countRoot: $("#hint-count"), button: $("#reveal-hint") });
+    const hintScene = replay ? engine.currentScene() : scene;
+    const hintSceneChanged = hintScene.id !== hintSceneId;
+    renderHints({ scene: hintScene, store, listRoot: $("#hint-list"), countRoot: $("#hint-count"), button: $("#reveal-hint") });
+    if (hintSceneChanged) {
+      hintSceneId = hintScene.id;
+      if (activeTool === "hints") toolRail.scrollTop = 0;
+    }
     renderHistory();
   }
 

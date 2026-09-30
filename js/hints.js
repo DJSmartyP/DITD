@@ -9,13 +9,15 @@ export function renderHints({ scene, store, listRoot, countRoot, button }) {
   const hints = Array.isArray(scene.hints) ? scene.hints : [];
   const level = Math.min(Number(store.get().hintLevels[scene.id] || 0), hints.length);
   listRoot.replaceChildren();
+  listRoot.dataset.sceneId = scene.id;
+  listRoot.append(el("p", "hint-scene-label", `Scene ${String(scene.order).padStart(2, "0")} — ${scene.title}`));
   hints.slice(0, level).forEach((hint) => listRoot.append(el("div", "hint-item", hint)));
   if (!level && hints.length) listRoot.append(el("p", "empty-state", "Hints appear one at a time and never affect progress."));
   if (!hints.length) listRoot.append(el("p", "empty-state", "No hint is needed for this scene."));
   countRoot.textContent = `${level} / ${hints.length}`;
   button.disabled = level >= hints.length;
   button.hidden = hints.length === 0;
-  button.textContent = level ? "Reveal another hint" : "Ask Jonabot for a hint";
+  button.textContent = level >= hints.length ? "All hints revealed" : `Reveal hint ${level + 1} of ${hints.length}`;
 }
 
 export function revealNextHint(scene, store) {
