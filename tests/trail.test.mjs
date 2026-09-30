@@ -114,6 +114,36 @@ test("the noticeboard stays available as a zoomable 2JP reference without being 
   assert.equal(map.specialResponses["8HO"].includes("Help route"), true);
 });
 
+test("the Field Kit is removed while references remain inline with their puzzles", async () => {
+  const html = await readFile(join(root, "index.html"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
+  assert.doesNotMatch(html, /Field Kit|field-kit|panel-field-kit|data-mobile-tool="field-kit"/i);
+  assert.doesNotMatch(app, /renderEvidenceList|field-kit/i);
+  assert.doesNotMatch(css, /evidence-card|pinned-evidence/i);
+  assert.match(html, /data-tool="notes"/);
+  assert.match(html, /data-tool="hints"/);
+  assert.match(html, /data-tool="history"/);
+});
+
+test("corruption begins with the reveal, escalates by scene and clears on reset", async () => {
+  const signalTest = trail.scenes.find((scene) => scene.id === "test-videomatic");
+  const reveal = trail.scenes.find((scene) => scene.id === "jonabot-reveal");
+  const restore = trail.scenes.find((scene) => scene.id === "restore");
+  const rebooted = trail.scenes.find((scene) => scene.id === "factory-jonabot");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const css = await readFile(join(root, "css", "corruption.css"), "utf8");
+  assert.equal(signalTest.phase, "uneasy");
+  assert.equal(reveal.phase, "corrupted");
+  assert.equal(restore.phase, "corrupted");
+  assert.equal(rebooted.phase, "restored");
+  assert.match(app, /Math\.max\(1, Math\.min\(9, scene\.order - 10\)\)/);
+  assert.match(app, /removeProperty\("--corruption-level"\)/);
+  assert.match(css, /var\(--corruption-level\)/);
+  assert.match(css, /data-corruption-level="9"/);
+  assert.doesNotMatch(css, /data-phase="restored"/);
+});
+
 test("answer-bearing video remains on screen with the Bodach Bay question", () => {
   const tuner = trail.scenes.find((scene) => scene.id === "jonavision-207");
   const question = trail.scenes.find((scene) => scene.id === "bodach-bay");

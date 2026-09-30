@@ -45,7 +45,7 @@ The required answers and behaviours are:
 
 ## Persistence and safety
 
-Progress, evidence, pins, notes, hints and attempt counts use the single namespaced key `ppecTrailState:v1`. Starting again confirms before removing only that key.
+Progress, notes, hints and attempt counts use the single namespaced key `ppecTrailState:v1`. Starting again confirms before removing only that key.
 
 All compromise, activation, install, scanning and deletion effects are fictional presentation. The site requests no device permissions and executes no downloaded code.
 
@@ -57,7 +57,7 @@ The supplied noticeboard, map, manuals and Jonabot portrait are included in `ass
 
 When a video contains the answer to the following question, that same video remains visible with the question. The password puzzle later directs players into Discord's `#trail-notes` channel to use the previous-trail PDFs there; the website does not replace that external investigation.
 
-On mobile, Trail Tools use a compact floating dock with the tool drawer positioned safely above it. The current scene's hint set is refreshed whenever the scene changes, and the next available hint control remains visible at the bottom of the drawer.
+On mobile, Notes, Hints and Menu use a compact floating dock with the tool drawer positioned safely above it. The current scene's hint set is refreshed whenever the scene changes, and the next available hint control remains visible at the bottom of the drawer. The retired Field Kit is not shown; required references remain inline with the puzzles that use them.
 
 Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page; History jumps to an earlier section without leaving the live trail.
 

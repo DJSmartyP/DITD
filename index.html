@@ -16,9 +16,9 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="./assets/images/jonabot-favicon.png">
   <link rel="apple-touch-icon" href="./assets/images/jonabot-touch-icon.png">
-  <link rel="stylesheet" href="./css/main.css?v=20260930-3">
+  <link rel="stylesheet" href="./css/main.css?v=20260930-4">
   <link rel="stylesheet" href="./css/machines.css?v=20260930-3">
-  <link rel="stylesheet" href="./css/corruption.css">
+  <link rel="stylesheet" href="./css/corruption.css?v=20260930-4">
 </head>
 <body data-phase="normal">
   <a class="skip-link" href="#workspace">Skip to current trail scene</a>
@@ -57,7 +57,6 @@
         </div>
         <dl class="system-readout">
           <div><dt>Trail</dt><dd id="trail-progress">0%</dd></div>
-          <div><dt>Evidence</dt><dd id="evidence-count">0 items</dd></div>
           <div><dt>Storage</dt><dd>Local device</dd></div>
         </dl>
         <button class="quiet-button desktop-only" id="menu-button" type="button">Console menu</button>
@@ -69,19 +68,10 @@
 
       <aside class="tool-rail" id="tool-rail" aria-label="Trail tools">
         <div class="tool-tabs" role="tablist" aria-label="Trail tools">
-          <button role="tab" aria-selected="true" aria-controls="panel-field-kit" id="tab-field-kit" data-tool="field-kit">Field Kit</button>
           <button role="tab" aria-selected="false" aria-controls="panel-notes" id="tab-notes" data-tool="notes">Notes</button>
-          <button role="tab" aria-selected="false" aria-controls="panel-hints" id="tab-hints" data-tool="hints">Hints</button>
+          <button role="tab" aria-selected="true" aria-controls="panel-hints" id="tab-hints" data-tool="hints">Hints</button>
           <button role="tab" aria-selected="false" aria-controls="panel-history" id="tab-history" data-tool="history">History</button>
         </div>
-
-        <section class="tool-panel" id="panel-field-kit" role="tabpanel" aria-labelledby="tab-field-kit">
-          <div class="panel-heading">
-            <h2>Field Kit</h2>
-            <span id="pin-status">Nothing pinned</span>
-          </div>
-          <div id="evidence-list" class="evidence-list"></div>
-        </section>
 
         <section class="tool-panel" id="panel-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
           <div class="panel-heading">
@@ -92,7 +82,7 @@
           <textarea id="trail-notes" rows="13" placeholder="Codes, names, suspicious robots..."></textarea>
         </section>
 
-        <section class="tool-panel" id="panel-hints" role="tabpanel" aria-labelledby="tab-hints" hidden>
+        <section class="tool-panel" id="panel-hints" role="tabpanel" aria-labelledby="tab-hints">
           <div class="panel-heading">
             <h2>Hints</h2>
             <span id="hint-count">0 / 0</span>
@@ -112,7 +102,6 @@
     </div>
 
     <nav class="mobile-toolbar" aria-label="Trail tools">
-      <button type="button" data-mobile-tool="field-kit"><span aria-hidden="true">◇</span> Clues</button>
       <button type="button" data-mobile-tool="notes"><span aria-hidden="true">✎</span> Notes</button>
       <button type="button" data-mobile-tool="hints"><span aria-hidden="true">?</span> Hint</button>
       <button type="button" data-mobile-tool="menu"><span aria-hidden="true">☰</span> Menu</button>
@@ -146,6 +135,6 @@
     <p class="fine-print">All compromise, activation, installation and diagnostic effects are part of the story. The trail requests no device permissions and installs nothing.</p>
   </dialog>
 
-  <script type="module" src="./js/app.js?v=20260930-3"></script>
+  <script type="module" src="./js/app.js?v=20260930-4"></script>
 </body>
 </html>

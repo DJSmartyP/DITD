@@ -215,7 +215,7 @@
       "order": 11,
       "title": "Signal Test",
       "mode": "videomatic",
-      "phase": "corrupted",
+      "phase": "uneasy",
       "speaker": "Jonabot",
       "body": ["That seems to have worked! Let's check if the Videomatic system is back online. Request Videomatic 8345 as a test."],
       "mediaId": "videomatic-8345-reveal",

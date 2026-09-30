@@ -1,6 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
 import { TrailEngine } from "./trail-engine.js?v=20260930-3";
-import { renderEvidenceList } from "./evidence.js";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -32,7 +31,7 @@ try {
   const store = createStateStore(trail);
   const sceneById = new Map(trail.scenes.map((scene) => [scene.id, scene]));
 
-  let activeTool = "field-kit";
+  let activeTool = "hints";
   let hintSceneId = null;
   const toolRail = $("#tool-rail");
   const notes = $("#trail-notes");
@@ -40,7 +39,7 @@ try {
   const menuDialog = $("#menu-dialog");
 
   function selectTool(tool, { open = true } = {}) {
-    if (!["field-kit", "notes", "hints", "history"].includes(tool)) return;
+    if (!["notes", "hints", "history"].includes(tool)) return;
     activeTool = tool;
     document.querySelectorAll("[data-tool]").forEach((tab) => {
       const selected = tab.dataset.tool === tool;
@@ -89,6 +88,14 @@ try {
     const state = store.get();
     const phase = state.phase || scene.phase;
     document.body.dataset.phase = phase;
+    if (phase === "corrupted") {
+      const corruptionLevel = Math.max(1, Math.min(9, scene.order - 10));
+      document.body.dataset.corruptionLevel = String(corruptionLevel);
+      document.body.style.setProperty("--corruption-level", String(corruptionLevel));
+    } else {
+      delete document.body.dataset.corruptionLevel;
+      document.body.style.removeProperty("--corruption-level");
+    }
     const labels = {
       normal: "SYSTEM: CLEAN",
       uneasy: "SYSTEM: UNSTABLE",
@@ -98,21 +105,16 @@ try {
     setText("#phase-label", labels[phase]);
     setText("#stage-label", replay ? `HISTORY ${String(scene.order).padStart(2, "0")}` : `STAGE ${String(scene.order).padStart(2, "0")} / 22`);
     setText("#trail-progress", `${Math.round((state.completedSceneIds.length / trail.scenes.length) * 100)}%`);
-    setText("#evidence-count", `${state.evidenceIds.length} item${state.evidenceIds.length === 1 ? "" : "s"}`);
     setText("#narrator-name", phase === "corrupted" ? "Administrator: Jonabot" : phase === "restored" ? "Jonabot (Dec 2023)" : "Jonabot v2.3");
-    setText("#narrator-status", replay ? "Replaying a completed scene." : phase === "corrupted" ? "Access elevated. Temper deteriorating." : phase === "restored" ? "Factory backup online. Incident not remembered." : phase === "uneasy" ? "Connected. Minor anomalies detected." : "Connected and standing by.");
-
-    renderEvidenceList({
-      root: $("#evidence-list"),
-      trail,
-      manifest,
-      store,
-      onChange: () => {
-        engine.render();
-        renderInterface(engine.currentScene());
-      }
-    });
-    setText("#pin-status", state.pinnedEvidenceIds.length ? `${state.pinnedEvidenceIds.length} pinned` : "Nothing pinned");
+    const corruptionLevel = Number(document.body.dataset.corruptionLevel || 0);
+    const corruptedStatus = corruptionLevel >= 9
+      ? "Recovery collision detected. System integrity critical."
+      : corruptionLevel >= 7
+        ? "Access elevated. System integrity critical."
+        : corruptionLevel >= 4
+          ? "Access elevated. Interface corruption spreading."
+          : "Access elevated. Temper deteriorating.";
+    setText("#narrator-status", replay ? "Replaying a completed scene." : phase === "corrupted" ? corruptedStatus : phase === "restored" ? "Factory backup online. Incident not remembered." : phase === "uneasy" ? "Connected. Minor anomalies detected." : "Connected and standing by.");
     const hintScene = replay ? engine.currentScene() : scene;
     const hintSceneChanged = hintScene.id !== hintSceneId;
     renderHints({ scene: hintScene, store, listRoot: $("#hint-list"), countRoot: $("#hint-count"), button: $("#reveal-hint") });
@@ -144,7 +146,7 @@ try {
     tab.addEventListener("click", () => selectTool(tab.dataset.tool, { open: false }));
     tab.addEventListener("keydown", (event) => {
       if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
-      const tools = ["field-kit", "notes", "hints", "history"];
+      const tools = ["notes", "hints", "history"];
       const delta = event.key === "ArrowRight" ? 1 : -1;
       const next = tools[(tools.indexOf(activeTool) + delta + tools.length) % tools.length];
       selectTool(next, { open: false });
@@ -202,7 +204,7 @@ try {
     if (event.key === "Escape" && toolRail.dataset.open === "true") toolRail.dataset.open = "false";
   });
 
-  selectTool("field-kit", { open: false });
+  selectTool("hints", { open: false });
   engine.render();
 
   const hasProgress = store.hadProgress();
