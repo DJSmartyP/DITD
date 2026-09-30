@@ -449,6 +449,11 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .console-dialog { width: min(92vw, 34rem); padding: 1.4rem; color: var(--ink); background: var(--paper); border: 4px solid var(--brass); box-shadow: 10px 10px 0 #071d1b; }
 .console-dialog::backdrop { background: rgba(1, 14, 13, .82); }
 .console-dialog h2 { margin: .2rem 0; font: 900 clamp(1.6rem, 8vw, 2.8rem)/1 var(--mono); }
+.success-dialog { text-align: center; border-color: #4f9d69; box-shadow: 10px 10px 0 #163c26; }
+.success-dialog .eyebrow { color: #1d6a3e; }
+.success-dialog .dialog-actions { justify-content: center; }
+.success-signal { display: grid; place-items: center; width: 4.5rem; height: 4.5rem; margin: .7rem auto 1rem; color: #fff; background: #28764a; border: 3px solid #123f2a; border-radius: 50%; box-shadow: 0 0 0 .45rem #d7f3df; font: 900 2.6rem/1 var(--mono); }
+#success-message { margin: 1rem auto 0; max-width: 38ch; font-weight: 800; }
 .dialog-badge { display: inline-block; padding: .22rem .45rem; color: var(--paper); background: var(--teal); font: 800 .7rem var(--mono); }
 .dialog-subtitle { margin-top: .25rem; color: var(--teal); font-weight: 800; }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.2rem; }

@@ -273,6 +273,8 @@ test("HTML uses repository-relative local URLs", async () => {
   assert.match(html, /id="welcome-reset"/);
   assert.doesNotMatch(html, /id="stage-label"/);
   assert.match(html, /id="desktop-reset"/);
+  assert.match(html, /id="success-dialog"/);
+  assert.match(html, /id="success-continue"/);
   assert.doesNotMatch(html, /id="menu-button"|>Console menu</);
   assert.match(app, /\$\("#desktop-reset"\)\.addEventListener\("click", confirmReset\)/);
   assert.match(app, /cache:\s*"no-store"/);
@@ -296,6 +298,7 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
   const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
   const css = await readFile(join(root, "css", "main.css"), "utf8");
   assert.match(engine, /pendingFeedback = \{ sceneId: scene\.id, message: scene\.success, kind: "success" \}/);
   assert.match(engine, /pendingFeedback\?\.sceneId === scene\.id/);
@@ -307,6 +310,12 @@ test("answer feedback appears only after submission and has distinct result stat
   assert.match(engine, /pendingFeedback = \{ sceneId: scene\.id, message: target\.success, kind: "success" \}/);
   assert.doesNotMatch(engine, /state\.currentSceneId = target\.id/);
   assert.match(engine, /Continue: \$\{this\.sceneById\.get\(scene\.next\)\?\.title/);
+  assert.match(engine, /this\.onCorrect\?\.\(\{ scene, message: scene\.success \}\)/);
+  assert.match(engine, /this\.onCorrect\?\.\(\{ scene, message: target\.success \}\)/);
+  assert.equal((engine.match(/onCorrect\?\.\(\{ scene, message: scene\.success/g) || []).length, 1);
+  assert.equal((engine.match(/onCorrect\?\.\(\{ scene, message: target\.success/g) || []).length, 1);
+  assert.match(engine, /scrollIntoView\(\{ behavior: "auto", block: "start" \}\)/);
+  assert.match(app, /onCorrect: \(\{ scene, message \}\) => openSuccessDialog\(scene, message\)/);
 });
 
 test("player-facing copy stays inside the story world", async () => {

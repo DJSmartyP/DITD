@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20260930-7";
+import { TrailEngine } from "./trail-engine.js?v=20260930-8";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -37,6 +37,18 @@ try {
   const notes = $("#trail-notes");
   const welcomeDialog = $("#welcome-dialog");
   const menuDialog = $("#menu-dialog");
+  const successDialog = $("#success-dialog");
+  let pendingSuccessScene = null;
+
+  function openSuccessDialog(scene, message) {
+    pendingSuccessScene = scene;
+    setText("#success-message", message);
+    const next = sceneById.get(scene.next);
+    setText("#success-continue", scene.validation?.intentionalFailure
+      ? "Continue behind the scenes"
+      : `Continue: ${next?.title || "next section"}`);
+    if (!successDialog.open) successDialog.showModal();
+  }
 
   function selectTool(tool, { open = true } = {}) {
     if (!["notes", "hints", "history"].includes(tool)) return;
@@ -130,8 +142,21 @@ try {
     manifest,
     store,
     onRender: renderInterface,
-    onOpenTool: (tool) => selectTool(tool)
+    onOpenTool: (tool) => selectTool(tool),
+    onCorrect: ({ scene, message }) => openSuccessDialog(scene, message)
   });
+
+  $("#success-continue").addEventListener("click", () => {
+    const scene = pendingSuccessScene;
+    pendingSuccessScene = null;
+    successDialog.close();
+    if (scene) engine.advance(scene);
+  });
+  $("#success-stay").addEventListener("click", () => {
+    pendingSuccessScene = null;
+    successDialog.close();
+  });
+  successDialog.addEventListener("cancel", () => { pendingSuccessScene = null; });
 
   notes.value = store.get().notes;
   const saveNotes = debounce(() => {

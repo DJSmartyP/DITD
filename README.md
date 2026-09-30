@@ -61,7 +61,7 @@ On mobile, Notes, Hints and Menu use a compact floating dock with the tool drawe
 
 Answer feedback appears only after an answer control is submitted. Correct, incorrect and informational results use distinct labelled, high-contrast panels, with invalid inputs also marked for assistive technology.
 
-Correct answers never advance automatically. The current task remains on screen with its green in-world acceptance signal and a deliberate Continue button; the next section appears only after the player chooses to proceed. This also applies to the noticeboard's inline Jonavision tuner.
+Correct answers never advance automatically. A dedicated in-world success dialog confirms the result and offers the deliberate Continue action. The submitted section also retains its green acceptance signal at the bottom as a persistent record. The next section appears only after the player chooses to proceed, and is aligned at its top rather than near its controls or lower edge. This also applies to the noticeboard's inline Jonavision tuner.
 
 Completed story beats remain above the current interactive section instead of being replaced. Videos, images and relevant read-only records therefore stay available in one chronological page; History jumps to an earlier section without leaving the live trail.
 

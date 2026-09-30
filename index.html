@@ -16,7 +16,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="./assets/images/jonabot-favicon.png">
   <link rel="apple-touch-icon" href="./assets/images/jonabot-touch-icon.png">
-  <link rel="stylesheet" href="./css/main.css?v=20260930-6">
+  <link rel="stylesheet" href="./css/main.css?v=20260930-7">
   <link rel="stylesheet" href="./css/machines.css?v=20260930-5">
   <link rel="stylesheet" href="./css/corruption.css?v=20260930-4">
 </head>
@@ -123,6 +123,17 @@
     </div>
   </dialog>
 
+  <dialog id="success-dialog" class="console-dialog success-dialog" aria-labelledby="success-title">
+    <p class="eyebrow">ANSWER CONFIRMED</p>
+    <div class="success-signal" aria-hidden="true">✓</div>
+    <h2 id="success-title">Signal accepted</h2>
+    <p id="success-message"></p>
+    <div class="dialog-actions">
+      <button class="primary-button" id="success-continue" type="button">Continue</button>
+      <button class="quiet-button" id="success-stay" type="button">Stay here</button>
+    </div>
+  </dialog>
+
   <dialog id="menu-dialog" class="console-dialog">
     <button class="dialog-close" type="button" data-close-dialog aria-label="Close console menu">×</button>
     <p class="eyebrow">CONSOLE MENU</p>
@@ -134,6 +145,6 @@
     <p class="fine-print">All compromise, activation, installation and diagnostic effects are part of the story. The trail requests no device permissions and installs nothing.</p>
   </dialog>
 
-  <script type="module" src="./js/app.js?v=20260930-8"></script>
+  <script type="module" src="./js/app.js?v=20260930-9"></script>
 </body>
 </html>

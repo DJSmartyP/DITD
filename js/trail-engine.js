@@ -9,13 +9,14 @@ function el(tag, className, text) {
 }
 
 export class TrailEngine {
-  constructor({ root, trail, manifest, store, onRender, onOpenTool }) {
+  constructor({ root, trail, manifest, store, onRender, onOpenTool, onCorrect }) {
     this.root = root;
     this.trail = trail;
     this.manifest = manifest;
     this.store = store;
     this.onRender = onRender;
     this.onOpenTool = onOpenTool;
+    this.onCorrect = onCorrect;
     this.sceneById = new Map(trail.scenes.map((scene) => [scene.id, scene]));
     this.feedback = null;
     this.pendingFeedback = null;
@@ -81,6 +82,7 @@ export class TrailEngine {
     this.complete(scene, { stay: true });
     this.render(scene.id);
     this.scrollToScene(scene.id, { focus: true });
+    this.onCorrect?.({ scene, message: scene.success });
   }
 
   submitInline(scene, target, value, input, terminalScreen) {
@@ -121,6 +123,7 @@ export class TrailEngine {
     this.feedback = null;
     this.render(scene.id);
     this.scrollToScene(scene.id, { focus: true });
+    this.onCorrect?.({ scene, message: target.success });
   }
 
   advance(scene) {
@@ -213,7 +216,7 @@ export class TrailEngine {
   scrollToScene(sceneId, { focus = false } = {}) {
     const section = document.getElementById(`trail-scene-${sceneId}`);
     if (!section) return;
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    section.scrollIntoView({ behavior: "auto", block: "start" });
     if (focus) {
       section.tabIndex = -1;
       section.focus({ preventScroll: true });
@@ -252,8 +255,6 @@ export class TrailEngine {
       this.feedback.setAttribute("role", "status");
       currentRoot.append(this.feedback);
     };
-    if (solved && !replay) mountFeedback();
-
     if (!scene.mediaFirst && mediaVisible) {
       this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
     }
@@ -270,8 +271,6 @@ export class TrailEngine {
       this.onRender?.(scene, { replay: true });
       return;
     }
-
-    if (!solved) mountFeedback();
 
     if (inlineMachineScene && !inlineMachineSolved) {
       const machine = renderMachine(inlineMachineScene, {
@@ -293,6 +292,8 @@ export class TrailEngine {
       const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
       if (machine) currentRoot.append(machine);
     }
+
+    mountFeedback();
 
     if (this.pendingFeedback?.sceneId === scene.id) {
       this.setFeedback(this.pendingFeedback.message, this.pendingFeedback.kind, scene.id);
