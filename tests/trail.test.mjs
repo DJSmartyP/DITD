@@ -94,8 +94,8 @@ test("each puzzle uses a nudge, stronger nudge, then explicit answer", async () 
 
 test("normalizers accept harmless variations without weakening answers", () => {
   assert.equal(normalizeAnswer("  Jonana   Peel  ", "name"), "jonana peel");
-  assert.equal(normalizeAnswer("!jonagraph 2jp", "jonagraph"), "2JP");
-  assert.equal(normalizeAnswer("!jonabot reboot-jonanapeel.exe", "command"), "reboot jonanapeel.exe");
+  assert.equal(answerMatches("!jonagraph 2jp", { answer: "2JP", normalizer: "jonagraph" }), false);
+  assert.equal(answerMatches("!jonabot reboot-jonanapeel.exe", { answer: "reboot-jonanapeel.exe", normalizer: "command" }), false);
   assert.equal(normalizeAnswer("initiate-jonabot-restore", "command"), "initiate jonabot restore");
   assert.equal(answerMatches(" initiate-jonabot-restore ", { answer: "INITIATE JONABOT RESTORE", normalizer: "command" }), true);
   assert.equal(answerMatches("2LF", { answer: "2JP", normalizer: "jonagraph" }), false);
@@ -204,6 +204,17 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   assert.equal(puzzle.speaker, "Administrator: Jonabot");
 });
 
+test("the noticeboard zoom viewer supports horizontal touch and button panning", async () => {
+  const media = await readFile(join(root, "js", "media.js"), "utf8");
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
+  assert.match(media, /Pan left/);
+  assert.match(media, /Pan right/);
+  assert.match(media, /viewport\.scrollBy/);
+  assert.match(media, /enlarged\.style\.minWidth/);
+  assert.match(css, /touch-action:\s*pan-x pan-y/);
+  assert.match(css, /overflow:\s*auto/);
+});
+
 test("every scene media ID exists and local mapped assets resolve", async () => {
   for (const scene of trail.scenes) {
     if (scene.mediaId) assert.ok(manifest.items[scene.mediaId], `Missing manifest item: ${scene.mediaId}`);
@@ -261,6 +272,9 @@ test("the final reward includes tickets and shows the credits video with the wri
   assert.equal(tickets.status, "generated-reward-asset");
   assert.match(tickets.src, /completion-pass\.png$/);
   assert.equal(tickets.downloadLabel, "Download your completion pass");
+  assert.ok(finale.credits.includes("Originally programmed by Arty"));
+  assert.ok(finale.credits.includes("Redesign by Smarty"));
+  assert.equal(finale.credits.some((credit) => credit.includes("Founder Neven")), false);
 });
 
 test("HTML uses repository-relative local URLs", async () => {

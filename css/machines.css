@@ -91,6 +91,16 @@
 .channel-access-banner { display: grid; gap: .2rem; margin-bottom: .8rem; padding: .65rem .75rem; border: 1px solid #8e3c34; color: #ffd0c7; background: #2f1212; font-family: var(--mono); }
 .channel-access-banner strong { font-size: .82rem; letter-spacing: .08em; }
 .channel-access-banner span { color: #d4a59d; font-size: .7rem; }
+.reward-stack { display: grid; gap: 1.15rem; margin: 1.25rem 0; }
+.reward-stack .machine { margin: 0; }
+.reward-instructions { margin-bottom: 0; }
+.credits-panel { position: relative; overflow: hidden; padding: 1.15rem; border: 4px double #8e6928; color: #192d29; background: linear-gradient(135deg, #fff9e9, #eadcb9); box-shadow: var(--shadow); }
+.credits-panel::after { content: ""; position: absolute; inset: .45rem; border: 1px solid rgb(142 105 40 / .45); pointer-events: none; }
+.credits-kicker { position: relative; z-index: 1; color: #8b2e25; font: 900 .7rem var(--mono); letter-spacing: .14em; }
+.credits-panel h3 { position: relative; z-index: 1; margin: .25rem 0 .8rem; font: 900 clamp(1.45rem, 7vw, 2rem)/1 var(--mono); }
+.credits-panel ul { position: relative; z-index: 1; display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.credits-panel li { padding: .55rem .15rem; border-top: 1px solid rgb(104 81 38 / .32); }
+.credits-panel li:first-child { border-top: 2px solid #8e6928; }
 
 @media (min-width: 640px) {
   .licence-fields { grid-template-columns: 1fr 1fr; }

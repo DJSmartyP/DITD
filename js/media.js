@@ -86,7 +86,7 @@ function image(item) {
     caption.append(el("p", "", "The cypher poster is in the lower-right area of the noticeboard image."));
   }
   if (item.download) {
-    const link = el("a", "secondary-button", item.downloadLabel || "Download reward");
+    const link = el("a", "secondary-button download-button", item.downloadLabel || "Download reward");
     link.href = item.src;
     link.download = item.downloadName || "trail-reward.png";
     caption.append(link);
@@ -119,7 +119,12 @@ function openImageViewer(item) {
   [zoomOut, reset, zoomIn].forEach((button) => { button.type = "button"; });
   const status = el("output", "image-zoom-status", "100%");
   status.setAttribute("aria-live", "polite");
-  controls.append(zoomOut, reset, zoomIn, status);
+  const panControls = el("div", "image-pan-controls");
+  const panLeft = el("button", "secondary-button", "Pan left");
+  const panRight = el("button", "secondary-button", "Pan right");
+  [panLeft, panRight].forEach((button) => { button.type = "button"; });
+  panControls.append(panLeft, panRight);
+  controls.append(zoomOut, reset, zoomIn, status, panControls);
 
   const viewport = el("div", "image-viewer-viewport");
   const enlarged = document.createElement("img");
@@ -130,9 +135,15 @@ function openImageViewer(item) {
   viewport.append(enlarged);
 
   let zoom = 100;
+  const updatePanControls = () => {
+    const maximum = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    panLeft.disabled = zoom === 100 || viewport.scrollLeft <= 1;
+    panRight.disabled = zoom === 100 || viewport.scrollLeft >= maximum - 1;
+  };
   const setZoom = (next) => {
     zoom = Math.max(100, Math.min(400, next));
     enlarged.style.width = `${zoom}%`;
+    enlarged.style.minWidth = `${zoom}%`;
     status.textContent = `${zoom}%`;
     zoomOut.disabled = zoom === 100;
     zoomIn.disabled = zoom === 400;
@@ -140,10 +151,14 @@ function openImageViewer(item) {
       viewport.scrollLeft = 0;
       viewport.scrollTop = 0;
     }
+    requestAnimationFrame(updatePanControls);
   };
   zoomOut.addEventListener("click", () => setZoom(zoom - 50));
   reset.addEventListener("click", () => setZoom(100));
   zoomIn.addEventListener("click", () => setZoom(zoom + 50));
+  panLeft.addEventListener("click", () => viewport.scrollBy({ left: -viewport.clientWidth * .7, behavior: "smooth" }));
+  panRight.addEventListener("click", () => viewport.scrollBy({ left: viewport.clientWidth * .7, behavior: "smooth" }));
+  viewport.addEventListener("scroll", updatePanControls, { passive: true });
 
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();

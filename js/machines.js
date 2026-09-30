@@ -10,12 +10,10 @@ export function normalizeAnswer(value, kind = "text") {
   if (kind === "digits") return raw.replace(/\D/g, "");
   if (kind === "name") return raw.toLocaleLowerCase("en-GB").replace(/[^a-z\s'-]/g, "").replace(/\s+/g, " ").trim();
   if (kind === "captcha") return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (kind === "jonagraph") return raw.toUpperCase().replace(/^!JONAGRAPH\s*/i, "").replace(/[^A-Z0-9]/g, "");
+  if (kind === "jonagraph") return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (kind === "command") {
     return raw
       .toLocaleLowerCase("en-GB")
-      .replace(/^!/, "")
-      .replace(/^(jonabot|terminal)\s+/, "")
       .replace(/[-_]+/g, " ")
       .replace(/[^a-z0-9.\s]/g, "")
       .replace(/\s+/g, " ")
@@ -300,12 +298,23 @@ function restore(scene, onComplete) {
 }
 
 function reward(scene) {
-  const wrapper = machineFrame("BODACH BAY BOOKING", "CONFIRMED");
-  wrapper.append(el("div", "armed-badge", "BLIMP PASS: RESERVED"));
+  const stack = el("div", "reward-stack");
+  const booking = machineFrame("BODACH BAY BOOKING", "CONFIRMED");
+  booking.classList.add("reward-booking");
+  booking.append(
+    el("div", "armed-badge", "BLIMP PASS: RESERVED"),
+    el("p", "reward-instructions", "Your collectible completion pass is ready above. Download it, add your details and keep it as proof that you completed the trail.")
+  );
+
+  const creditsPanel = el("section", "credits-panel");
+  creditsPanel.setAttribute("aria-labelledby", "trail-credits-heading");
+  const heading = el("h3", "", "Trail Credits");
+  heading.id = "trail-credits-heading";
   const credits = document.createElement("ul");
   (scene.credits || []).forEach((credit) => credits.append(el("li", "", credit)));
-  wrapper.append(el("p", "", "Your collectible completion pass is ready above. Download it, add your details and keep it as proof that you completed the trail."), el("h3", "", "Credits"), credits);
-  return wrapper;
+  creditsPanel.append(el("span", "credits-kicker", "A JONABOT TRAIL"), heading, credits);
+  stack.append(booking, creditsPanel);
+  return stack;
 }
 
 export function renderMachine(scene, { onSubmit, onComplete }) {

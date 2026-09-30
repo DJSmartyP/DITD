@@ -1,5 +1,5 @@
 import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20260930-4";
-import { renderMedia } from "./media.js?v=20260930-4";
+import { renderMedia } from "./media.js?v=20260930-5";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);

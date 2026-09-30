@@ -198,6 +198,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .media-caption strong { display: block; font-family: var(--mono); }
 .media-caption p { margin: .35rem 0 0; font-size: .88rem; }
 .media-caption .zoom-button { margin-top: .7rem; }
+.media-caption .download-button { display: flex; width: 100%; max-width: 100%; margin-top: .65rem; align-items: center; justify-content: center; padding: .72rem 1rem; line-height: 1.25; overflow-wrap: anywhere; text-align: center; white-space: normal; }
 .media-placeholder { min-height: 220px; display: grid; place-items: center; padding: 1.3rem; text-align: center; background: repeating-linear-gradient(-45deg, #132d29 0 12px, #193934 12px 24px); }
 .media-placeholder span { display: block; font: 900 1rem var(--mono); }
 .media-placeholder small { display: block; max-width: 34rem; margin-top: .6rem; color: #bed5cd; }
@@ -375,6 +376,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
   border: 4px solid var(--brass);
   box-shadow: 10px 10px 0 rgba(0, 0, 0, .55);
 }
+.image-viewer[open] { display: grid; grid-template-rows: auto auto minmax(0, 1fr); }
 .image-viewer::backdrop { background: rgba(1, 10, 9, .88); }
 .image-viewer-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem .8rem; background: var(--teal-dark); border-bottom: 2px solid var(--brass); }
 .image-viewer-header strong { font: 900 .9rem var(--mono); }
@@ -382,7 +384,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .image-viewer-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; padding: .65rem .8rem; background: #102e2b; }
 .image-viewer-controls .secondary-button { min-width: 0; padding: .45rem .25rem; font-size: .78rem; }
 .image-zoom-status { grid-column: 1 / -1; justify-self: center; color: var(--brass-light); font: 900 .75rem var(--mono); }
-.image-viewer-viewport { height: calc(100% - 142px); overflow: auto; overscroll-behavior: contain; background: #020807; }
+.image-pan-controls { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+.image-viewer-viewport { width: 100%; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; scrollbar-gutter: stable both-edges; background: #020807; }
 .image-viewer-image { display: block; width: 100%; max-width: none; height: auto; user-select: none; }
 
 .scene-actions { display: flex; flex-wrap: wrap; gap: .65rem; margin: 1.25rem 0 .3rem; }
