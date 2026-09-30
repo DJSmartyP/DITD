@@ -240,7 +240,11 @@ export class TrailEngine {
     currentRoot.setAttribute("aria-label", `Current scene ${String(scene.order).padStart(2, "0")}: ${scene.title}`);
     currentRoot.setAttribute("aria-live", "polite");
     stream.append(currentRoot);
-    this.appendSceneHeadingAndCopy(currentRoot, scene);
+    const mediaVisible = this.mediaShouldShow(scene, solved, replay);
+    if (scene.mediaFirst && mediaVisible) {
+      this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
+    }
+    if (!scene.openingVideoOnly) this.appendSceneHeadingAndCopy(currentRoot, scene);
 
     const mountFeedback = () => {
       this.feedback = el("p", "feedback", "");
@@ -251,7 +255,7 @@ export class TrailEngine {
     };
     if (solved && !replay) mountFeedback();
 
-    if (this.mediaShouldShow(scene, solved, replay)) {
+    if (!scene.mediaFirst && mediaVisible) {
       this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
     }
 

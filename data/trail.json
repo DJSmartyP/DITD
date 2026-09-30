@@ -11,11 +11,11 @@
       "mode": "story",
       "phase": "normal",
       "speaker": "Jonabot",
-      "body": [
-        "Incoming transmission from Jonabot v2.3."
-      ],
+      "body": [],
       "mediaId": "intro",
-      "cta": "Check the town noticeboard",
+      "mediaFirst": true,
+      "openingVideoOnly": true,
+      "cta": "Start trail",
       "hints": [],
       "next": "noticeboard"
     },

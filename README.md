@@ -71,6 +71,8 @@ Jonabot favicon and touch-icon crops are included for browser tabs and saved-hom
 
 The home screen uses an original responsive advert-style Jonabot hero with live HTML title, Start Trail, Resume Trail and Start Again controls. Keeping the controls out of the bitmap preserves accessibility and lets the page show the correct option for saved progress.
 
+Starting a fresh trail lands directly on Jonabot's opening transmission artwork and play control. A **Start trail** button sits immediately beneath the video; only after the player selects it does the first trail message and noticeboard load.
+
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
 A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward. The final Jonana Peel recording leads directly to the ticket page, where the post-trail credits video appears with the written credits rather than as another trail step.

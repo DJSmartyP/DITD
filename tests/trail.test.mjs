@@ -335,3 +335,17 @@ test("the console renders one chronological growing trail stream", async () => {
   assert.match(app, /engine\.scrollToScene\(scene\.id/);
   assert.doesNotMatch(app, /Replay scene/);
 });
+
+test("the welcome page hands off to the opening video, then Start trail loads the first message", async () => {
+  const intro = trail.scenes.find((scene) => scene.id === trail.startSceneId);
+  const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  assert.equal(intro.mediaId, "intro");
+  assert.equal(intro.mediaFirst, true);
+  assert.equal(intro.openingVideoOnly, true);
+  assert.deepEqual(intro.body, []);
+  assert.equal(intro.cta, "Start trail");
+  assert.equal(intro.next, "noticeboard");
+  assert.match(engine, /if \(scene\.mediaFirst && mediaVisible\)/);
+  assert.match(engine, /if \(!scene\.mediaFirst && mediaVisible\)/);
+  assert.match(engine, /if \(!scene\.openingVideoOnly\) this\.appendSceneHeadingAndCopy/);
+});
