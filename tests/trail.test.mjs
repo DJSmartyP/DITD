@@ -226,6 +226,17 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   assert.equal(puzzle.speaker, "Administrator: Jonabot");
 });
 
+test("Videomatic 8345 preserves its reveal until playback", () => {
+  const recording = manifest.items["videomatic-8345-reveal"];
+  assert.equal(recording.title, "Videomatic recording 8345");
+  assert.equal(recording.posterHeadline, "RESTRICTED RECORDING");
+  assert.equal(recording.posterStatus, "SIGNAL READY");
+  assert.equal(recording.playLabel, "Play Videomatic recording 8345");
+  for (const value of [recording.title, recording.thumbnailAlt, recording.posterHeadline, recording.posterStatus]) {
+    assert.doesNotMatch(value, /jonabot|reveal|administrator/i);
+  }
+});
+
 test("the noticeboard zoom viewer supports horizontal touch and button panning", async () => {
   const media = await readFile(join(root, "js", "media.js"), "utf8");
   const css = await readFile(join(root, "css", "main.css"), "utf8");
@@ -424,8 +435,12 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   const diagnostic = trail.scenes.find((scene) => scene.id === "no-more-trails");
   const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
   const privateFrequency = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
+  const recoveryManual = trail.scenes.find((scene) => scene.id === "recovery-manual");
   assert.deepEqual(diagnostic.body, []);
   assert.deepEqual(privateFrequency.body, []);
+  assert.equal(privateFrequency.interceptMessage, "Here’s the chat I mentioned earlier! Stupid humans!");
+  assert.equal(privateFrequency.speaker, "Jonabot");
+  assert.equal(recoveryManual.cta, "View incoming Jonabot message");
   assert.match(machines, /Threat scan complete/);
   assert.match(machines, /Next JonAssist request/);
   assert.match(machines, /Manual counter-command required/);

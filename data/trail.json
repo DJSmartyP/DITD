@@ -284,6 +284,7 @@
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": [],
+      "interceptMessage": "Here’s the chat I mentioned earlier! Stupid humans!",
       "messages": [
         { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
         { "author": "Arty", "text": "It would seem that the AI function of the bot has turned itself on outside the realms of the test area, and it's not listening to the shutdown command." },
@@ -322,7 +323,7 @@
       "speaker": "Trail Console",
       "body": ["The Jonabot Owners Guide is present, but Jonabot has protected it with a four-digit password."],
       "mediaId": "jonabot-operator-manual-protected",
-      "cta": "Read Jonabot's taunt",
+      "cta": "View incoming Jonabot message",
       "hints": [],
       "next": "jonabot-taunt"
     },

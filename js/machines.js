@@ -229,6 +229,14 @@ function diagnostic() {
 function privateChannel(scene) {
   const wrapper = el("section", "private-channel");
   wrapper.setAttribute("aria-label", "Read-only moderator conversation");
+  if (scene.interceptMessage) {
+    const incoming = el("article", "channel-message channel-message--jonabot");
+    incoming.append(
+      el("strong", "", "INCOMING MESSAGE // JONABOT"),
+      el("p", "", scene.interceptMessage)
+    );
+    wrapper.append(incoming);
+  }
   const banner = el("div", "channel-access-banner");
   banner.append(
     el("strong", "", "PRIVATE FREQUENCY INTERCEPT"),
