@@ -166,6 +166,19 @@ test("corruption begins with the reveal, escalates by scene and clears on reset"
   assert.doesNotMatch(css, /data-phase="restored"/);
 });
 
+test("Jonabot's wrong-answer messages escalate in his live voice", () => {
+  const bodachBay = trail.scenes.find((scene) => scene.id === "bodach-bay");
+  const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
+  const password = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
+  assert.match(bodachBay.wrongResponses[0], /Bodach Bay advert/);
+  assert.equal(trap.wrongResponses.length, 4);
+  assert.match(trap.wrongResponses[0], /^No, that’s wrong\. I /);
+  assert.match(trap.wrongResponses[3], /^WHAT’S WRONG WITH YOU\?/);
+  assert.equal(password.wrongResponses.length, 4);
+  password.wrongResponses.forEach((message) => assert.match(message, /\bI(?:’m|’d)?\b|\bmyself\b/));
+  assert.doesNotMatch(password.wrongResponses.join(" "), /Jonabot is delighted|does not unlock/i);
+});
+
 test("answer-bearing video remains on screen with the Bodach Bay question", () => {
   const tuner = trail.scenes.find((scene) => scene.id === "jonavision-207");
   const question = trail.scenes.find((scene) => scene.id === "bodach-bay");

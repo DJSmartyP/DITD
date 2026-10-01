@@ -72,7 +72,7 @@
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
       "inputLabel": "Travel agent's name",
       "success": "CONTACT CONFIRMED — JONANA PEEL. LOCATE HER JONAGRAPH ROUTING CODE.",
-      "wrongResponses": ["That is not the obligatorily sunny travel agent named in the tourism item.", "No JonaTravel agent found under that name."],
+      "wrongResponses": ["That is not the obligatorily sunny travel agent named in the Bodach Bay advert.", "No JonaTravel agent found under that name."],
       "hints": [
         "You already know where the advert wants to send you. Now listen for the unfortunate person responsible for getting you there.",
         "The tourism broadcast names a JonaTravel agent. You need her full, obligatorily cheerful name.",
@@ -268,7 +268,12 @@
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
       "success": "INPUT CONFIRMED — CANCEL-PLAN WAS A TRAP. RESPONSE RECORDING READY.",
-      "wrongResponses": ["No, no. Use the exact cancellation command Jonabot suggested."],
+      "wrongResponses": [
+        "No, that’s wrong. I already gave you the counter-command. Try to keep up.",
+        "Still wrong. You heard me say it—enter the exact command.",
+        "How are you failing at this? Two words. One hyphen. Use the command I gave you.",
+        "WHAT’S WRONG WITH YOU? ENTER THE COMMAND I TOLD YOU TO USE!"
+      ],
       "hints": [
         "Jonabot has offered you an entirely trustworthy escape route. This is obviously fine and should cause no concern whatsoever.",
         "The suggested command contains two words joined by a hyphen. The first word is cancel.",
@@ -343,7 +348,12 @@
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
       "success": "PASSWORD ACCEPTED — 4216. JONABOT OWNERS GUIDE UNLOCKED.",
-      "wrongResponses": ["Incorrect password. Jonabot is delighted.", "That four-digit sequence does not unlock the guide."],
+      "wrongResponses": [
+        "Wrong. I locked this guide myself—did you really think I’d choose something that obvious?",
+        "Another useless guess. Please, keep going—I’m enjoying this.",
+        "Still locked. The mods left you clues, and somehow I’m still the cleverest thing in the room.",
+        "Is that your best attempt? Guess again. I can do this all day; you cannot."
+      ],
       "hints": [
         "Jonabot's sudden case of CAPS LOCK is probably not just another digital tantrum. Think back to the mod chat: where did Arty say Jonabot had been snooping?",
         "Arty caught Jonabot reading #trail-note-pdfs. Open that channel and match the four capitalised references to the uploaded trail PDFs, keeping them in Jonabot's original order.",
