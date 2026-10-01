@@ -390,7 +390,7 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
   assert.match(css, /min-height:\s*min\(94dvh, 50rem\)/);
   assert.match(css, /@media \(min-width: 700px\) and \(orientation: landscape\), \(min-width: 980px\)/);
   assert.match(css, /grid-template-columns:\s*clamp\(150px, 17vw, 220px\) minmax\(0, 1fr\) clamp\(220px, 25vw, 300px\)/);
-  assert.match(css, /trail-entry-complete:is\(:not\(\.trail-entry-retain\)/);
+  assert.doesNotMatch(css, /trail-entry-complete:is\(:not\(\.trail-entry-retain\)/);
   assert.match(css, /padding-bottom:\s*max\(2rem, calc\(100dvh - 24rem\)\)/);
   assert.match(machines, /orientation: landscape/);
   assert.equal((html.match(/data-mobile-tool=/g) || []).length, 3);
@@ -398,6 +398,19 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
     trail.scenes.filter((scene) => scene.retainWithNext).map((scene) => scene.id),
     ["jonavision-207", "system-log", "bodach-bay-booking"]
   );
+});
+
+test("the growing trail keeps a persistent page scrollbar", async () => {
+  const css = await readFile(join(root, "css", "main.css"), "utf8");
+  const html = await readFile(join(root, "index.html"), "utf8");
+  assert.match(css, /html\s*\{[^}]*overflow-y:\s*scroll;/s);
+  assert.match(css, /scrollbar-gutter:\s*stable/);
+  assert.match(css, /html::\-webkit-scrollbar\s*\{\s*width:\s*14px;/);
+  assert.match(css, /body\s*\{[^}]*overflow-x:\s*hidden;/s);
+  assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
+  assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
+  assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
+  assert.match(html, /main\.css\?v=20261001-1/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {

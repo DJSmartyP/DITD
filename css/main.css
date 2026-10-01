@@ -21,11 +21,28 @@
 
 * { box-sizing: border-box; }
 
-html { background: #092b29; }
+html {
+  min-height: 100%;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: var(--brass) #092b29;
+  background: #092b29;
+}
+
+html::-webkit-scrollbar { width: 14px; }
+html::-webkit-scrollbar-track { background: #092b29; }
+html::-webkit-scrollbar-thumb {
+  border: 3px solid #092b29;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brass-light), var(--brass));
+}
+html::-webkit-scrollbar-thumb:hover { background: var(--brass-light); }
 
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   background:
     linear-gradient(135deg, rgba(255,255,255,.035) 25%, transparent 25%) 0 0 / 18px 18px,
@@ -563,13 +580,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
   .trail-entry { padding: clamp(.7rem, 1.4vw, 1rem); scroll-margin-top: 74px; }
   .trail-entry:not(:last-child)::after { bottom: -.78rem; height: .78rem; }
   .trail-entry-current .scene-header h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) { padding: .45rem .7rem; }
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .scene-header { margin: 0; border: 0; }
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .scene-header h2 { margin: .1rem 0; font-size: 1rem; letter-spacing: 0; }
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .scene-mode,
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .story-copy,
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .scene-media-layout,
-  .trail-entry-complete:is(:not(.trail-entry-retain), .trail-entry-retain:not(:has(+ .trail-entry-current))) .machine { display: none; }
   .document-page-stack { max-height: min(52vh, 32rem); }
   .tool-rail { position: sticky; inset: auto; top: 64px; z-index: 1; align-self: start; max-height: calc(100vh - 64px); min-height: calc(100vh - 64px); transform: none; border: 0; border-left: 3px solid var(--brass); }
   .tool-tabs { grid-template-columns: repeat(3, 1fr); }
