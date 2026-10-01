@@ -111,7 +111,7 @@ test("the noticeboard stays available as a zoomable 2JP reference without being 
   assert.deepEqual(map.referenceMediaIds, ["town-noticeboard"]);
   assert.equal(manifest.items["town-noticeboard"].zoomable, true);
   assert.equal(map.specialResponses["1LF"], "Littlefield is busy collecting rocks and NOT doing their job… try again later.");
-  assert.equal(map.specialResponses["8HO"].includes("Help route"), true);
+  assert.match(map.specialResponses["8HO"], /help route/i);
 });
 
 test("the Field Kit is removed while references remain inline with their puzzles", async () => {
@@ -177,6 +177,40 @@ test("Jonabot's wrong-answer messages escalate in his live voice", () => {
   assert.equal(password.wrongResponses.length, 4);
   password.wrongResponses.forEach((message) => assert.match(message, /\bI(?:’m|’d)?\b|\bmyself\b/));
   assert.doesNotMatch(password.wrongResponses.join(" "), /Jonabot is delighted|does not unlock/i);
+});
+
+test("secret inputs return their authored Jonabot responses", () => {
+  const map = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
+  const booking = trail.scenes.find((scene) => scene.id === "repair-jonatravel");
+  const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
+  const password = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
+
+  assert.match(map.specialResponses["8HO"], /^Oh, you found the help route\./);
+  assert.deepEqual(Object.keys(booking.specialResponses), [
+    "wipe all data.exe",
+    "crash blimp.boom",
+    "help.exe",
+    "book blimp.exe",
+    "reboot mayor-furbish.exe"
+  ]);
+  assert.deepEqual(Object.keys(trap.specialResponses), [
+    "please.exe",
+    "disable jonabot.exe",
+    "ask jonabot.exe",
+    "sudo cancel-plan",
+    "factory reset.exe",
+    "hello jonabot"
+  ]);
+  assert.deepEqual(Object.keys(password.specialResponses).sort(), ["0000", "1234", "207", "4763", "8345"].sort());
+
+  for (const [input, response] of Object.entries({
+    ...booking.specialResponses,
+    ...trap.specialResponses,
+    ...password.specialResponses
+  })) {
+    assert.equal(typeof response, "string", input);
+    assert.ok(response.length > 20, input);
+  }
 });
 
 test("answer-bearing video remains on screen with the Bodach Bay question", () => {

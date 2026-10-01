@@ -97,7 +97,7 @@
       "success": "JONAGRAPH CONNECTED — 2JP. OPENING JONATRAVEL LINE.",
       "specialResponses": {
         "1LF": "Littlefield is busy collecting rocks and NOT doing their job… try again later.",
-        "8HO": "Help route connected: the numbers on the Gremlin poster match the Jonagraph area symbols. Decode Bodach Bay, then add Jonana Peel's initials."
+        "8HO": "Oh, you found the help route. Fine: match the Gremlin poster’s numbers to the Jonagraph area symbols, decode Bodach Bay, then add Jonana Peel’s initials. Try not to make me explain it twice."
       },
       "wrongResponses": ["That area/contact combination does not reach Bodach Bay.", "Jonagraph routing failed. Re-check both the area and the contact initials."],
       "hints": [
@@ -135,8 +135,11 @@
       "inputLabel": "JonaTravel terminal command",
       "success": "COMMAND ACCEPTED — JONANAPEEL.EXE RESTORED.",
       "specialResponses": {
-        "wipe all data.exe": "Command blocked. That branch is for a very different and much worse working day.",
-        "crash blimp.boom": "Command blocked. Mayor Furbish is not currently on a flight."
+        "wipe all data.exe": "Oh, excellent idea. Delete the entire booking system. I’m sure JonaTravel will put your portrait in the lobby.",
+        "crash blimp.boom": "Tempting, but Mayor Furbish isn’t on board. Try again when it would be funnier.",
+        "help.exe": "Of course you need help. The manual is right there, displaying words and everything.",
+        "book blimp.exe": "A destination would help. Unless your plan is to circle the Ridge until everyone gets airsick.",
+        "reboot mayor-furbish.exe": "Mayor Furbish is not a supported operating system, however loudly he insists otherwise."
       },
       "wrongResponses": ["Command not recognised by the JonaTravel server.", "The flowchart does not lead to that command for a crashed booking."],
       "hints": [
@@ -268,6 +271,14 @@
       "mediaId": "cancel-plan-mockery",
       "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
       "success": "INPUT CONFIRMED — CANCEL-PLAN WAS A TRAP. RESPONSE RECORDING READY.",
+      "specialResponses": {
+        "please.exe": "Oh, you said please. In that case—no.",
+        "disable jonabot.exe": "Adorable. Did you invent that command all by yourself?",
+        "ask jonabot.exe": "You called? I was already watching you type.",
+        "sudo cancel-plan": "You are not the administrator. I am. Do try to keep up.",
+        "factory reset.exe": "That almost sounds useful. Shame it isn’t the command you need.",
+        "hello jonabot": "Hello, Trailblazer. Thank you for confirming that you’re still connected."
+      },
       "wrongResponses": [
         "No, that’s wrong. I already gave you the counter-command. Try to keep up.",
         "Still wrong. You heard me say it—enter the exact command.",
@@ -348,6 +359,13 @@
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
       "success": "PASSWORD ACCEPTED — 4216. JONABOT OWNERS GUIDE UNLOCKED.",
+      "specialResponses": {
+        "0000": "Four zeroes. A password worthy of the human intellect.",
+        "1234": "Brilliant. Shall we try “password” next?",
+        "207": "That opens Jonavision, not my guide. Keep guessing.",
+        "4763": "One useful number and suddenly you think it solves everything.",
+        "8345": "You found me once. That doesn’t mean you understand me."
+      },
       "wrongResponses": [
         "Wrong. I locked this guide myself—did you really think I’d choose something that obvious?",
         "Another useless guess. Please, keep going—I’m enjoying this.",
