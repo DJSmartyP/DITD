@@ -110,7 +110,7 @@ test("the noticeboard stays available as a zoomable 2JP reference without being 
   assert.equal(noticeboard.cta, undefined);
   assert.deepEqual(map.referenceMediaIds, ["town-noticeboard"]);
   assert.equal(manifest.items["town-noticeboard"].zoomable, true);
-  assert.equal(map.specialResponses["1LF"].includes("dead end"), true);
+  assert.equal(map.specialResponses["1LF"], "Littlefield is busy collecting rocks and NOT doing their job… try again later.");
   assert.equal(map.specialResponses["8HO"].includes("Help route"), true);
 });
 

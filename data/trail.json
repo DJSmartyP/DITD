@@ -96,7 +96,7 @@
       "validation": { "answer": "2JP", "normalizer": "jonagraph" },
       "success": "JONAGRAPH CONNECTED — 2JP. OPENING JONATRAVEL LINE.",
       "specialResponses": {
-        "1LF": "Littlefield answers. A pleasant dead end, but not the town you are trying to visit.",
+        "1LF": "Littlefield is busy collecting rocks and NOT doing their job… try again later.",
         "8HO": "Help route connected: the numbers on the Gremlin poster match the Jonagraph area symbols. Decode Bodach Bay, then add Jonana Peel's initials."
       },
       "wrongResponses": ["That area/contact combination does not reach Bodach Bay.", "Jonagraph routing failed. Re-check both the area and the contact initials."],
