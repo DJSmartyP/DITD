@@ -127,20 +127,42 @@ test("the Field Kit is removed while references remain inline with their puzzles
 });
 
 test("corruption begins with the reveal, escalates by scene and clears on reset", async () => {
+  const firstUneasy = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
   const signalTest = trail.scenes.find((scene) => scene.id === "test-videomatic");
   const reveal = trail.scenes.find((scene) => scene.id === "jonabot-reveal");
   const restore = trail.scenes.find((scene) => scene.id === "restore");
   const rebooted = trail.scenes.find((scene) => scene.id === "factory-jonabot");
   const app = await readFile(join(root, "js", "app.js"), "utf8");
   const css = await readFile(join(root, "css", "corruption.css"), "utf8");
+  assert.equal(firstUneasy.phase, "uneasy");
   assert.equal(signalTest.phase, "uneasy");
   assert.equal(reveal.phase, "corrupted");
   assert.equal(restore.phase, "corrupted");
   assert.equal(rebooted.phase, "restored");
-  assert.match(app, /Math\.max\(1, Math\.min\(9, scene\.order - 10\)\)/);
+  assert.match(app, /Math\.max\(1, Math\.min\(9, effectScene\.order - 2\)\)/);
+  assert.match(app, /Math\.max\(1, Math\.min\(9, effectScene\.order - 10\)\)/);
+  assert.match(app, /data\.currentScene|dataset\.currentScene/);
+  assert.match(app, /phase-transition-corrupted/);
+  assert.match(app, /phase-transition-restored/);
+  assert.match(app, /ACCESS CONTROL OVERRIDE/);
+  assert.match(app, /RECOVERY ROUTE OPEN/);
+  assert.match(app, /External administrator signature detected/);
+  assert.match(app, /Administrative safeguards failing/);
+  assert.match(app, /Unauthorised access trace detected/);
   assert.match(app, /removeProperty\("--corruption-level"\)/);
+  assert.match(app, /removeProperty\("--uneasy-level"\)/);
+  assert.match(css, /var\(--uneasy-level\)/);
+  assert.match(css, /data-uneasy-level="9"/);
   assert.match(css, /var\(--corruption-level\)/);
   assert.match(css, /data-corruption-level="9"/);
+  assert.match(css, /data-current-scene="no-more-trails"/);
+  assert.match(css, /data-current-scene="fake-cancel-plan"/);
+  assert.match(css, /data-current-scene="behind-the-scenes"/);
+  assert.match(css, /data-current-scene="recovery-manual"/);
+  assert.match(css, /data-current-scene="jonabot-taunt"/);
+  assert.match(css, /data-current-scene="recovery-console"/);
+  assert.match(css, /data-current-scene="restore"/);
+  assert.match(css, /prefers-reduced-motion: no-preference/);
   assert.doesNotMatch(css, /data-phase="restored"/);
 });
 

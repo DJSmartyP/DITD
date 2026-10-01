@@ -39,10 +39,68 @@ try {
   const menuDialog = $("#menu-dialog");
   const successDialog = $("#success-dialog");
   let pendingSuccess = null;
+  let lastRenderedPhase = null;
+  let phaseTransitionTimer = null;
+
+  function setSuccessVariant(sceneId) {
+    const variants = {
+      "activation-centre": {
+        name: "warning",
+        eyebrow: "SECURITY LAYER REMOVED",
+        signal: "!",
+        title: "Administrative access granted"
+      },
+      "test-videomatic": {
+        name: "takeover",
+        eyebrow: "ACCESS CONTROL OVERRIDE",
+        signal: "!",
+        title: "Administrator connected"
+      },
+      "fake-cancel-plan": {
+        name: "trap",
+        eyebrow: "INPUT INTERCEPTED",
+        signal: "×",
+        title: "Jonabot was waiting"
+      },
+      "recovery-console": {
+        name: "recovery",
+        eyebrow: "RECOVERY ROUTE OPEN",
+        signal: "↻",
+        title: "Restore instruction accepted"
+      }
+    };
+    const variant = variants[sceneId] || {
+      name: "success",
+      eyebrow: "ANSWER CONFIRMED",
+      signal: "✓",
+      title: "Signal accepted"
+    };
+    successDialog.dataset.variant = variant.name;
+    successDialog.querySelector(".eyebrow").textContent = variant.eyebrow;
+    successDialog.querySelector(".success-signal").textContent = variant.signal;
+    setText("#success-title", variant.title);
+  }
+
+  function showPhaseTransition(previousPhase, phase) {
+    document.body.classList.remove("phase-transition-uneasy", "phase-transition-corrupted", "phase-transition-restored");
+    if (!previousPhase || previousPhase === phase) return;
+    const className = phase === "corrupted"
+      ? "phase-transition-corrupted"
+      : phase === "restored"
+        ? "phase-transition-restored"
+        : phase === "uneasy"
+          ? "phase-transition-uneasy"
+          : "";
+    if (!className) return;
+    document.body.classList.add(className);
+    clearTimeout(phaseTransitionTimer);
+    phaseTransitionTimer = setTimeout(() => document.body.classList.remove(className), 1800);
+  }
 
   function openSuccessDialog(result) {
     pendingSuccess = result;
-    const { message } = result;
+    const { message, scene } = result;
+    setSuccessVariant(scene.id);
     setText("#success-message", message);
     setText("#success-continue", "Continue");
     if (!successDialog.open) successDialog.showModal();
@@ -98,15 +156,28 @@ try {
   function renderInterface(scene, { replay = false } = {}) {
     const state = store.get();
     const phase = state.phase || scene.phase;
+    const effectScene = replay ? engine.currentScene() : scene;
+    const previousPhase = lastRenderedPhase;
     document.body.dataset.phase = phase;
+    document.body.dataset.currentScene = effectScene.id;
+    if (phase === "uneasy") {
+      const uneasyLevel = Math.max(1, Math.min(9, effectScene.order - 2));
+      document.body.dataset.uneasyLevel = String(uneasyLevel);
+      document.body.style.setProperty("--uneasy-level", String(uneasyLevel));
+    } else {
+      delete document.body.dataset.uneasyLevel;
+      document.body.style.removeProperty("--uneasy-level");
+    }
     if (phase === "corrupted") {
-      const corruptionLevel = Math.max(1, Math.min(9, scene.order - 10));
+      const corruptionLevel = Math.max(1, Math.min(9, effectScene.order - 10));
       document.body.dataset.corruptionLevel = String(corruptionLevel);
       document.body.style.setProperty("--corruption-level", String(corruptionLevel));
     } else {
       delete document.body.dataset.corruptionLevel;
       document.body.style.removeProperty("--corruption-level");
     }
+    showPhaseTransition(previousPhase, phase);
+    lastRenderedPhase = phase;
     const labels = {
       normal: "SYSTEM: CLEAN",
       uneasy: "SYSTEM: UNSTABLE",
@@ -116,7 +187,17 @@ try {
     setText("#phase-label", labels[phase]);
     setText("#trail-progress", `${Math.round((state.completedSceneIds.length / trail.scenes.length) * 100)}%`);
     setText("#narrator-name", phase === "corrupted" ? "Administrator: Jonabot" : phase === "restored" ? "Jonabot (Dec 2023)" : "Jonabot v2.3");
+    const uneasyLevel = Number(document.body.dataset.uneasyLevel || 0);
     const corruptionLevel = Number(document.body.dataset.corruptionLevel || 0);
+    const uneasyStatus = uneasyLevel >= 9
+      ? "External administrator signature detected."
+      : uneasyLevel >= 7
+        ? "Administrative safeguards failing."
+        : uneasyLevel >= 5
+          ? "Unauthorised access trace detected."
+          : uneasyLevel >= 3
+            ? "JonaTravel fault pattern spreading."
+            : "Connected. Minor anomalies detected.";
     const corruptedStatus = corruptionLevel >= 9
       ? "Recovery collision detected. System integrity critical."
       : corruptionLevel >= 7
@@ -124,7 +205,7 @@ try {
         : corruptionLevel >= 4
           ? "Access elevated. Interface corruption spreading."
           : "Access elevated. Temper deteriorating.";
-    setText("#narrator-status", replay ? "Replaying a completed scene." : phase === "corrupted" ? corruptedStatus : phase === "restored" ? "Factory backup online. Incident not remembered." : phase === "uneasy" ? "Connected. Minor anomalies detected." : "Connected and standing by.");
+    setText("#narrator-status", replay ? "Replaying a completed scene." : phase === "corrupted" ? corruptedStatus : phase === "restored" ? "Factory backup online. Incident not remembered." : phase === "uneasy" ? uneasyStatus : "Connected and standing by.");
     const hintScene = replay ? engine.currentScene() : scene;
     const hintSceneChanged = hintScene.id !== hintSceneId;
     renderHints({ scene: hintScene, store, listRoot: $("#hint-list"), countRoot: $("#hint-count"), button: $("#reveal-hint") });

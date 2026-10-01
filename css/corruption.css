@@ -1,6 +1,73 @@
-body[data-phase="uneasy"] .status-lamp { background: #f1bd50; box-shadow: 0 0 .6rem #f1bd50; }
-body[data-phase="uneasy"] .console-header { background: #23433d; }
+body[data-phase="uneasy"] {
+  --uneasy-level: 1;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 180 72 / calc(var(--uneasy-level) * .003)) 0 1px, transparent 1px 11px),
+    radial-gradient(circle at 50% 0, rgb(111 53 19 / calc(.03 + var(--uneasy-level) * .012)), transparent 62%),
+    #092b29;
+}
+
+body[data-phase="uneasy"]::after {
+  content: "";
+  position: fixed;
+  z-index: 18;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 calc(1rem + var(--uneasy-level) * .55rem) rgb(90 35 10 / calc(var(--uneasy-level) * .018));
+}
+
+body[data-phase="uneasy"] .status-lamp {
+  background: color-mix(in srgb, #f1bd50 calc(100% - var(--uneasy-level) * 4%), #ff5945);
+  box-shadow: 0 0 calc(.45rem + var(--uneasy-level) * .07rem) #f1a743;
+}
+
+body[data-phase="uneasy"] .console-header {
+  background:
+    linear-gradient(90deg, transparent, rgb(152 72 28 / calc(var(--uneasy-level) * .025)), transparent),
+    #23433d;
+  border-color: color-mix(in srgb, #b88a32 calc(100% - var(--uneasy-level) * 5%), #c64732);
+}
+
 body[data-phase="uneasy"] .unit-name::after { content: "?"; color: #ffcb5b; }
+
+body[data-phase="uneasy"] .workspace {
+  background:
+    linear-gradient(calc(94deg + var(--uneasy-level) * .3deg), rgb(153 68 25 / calc(var(--uneasy-level) * .009)), transparent 42%),
+    var(--paper);
+}
+
+body[data-phase="uneasy"] .trail-entry-current {
+  border-color: color-mix(in srgb, var(--brass) calc(100% - var(--uneasy-level) * 5%), #bd4435);
+  box-shadow:
+    calc(.35rem + var(--uneasy-level) * .025rem)
+    calc(.35rem + var(--uneasy-level) * .025rem)
+    0 var(--teal-dark),
+    0 0 calc(var(--uneasy-level) * .22rem) rgb(150 74 31 / .16);
+}
+
+body[data-phase="uneasy"] .portrait img {
+  filter:
+    sepia(calc(var(--uneasy-level) * .025))
+    contrast(calc(1 + var(--uneasy-level) * .012));
+}
+
+body[data-uneasy-level="5"] .scene-header h2,
+body[data-uneasy-level="6"] .scene-header h2,
+body[data-uneasy-level="7"] .scene-header h2,
+body[data-uneasy-level="8"] .scene-header h2,
+body[data-uneasy-level="9"] .scene-header h2 {
+  text-shadow: 1px 0 rgb(179 65 39 / calc(var(--uneasy-level) * .035));
+}
+
+body[data-uneasy-level="7"] .console-header,
+body[data-uneasy-level="8"] .console-header,
+body[data-uneasy-level="9"] .console-header {
+  box-shadow: 0 .18rem calc(var(--uneasy-level) * .12rem) rgb(100 34 18 / .32);
+}
+
+body[data-uneasy-level="8"] .trail-entry-current,
+body[data-uneasy-level="9"] .trail-entry-current {
+  background-image: repeating-linear-gradient(179deg, transparent 0 32px, rgb(151 67 33 / .045) 32px 34px);
+}
 
 body[data-phase="corrupted"] {
   --corruption-level: 1;
@@ -115,6 +182,140 @@ body[data-phase="corrupted"] .secondary-button {
   box-shadow: calc(var(--corruption-level) * .12rem) calc(var(--corruption-level) * .08rem) 0 rgb(66 0 10 / .35);
 }
 
+body[data-current-scene="no-more-trails"] .fake-diagnostic {
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-current-scene="no-more-trails"] .fake-diagnostic::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 4rem 0 auto;
+  height: .24rem;
+  background: linear-gradient(90deg, transparent, rgb(212 52 45 / .82), transparent);
+  box-shadow: 0 0 .8rem rgb(255 83 66 / .8);
+  pointer-events: none;
+}
+
+body[data-current-scene="fake-cancel-plan"] .terminal-screen {
+  border-color: #ef5f50;
+  box-shadow: inset 0 0 2rem rgb(153 9 24 / .38), 0 0 1rem rgb(224 55 46 / .22);
+}
+
+body[data-current-scene="fake-cancel-plan"] .machine-label {
+  color: #fff1eb;
+  background: #a7262a;
+}
+
+body[data-current-scene="behind-the-scenes"] .channel-access-banner {
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 1.3rem rgb(197 34 42 / .42), 0 0 1rem rgb(164 18 27 / .32);
+}
+
+body[data-current-scene="behind-the-scenes"] .channel-access-banner::after {
+  content: "ROUTE MONITORED";
+  justify-self: end;
+  color: #ff8c7c;
+  font: 900 .62rem var(--mono);
+  letter-spacing: .12em;
+}
+
+body[data-current-scene="recovery-manual"] .document-lock-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #ef6554;
+  box-shadow: inset 0 0 3rem #5c0714, 0 0 1.35rem rgb(211 34 43 / .48);
+}
+
+body[data-current-scene="recovery-manual"] .document-lock-card::after {
+  content: "ADMINISTRATOR LOCK // ACTIVE";
+  position: absolute;
+  inset: auto 0 0;
+  padding: .35rem;
+  color: #ffd0c7;
+  background: #8c1e27;
+  font: 900 .68rem var(--mono);
+  letter-spacing: .1em;
+}
+
+body[data-current-scene="jonabot-taunt"] .story-copy {
+  position: relative;
+  padding: 1rem;
+  border: 2px solid #d7463f;
+  background: linear-gradient(100deg, rgb(92 7 19 / .13), transparent 60%);
+  box-shadow: inset .35rem 0 0 #8e2630, 0 0 1rem rgb(185 24 34 / .28);
+}
+
+body[data-current-scene="jonabot-taunt"] .story-copy::before {
+  content: "LIVE ADMINISTRATOR LINK";
+  display: block;
+  margin-bottom: .55rem;
+  color: #a9262d;
+  font: 900 .68rem var(--mono);
+  letter-spacing: .14em;
+}
+
+body[data-current-scene="recovery-console"] .machine {
+  border-color: #69d6ca;
+  outline-color: #d94c46;
+  background:
+    linear-gradient(135deg, rgb(67 214 196 / .08), transparent 48%, rgb(191 32 43 / .12)),
+    #0d2926;
+  box-shadow: -.35rem 0 0 #4dbfb4, .35rem 0 0 #a92833, 0 0 1.4rem rgb(77 214 198 / .26);
+}
+
+body[data-current-scene="recovery-console"] .machine-input {
+  border-color: #70dcd0;
+  box-shadow: inset 0 0 1rem rgb(67 205 190 / .2), 0 0 .8rem rgb(198 38 47 / .25);
+}
+
+body[data-current-scene="restore"] .video-shell-restore {
+  border: 4px solid #73ddd4;
+  box-shadow: -.45rem 0 0 #65d9d0, .45rem 0 0 #a92a34, 0 0 2rem rgb(103 222 211 / .42);
+}
+
+body[data-current-scene="restore"] .video-shell-restore .video-poster::before {
+  background: linear-gradient(90deg, rgb(65 225 211 / .24), transparent 45%, rgb(183 28 39 / .28));
+}
+
+.success-dialog[data-variant="warning"] {
+  border-color: #c27a25;
+  box-shadow: 10px 10px 0 #4b2910;
+}
+
+.success-dialog[data-variant="warning"] .eyebrow { color: #8a4a11; }
+.success-dialog[data-variant="warning"] .success-signal { background: #c1781f; border-color: #6b3b12; box-shadow: 0 0 0 .45rem #f3db9c; }
+
+.success-dialog[data-variant="takeover"],
+.success-dialog[data-variant="trap"] {
+  color: #ffe4da;
+  background: repeating-linear-gradient(-45deg, #2c0910 0 12px, #21070d 12px 24px);
+  border-color: #ef5d4e;
+  box-shadow: 10px 10px 0 #080104, 0 0 2rem rgb(223 47 47 / .55);
+}
+
+.success-dialog[data-variant="takeover"]::backdrop,
+.success-dialog[data-variant="trap"]::backdrop { background: rgb(24 0 6 / .9); }
+.success-dialog[data-variant="takeover"] .eyebrow,
+.success-dialog[data-variant="trap"] .eyebrow { color: #ff8c76; }
+.success-dialog[data-variant="takeover"] .success-signal,
+.success-dialog[data-variant="trap"] .success-signal { background: #9c1e2a; border-color: #ff7461; box-shadow: 0 0 0 .45rem #4c0a14, 0 0 1.5rem #e53e42; }
+.success-dialog[data-variant="takeover"] .primary-button,
+.success-dialog[data-variant="trap"] .primary-button { color: #fff4ec; background: #9e222c; border-color: #ff7a67; }
+
+.success-dialog[data-variant="recovery"] {
+  color: #eafff9;
+  background: linear-gradient(135deg, #073a38, #102423 62%, #45101a);
+  border-color: #76ded2;
+  box-shadow: 10px 10px 0 #061918, 0 0 2rem rgb(88 220 205 / .45);
+}
+
+.success-dialog[data-variant="recovery"] .eyebrow { color: #8df1e3; }
+.success-dialog[data-variant="recovery"] .success-signal { background: #168378; border-color: #8ff2e4; box-shadow: 0 0 0 .45rem #174b47, 0 0 1.5rem #55d9c8; }
+.success-dialog[data-variant="recovery"] .primary-button { color: #062522; background: #8ce5d7; border-color: #d5fff7; }
+
 body[data-corruption-level="7"] .story-copy,
 body[data-corruption-level="8"] .story-copy,
 body[data-corruption-level="9"] .story-copy {
@@ -127,6 +328,20 @@ body[data-corruption-level="9"] .trail-entry-current {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  body[data-phase="uneasy"]::after {
+    animation: uneasy-vignette calc(9s - var(--uneasy-level) * .55s) ease-in-out infinite alternate;
+  }
+
+  body[data-uneasy-level="7"] .console-header,
+  body[data-uneasy-level="8"] .console-header,
+  body[data-uneasy-level="9"] .console-header {
+    animation: warning-desync calc(6s - var(--uneasy-level) * .35s) steps(1) infinite;
+  }
+
+  body.phase-transition-uneasy .console { animation: uneasy-impact .8s ease-out; }
+  body.phase-transition-corrupted .console { animation: takeover-impact 1.35s steps(1); }
+  body.phase-transition-restored .console { animation: restoration-impact 1.05s ease-out; }
+
   body[data-phase="corrupted"]::before {
     animation: corruption-scan calc(7s - var(--corruption-level) * .45s) linear infinite;
   }
@@ -149,6 +364,114 @@ body[data-corruption-level="9"] .trail-entry-current {
   body[data-corruption-level="8"] .console-header,
   body[data-corruption-level="9"] .console-header {
     animation: header-desync calc(3.2s - var(--corruption-level) * .2s) steps(1) infinite;
+  }
+
+  body[data-current-scene="no-more-trails"] .fake-diagnostic::after {
+    animation: diagnostic-sweep 2.4s linear infinite;
+  }
+
+  body[data-current-scene="fake-cancel-plan"] .terminal-screen {
+    animation: hostile-terminal 2.8s ease-in-out infinite;
+  }
+
+  body[data-current-scene="behind-the-scenes"] .channel-access-banner::after {
+    animation: monitored-link 1.5s steps(1) infinite;
+  }
+
+  body[data-current-scene="recovery-manual"] .document-lock-card {
+    animation: lock-pressure 2.2s ease-in-out infinite alternate;
+  }
+
+  body[data-current-scene="jonabot-taunt"] .story-copy {
+    animation: live-message 1.8s steps(1) infinite;
+  }
+
+  body[data-current-scene="recovery-console"] .machine {
+    animation: recovery-conflict 1.9s ease-in-out infinite alternate;
+  }
+
+  body[data-current-scene="restore"] .video-shell-restore {
+    animation: restore-conflict 1.4s ease-in-out infinite alternate;
+  }
+
+  .success-dialog[data-variant="takeover"] .success-signal,
+  .success-dialog[data-variant="trap"] .success-signal { animation: takeover-signal .9s steps(1) infinite; }
+
+  @keyframes uneasy-vignette {
+    from { opacity: .55; }
+    to { opacity: 1; }
+  }
+
+  @keyframes warning-desync {
+    0%, 86%, 90%, 100% { filter: none; }
+    87% { filter: saturate(1.45) contrast(1.18); }
+    88% { translate: 1px 0; }
+    89% { translate: -1px 0; }
+  }
+
+  @keyframes uneasy-impact {
+    0% { filter: none; }
+    25% { filter: sepia(.45) saturate(1.35) brightness(1.12); }
+    100% { filter: none; }
+  }
+
+  @keyframes takeover-impact {
+    0% { filter: none; transform: translateX(0); }
+    8% { filter: brightness(1.8) contrast(.75) saturate(1.8); transform: translateX(-5px); }
+    14% { filter: contrast(1.6) hue-rotate(-12deg); transform: translateX(6px); }
+    22% { filter: brightness(.45) saturate(2); transform: translateX(-3px); }
+    31% { filter: contrast(1.35); transform: translateX(2px); }
+    42%, 100% { filter: none; transform: translateX(0); }
+  }
+
+  @keyframes restoration-impact {
+    0% { filter: brightness(2.1) saturate(.4) hue-rotate(120deg); }
+    34% { filter: brightness(1.35) saturate(1.5); }
+    100% { filter: none; }
+  }
+
+  @keyframes diagnostic-sweep {
+    from { translate: 0 0; }
+    to { translate: 0 82rem; }
+  }
+
+  @keyframes hostile-terminal {
+    0%, 76%, 100% { filter: none; }
+    80% { filter: contrast(1.5) brightness(.75); }
+    84% { filter: hue-rotate(-9deg); }
+  }
+
+  @keyframes monitored-link {
+    0%, 54%, 100% { opacity: .55; }
+    55%, 86% { opacity: 1; }
+  }
+
+  @keyframes lock-pressure {
+    from { filter: saturate(1); }
+    to { filter: saturate(1.35) contrast(1.08); }
+  }
+
+  @keyframes live-message {
+    0%, 87%, 91%, 100% { translate: 0; }
+    88% { translate: 2px 0; }
+    89% { translate: -2px 1px; }
+    90% { translate: 1px 0; }
+  }
+
+  @keyframes recovery-conflict {
+    from { box-shadow: -.35rem 0 0 #4dbfb4, .35rem 0 0 #a92833, 0 0 1rem rgb(77 214 198 / .22); }
+    to { box-shadow: -.55rem 0 0 #4dbfb4, .55rem 0 0 #a92833, 0 0 2rem rgb(201 37 48 / .35); }
+  }
+
+  @keyframes restore-conflict {
+    from { filter: saturate(1) brightness(1); }
+    to { filter: saturate(1.3) brightness(1.08); }
+  }
+
+  @keyframes takeover-signal {
+    0%, 62%, 100% { scale: 1; }
+    64% { scale: 1.08; }
+    68% { scale: .96; }
   }
 
   @keyframes corruption-scan {
