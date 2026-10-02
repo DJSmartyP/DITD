@@ -165,17 +165,59 @@ export class TrailEngine {
     );
     container.append(header);
 
-    const copy = el("div", "story-copy");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shouldType = Boolean(scene.typewriterTransmission && !completed && scene.body?.length && !reducedMotion);
+    const copy = el("div", `story-copy${scene.typewriterTransmission ? " story-copy-live-transmission" : ""}`);
+    const typedParagraphs = [];
     (scene.body || []).forEach((paragraph, index) => {
-      const p = el("p", index === 0 ? "speaker-line" : "", paragraph);
+      const p = el("p", index === 0 ? "speaker-line" : "", shouldType ? "" : paragraph);
       if (index === 0) {
         const livePrefix = scene.transmissionLabel ? `${scene.transmissionLabel} // ` : "";
         p.prepend(el("span", "speaker-label", `${livePrefix}${scene.speaker || "TRAIL CONSOLE"}`));
         if (scene.transmissionLabel) p.classList.add("speaker-line-live");
       }
       if (/^TBD|\[TBD/i.test(paragraph)) p.classList.add("tbd-copy");
+      if (shouldType) {
+        p.setAttribute("aria-hidden", "true");
+        const textNode = document.createTextNode("");
+        p.append(textNode);
+        typedParagraphs.push({ paragraph, p, textNode });
+      }
       copy.append(p);
     });
+    if (shouldType) {
+      const accessibleMessage = el("span", "sr-only", `${scene.transmissionLabel || "Incoming message"} ${scene.speaker}: ${scene.body.join(" ")}`);
+      accessibleMessage.setAttribute("role", "status");
+      copy.append(accessibleMessage);
+      container.classList.add("scene-transmission-typing");
+      const cursor = el("span", "channel-typing-cursor", "");
+      cursor.setAttribute("aria-hidden", "true");
+      typedParagraphs[0].p.append(cursor);
+      let paragraphIndex = 0;
+      let characterIndex = 0;
+      const typeNextCharacter = () => {
+        const current = typedParagraphs[paragraphIndex];
+        characterIndex += 1;
+        current.textNode.data = current.paragraph.slice(0, characterIndex);
+        if (characterIndex < current.paragraph.length) {
+          window.setTimeout(typeNextCharacter, 24);
+          return;
+        }
+        if (paragraphIndex < typedParagraphs.length - 1) {
+          paragraphIndex += 1;
+          characterIndex = 0;
+          typedParagraphs[paragraphIndex].p.append(cursor);
+          window.setTimeout(typeNextCharacter, 280);
+          return;
+        }
+        cursor.remove();
+        container.classList.remove("scene-transmission-typing");
+        container.classList.add("scene-transmission-ready");
+      };
+      window.setTimeout(typeNextCharacter, 350);
+    } else if (scene.typewriterTransmission) {
+      container.classList.add("scene-transmission-ready");
+    }
     container.append(copy);
   }
 
@@ -266,7 +308,7 @@ export class TrailEngine {
     if (scene.mediaFirst && mediaVisible) {
       this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
     }
-    if (!scene.openingVideoOnly) this.appendSceneHeadingAndCopy(currentRoot, scene);
+    if (!scene.openingVideoOnly) this.appendSceneHeadingAndCopy(currentRoot, scene, { completed: replay });
 
     const mountFeedback = () => {
       this.feedback = el("p", "feedback", "");

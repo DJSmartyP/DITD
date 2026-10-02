@@ -257,6 +257,8 @@ test("the restore video is the restoration event, without a duplicate progress m
 test("the manual password puzzle sends players to the Discord trail-note-pdfs channel", () => {
   const channel = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
   const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
+  const lockedGuide = trail.scenes.find((scene) => scene.id === "recovery-manual");
+  const recoveryConsole = trail.scenes.find((scene) => scene.id === "recovery-console");
   const protectedGuide = manifest.items["jonabot-operator-manual-protected"];
   assert.ok(channel.messages.some((message) => message.text.includes("#trail-note-pdfs")));
   assert.equal(channel.messages.some((message) => message.links?.some((link) => link.href === protectedGuide.src)), false);
@@ -271,6 +273,14 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   assert.equal(puzzle.modeLabel, "LIVE MESSAGE");
   assert.equal(puzzle.transmissionLabel, "LIVE NOW");
   assert.equal(puzzle.speaker, "Administrator: Jonabot");
+  for (const scene of [lockedGuide, puzzle, recoveryConsole]) {
+    assert.equal(scene.typewriterTransmission, true);
+    assert.equal(scene.transmissionLabel, "LIVE NOW");
+    assert.equal(scene.speaker, "Administrator: Jonabot");
+    assert.match(scene.body.join(" "), /\b(?:I|me|my)\b/i);
+  }
+  assert.match(recoveryConsole.body.join(" "), /backup/i);
+  assert.match(recoveryConsole.body.join(" "), /meatbags/i);
 });
 
 test("Videomatic 8345 preserves its reveal until playback", () => {
@@ -414,7 +424,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261002-3/);
+  assert.match(html, /main\.css\?v=20261002-4/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
@@ -510,7 +520,7 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(jonabotTaunt.body.join(" "), /meatbag/i);
   assert.ok(privateFrequency.messages.some((message) => message.author === "Grayfitz"));
   assert.equal(privateFrequency.messages.some((message) => message.author === "Gray"), false);
-  assert.equal(recoveryManual.cta, "View incoming Jonabot message");
+  assert.equal(recoveryManual.cta, "Attempt to unlock the guide");
   assert.match(machines, /Threat scan complete/);
   assert.match(machines, /Next JonAssist request/);
   assert.match(machines, /Manual counter-command required/);
@@ -536,6 +546,11 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(mainCss, /background:\s*#313338/);
   assert.match(mainCss, /\.channel-typing-cursor/);
   assert.match(mainCss, /\.private-channel:not\(\.private-channel-ready\) ~ \.scene-actions/);
+  assert.match(engine, /scene\.typewriterTransmission/);
+  assert.match(engine, /scene-transmission-typing/);
+  assert.match(engine, /current\.paragraph\.slice\(0, characterIndex\)/);
+  assert.match(mainCss, /\.story-copy-live-transmission/);
+  assert.match(mainCss, /\.scene-transmission-typing > :not\(\.scene-header\):not\(\.story-copy\)/);
   for (const moderator of ["smarty", "neven", "arty", "grayfitz"]) {
     assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));
   }

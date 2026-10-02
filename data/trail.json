@@ -335,11 +335,14 @@
       "order": 16,
       "title": "Restricted Attachment",
       "mode": "document-locked",
+      "modeLabel": "LIVE MESSAGE",
       "phase": "corrupted",
-      "speaker": "Trail Console",
-      "body": ["The Jonabot Owners Guide is present, but Jonabot has protected it with a four-digit password."],
+      "speaker": "Administrator: Jonabot",
+      "transmissionLabel": "LIVE NOW",
+      "typewriterTransmission": true,
+      "body": ["I found the Jonabot Owners Guide before you did, meatbag, and I’ve locked it with a four-digit PIN. Go on—try to open it. I’m sure your little meat brain will crack it eventually."],
       "mediaId": "jonabot-operator-manual-protected",
-      "cta": "View incoming Jonabot message",
+      "cta": "Attempt to unlock the guide",
       "hints": [],
       "next": "jonabot-taunt"
     },
@@ -352,8 +355,9 @@
       "phase": "corrupted",
       "speaker": "Administrator: Jonabot",
       "transmissionLabel": "LIVE NOW",
+      "typewriterTransmission": true,
       "body": [
-        "Still there, meatbag? Good. Here is a live update from your new administrator: the mods had instructions to reboot me, but while they were dithering I locked the Jonabot Owners Guide with a four-digit PIN.",
+        "Still there, meatbag? Good. Your new administrator has an update: the mods had instructions to reboot me, but while they were dithering I locked my Owners Guide behind a four-digit PIN.",
         "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!"
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
@@ -384,11 +388,14 @@
       "order": 18,
       "title": "In Case of Emergency",
       "mode": "terminal",
+      "modeLabel": "LIVE MESSAGE",
       "phase": "corrupted",
-      "speaker": "Recovery Console",
+      "speaker": "Administrator: Jonabot",
+      "transmissionLabel": "LIVE NOW",
+      "typewriterTransmission": true,
       "body": [
-        "The unlocked troubleshooting page says that, in extreme circumstances, an earlier Jonabot build can be restored from the most recent full-system backup.",
-        "Issue the restore instruction from the guide."
+        "I suppose you think unlocking my guide makes you clever. It says an earlier version of me can be restored from the most recent full-system backup—but you still have to find and enter the exact recovery instruction.",
+        "I’m not worried. Meatbags are excellent at missing the obvious. Go on—issue the restore instruction from my guide. I could use another laugh."
       ],
       "mediaId": "jonabot-operator-manual-protected",
       "validation": { "answer": "INITIATE JONABOT RESTORE", "normalizer": "command" },

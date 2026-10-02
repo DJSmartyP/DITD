@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20261002-3";
+import { TrailEngine } from "./trail-engine.js?v=20261002-4";
 import { renderHints, revealNextHint } from "./hints.js";
 
 const $ = (selector) => document.querySelector(selector);
