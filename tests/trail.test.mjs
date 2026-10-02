@@ -414,7 +414,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261002-2/);
+  assert.match(html, /main\.css\?v=20261002-3/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
@@ -522,8 +522,16 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(machines, /discord-attachment/);
   assert.match(machines, /Message #ai-issues/);
   assert.match(machines, /READ ONLY/);
+  assert.match(machines, /typeNextCharacter/);
+  assert.match(machines, /scene\.interceptMessage\.slice\(0, characterIndex\)/);
+  assert.match(machines, /channel\.hidden = shouldType/);
+  assert.match(machines, /channel\.hidden = false/);
+  assert.match(machines, /prefers-reduced-motion: reduce/);
+  assert.match(engine, /animate: false/);
   assert.match(mainCss, /\.discord-channel\s*\{/);
   assert.match(mainCss, /background:\s*#313338/);
+  assert.match(mainCss, /\.channel-typing-cursor/);
+  assert.match(mainCss, /\.private-channel:not\(\.private-channel-ready\) ~ \.scene-actions/);
   for (const moderator of ["smarty", "neven", "arty", "grayfitz"]) {
     assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));
   }

@@ -226,9 +226,11 @@ function diagnostic() {
   return wrapper;
 }
 
-function privateChannel(scene) {
+function privateChannel(scene, { animate = true } = {}) {
   const wrapper = el("section", "private-channel");
   wrapper.setAttribute("aria-label", "Read-only moderator conversation");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const shouldType = Boolean(scene.interceptMessage && animate && !reducedMotion);
 
   if (scene.interceptMessage) {
     const incoming = el("article", "channel-intercept channel-message--jonabot");
@@ -240,7 +242,14 @@ function privateChannel(scene) {
       el("strong", "", "JONABOT"),
       el("span", "channel-intercept-live", "INCOMING NOW")
     );
-    content.append(heading, el("p", "", scene.interceptMessage));
+    const message = el("p", "channel-intercept-message", shouldType ? "" : scene.interceptMessage);
+    content.append(heading, message);
+    if (shouldType) {
+      message.setAttribute("aria-hidden", "true");
+      const accessibleMessage = el("span", "sr-only", scene.interceptMessage);
+      accessibleMessage.setAttribute("role", "status");
+      content.append(accessibleMessage);
+    }
     incoming.append(avatar, content);
     wrapper.append(incoming);
   }
@@ -319,7 +328,35 @@ function privateChannel(scene) {
   );
 
   channel.append(channelHeader, messageList, composer);
+  channel.hidden = shouldType;
   wrapper.append(channel);
+
+  if (shouldType) {
+    wrapper.classList.add("private-channel-typing");
+    const message = wrapper.querySelector(".channel-intercept-message");
+    const cursor = el("span", "channel-typing-cursor", "");
+    cursor.setAttribute("aria-hidden", "true");
+    message.append(cursor);
+    const typedText = document.createTextNode("");
+    message.prepend(typedText);
+    let characterIndex = 0;
+    const typeNextCharacter = () => {
+      characterIndex += 1;
+      typedText.data = scene.interceptMessage.slice(0, characterIndex);
+      if (characterIndex < scene.interceptMessage.length) {
+        window.setTimeout(typeNextCharacter, 38);
+        return;
+      }
+      cursor.remove();
+      channel.hidden = false;
+      wrapper.classList.remove("private-channel-typing");
+      wrapper.classList.add("private-channel-ready");
+    };
+    window.setTimeout(typeNextCharacter, 350);
+  } else {
+    wrapper.classList.add("private-channel-ready");
+  }
+
   return wrapper;
 }
 
@@ -385,7 +422,7 @@ function reward(scene) {
   return stack;
 }
 
-export function renderMachine(scene, { onSubmit, onComplete }) {
+export function renderMachine(scene, { onSubmit, onComplete, animate = true }) {
   switch (scene.mode) {
     case "jonavision": return jonavision(scene, onSubmit);
     case "videomatic": return videomatic(scene, onSubmit);
@@ -402,7 +439,7 @@ export function renderMachine(scene, { onSubmit, onComplete }) {
     }
     case "system-log": return systemLog(scene);
     case "diagnostic": return diagnostic(scene);
-    case "private-channel": return privateChannel(scene);
+    case "private-channel": return privateChannel(scene, { animate });
     case "restore": return restore(scene, onComplete);
     case "reward": return reward(scene);
     default: return null;

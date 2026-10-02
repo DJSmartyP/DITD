@@ -1,4 +1,4 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261002-2";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261002-3";
 import { renderMedia } from "./media.js?v=20260930-5";
 
 function el(tag, className, text) {
@@ -312,7 +312,7 @@ export class TrailEngine {
       });
       if (machine) currentRoot.append(machine);
     } else if (scene.mode === "reward") {
-      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
+      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {}, animate: false });
       if (machine) currentRoot.append(machine);
     }
 
