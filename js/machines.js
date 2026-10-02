@@ -246,13 +246,13 @@ function privateChannel(scene) {
   }
 
   const channel = el("section", "discord-channel");
-  channel.setAttribute("aria-label", "Read-only Discord channel: moderator-chat");
+  channel.setAttribute("aria-label", "Read-only Discord channel: ai-issues");
 
   const channelHeader = el("header", "discord-channel-header");
   const channelIdentity = el("div", "discord-channel-identity");
   channelIdentity.append(
     el("span", "discord-channel-hash", "#"),
-    el("strong", "", "moderator-chat")
+    el("strong", "", "ai-issues")
   );
   channelHeader.append(
     channelIdentity,
@@ -266,7 +266,7 @@ function privateChannel(scene) {
   (scene.messages || []).forEach((message) => {
     const isSystem = message.author === "System";
     const authorKey = message.author.toLowerCase();
-    const moderatorClass = ["smarty", "neven", "arty", "gray"].includes(authorKey)
+    const moderatorClass = ["smarty", "neven", "arty", "grayfitz"].includes(authorKey)
       ? ` channel-message--${authorKey}`
       : "";
     const item = el("article", `discord-message${moderatorClass}${isSystem ? " discord-message--system" : ""}`);
@@ -314,7 +314,7 @@ function privateChannel(scene) {
   composer.setAttribute("aria-label", "Message composer disabled in this read-only intercept");
   composer.append(
     el("span", "discord-composer-plus", "+"),
-    el("span", "discord-composer-placeholder", "Message #moderator-chat"),
+    el("span", "discord-composer-placeholder", "Message #ai-issues"),
     el("span", "discord-composer-lock", "READ ONLY")
   );
 

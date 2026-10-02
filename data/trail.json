@@ -304,11 +304,11 @@
       "messages": [
         { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
         { "author": "Arty", "text": "It would seem that the AI function of the bot has turned itself on outside the realms of the test area, and it's not listening to the shutdown command." },
-        { "author": "Gray", "text": "Does that mean they can actually THINK?" },
+        { "author": "Grayfitz", "text": "Does that mean they can actually THINK?" },
         { "author": "Neven", "text": "It certainly appears that way." },
         { "author": "Smarty", "text": "Wait… can it see this room??" },
         { "author": "Arty", "text": "Nope, I thought ahead and made sure this channel was locked down! This room is for mods only - no bots or other users." },
-        { "author": "Gray", "text": "So what now - is there a way we can reboot it to factory settings? Remove the AI module?" },
+        { "author": "Grayfitz", "text": "So what now - is there a way we can reboot it to factory settings? Remove the AI module?" },
         { "author": "Arty", "text": "There might be. I'm going to send you all a PDF containing the reset protocols - hopefully there's something in here that can help." },
         {
           "author": "System",
@@ -323,7 +323,7 @@
         },
         { "author": "Smarty", "text": "Wait… can anyone else open the PDF? It's asking for a four-digit password?" },
         { "author": "Neven", "text": "Yep, password locked here." },
-        { "author": "Gray", "text": "And here!" },
+        { "author": "Grayfitz", "text": "And here!" },
         { "author": "Smarty", "text": "So… does anyone know the password?" }
       ],
       "cta": "Inspect the recovery manual",

@@ -613,7 +613,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .channel-message--smarty { --message-colour: #ff625d; --avatar-background: #a52c27; }
 .channel-message--neven { --message-colour: #c793ff; --avatar-background: #71409a; }
 .channel-message--arty { --message-colour: #ff9d52; --avatar-background: #b95a16; }
-.channel-message--gray { --message-colour: #c7c9cc; --avatar-background: #424b50; }
+.channel-message--grayfitz { --message-colour: #c7c9cc; --avatar-background: #424b50; }
 .discord-message--system { --message-colour: #c9cdfb; --avatar-background: #5865f2; }
 .discord-message--system .discord-avatar { border-radius: .35rem; font-size: .58rem; letter-spacing: .02em; }
 

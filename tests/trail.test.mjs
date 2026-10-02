@@ -414,7 +414,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261002-1/);
+  assert.match(html, /main\.css\?v=20261002-2/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
@@ -504,6 +504,8 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.deepEqual(privateFrequency.body, []);
   assert.equal(privateFrequency.interceptMessage, "Here’s the chat I mentioned earlier! Stupid humans!");
   assert.equal(privateFrequency.speaker, "Jonabot");
+  assert.ok(privateFrequency.messages.some((message) => message.author === "Grayfitz"));
+  assert.equal(privateFrequency.messages.some((message) => message.author === "Gray"), false);
   assert.equal(recoveryManual.cta, "View incoming Jonabot message");
   assert.match(machines, /Threat scan complete/);
   assert.match(machines, /Next JonAssist request/);
@@ -512,16 +514,17 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.doesNotMatch(machines.match(/COUNTER-COMMAND ACCESS GRANTED[\s\S]*?Awaiting instruction/)?.[0] || "", /cancel-plan/i);
   assert.equal(trap.hints.at(-1).includes("cancel-plan"), true);
   assert.match(machines, /PRIVATE FREQUENCY INTERCEPT/);
-  assert.match(machines, /moderator-chat/);
+  assert.match(machines, /ai-issues/);
+  assert.doesNotMatch(machines, /moderator-chat/);
   assert.match(machines, /discord-channel-header/);
   assert.match(machines, /discord-message-list/);
   assert.match(machines, /discord-avatar/);
   assert.match(machines, /discord-attachment/);
-  assert.match(machines, /Message #moderator-chat/);
+  assert.match(machines, /Message #ai-issues/);
   assert.match(machines, /READ ONLY/);
   assert.match(mainCss, /\.discord-channel\s*\{/);
   assert.match(mainCss, /background:\s*#313338/);
-  for (const moderator of ["smarty", "neven", "arty", "gray"]) {
+  for (const moderator of ["smarty", "neven", "arty", "grayfitz"]) {
     assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));
   }
   assert.doesNotMatch(engine, /scene-number|SCENE \$\{/);
