@@ -470,6 +470,7 @@ test("player-facing copy stays inside the story world", async () => {
   assert.doesNotMatch(visibleCopy, /third-party CAPTCHA/i);
   assert.doesNotMatch(visibleCopy, /Presentation only/i);
   assert.doesNotMatch(visibleCopy, /inline document viewer is unavailable/i);
+  assert.doesNotMatch(visibleCopy, /Trailblazer/i);
 });
 
 test("correct answers receive clear in-world confirmations", () => {
@@ -500,10 +501,13 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
   const privateFrequency = trail.scenes.find((scene) => scene.id === "behind-the-scenes");
   const recoveryManual = trail.scenes.find((scene) => scene.id === "recovery-manual");
+  const jonabotTaunt = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
   assert.deepEqual(diagnostic.body, []);
   assert.deepEqual(privateFrequency.body, []);
-  assert.equal(privateFrequency.interceptMessage, "Here’s the chat I mentioned earlier! Stupid humans!");
+  assert.equal(privateFrequency.interceptMessage, "Here’s the chat I mentioned earlier! Stupid meatbags!");
   assert.equal(privateFrequency.speaker, "Jonabot");
+  assert.match(trap.specialResponses["hello jonabot"], /meatbag/i);
+  assert.match(jonabotTaunt.body.join(" "), /meatbag/i);
   assert.ok(privateFrequency.messages.some((message) => message.author === "Grayfitz"));
   assert.equal(privateFrequency.messages.some((message) => message.author === "Gray"), false);
   assert.equal(recoveryManual.cta, "View incoming Jonabot message");

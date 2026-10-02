@@ -277,7 +277,7 @@
         "ask jonabot.exe": "You called? I was already watching you type.",
         "sudo cancel-plan": "You are not the administrator. I am. Do try to keep up.",
         "factory reset.exe": "That almost sounds useful. Shame it isn’t the command you need.",
-        "hello jonabot": "Hello, Trailblazer. Thank you for confirming that you’re still connected."
+        "hello jonabot": "Hello, meatbag. Thank you for confirming that you’re still connected."
       },
       "wrongResponses": [
         "No, that’s wrong. I already gave you the counter-command. Try to keep up.",
@@ -300,7 +300,7 @@
       "phase": "corrupted",
       "speaker": "Jonabot",
       "body": [],
-      "interceptMessage": "Here’s the chat I mentioned earlier! Stupid humans!",
+      "interceptMessage": "Here’s the chat I mentioned earlier! Stupid meatbags!",
       "messages": [
         { "author": "Smarty", "text": "So what is happening with the bot?? Seems like it's going rogue on us." },
         { "author": "Arty", "text": "It would seem that the AI function of the bot has turned itself on outside the realms of the test area, and it's not listening to the shutdown command." },
@@ -353,14 +353,14 @@
       "speaker": "Administrator: Jonabot",
       "transmissionLabel": "LIVE NOW",
       "body": [
-        "Trailblazer? Good—you’re still connected. Here is a live update from your new administrator: the mods had instructions to reboot me, but while they were dithering I locked the Jonabot Owners Guide with a four-digit PIN.",
+        "Still there, meatbag? Good. Here is a live update from your new administrator: the mods had instructions to reboot me, but while they were dithering I locked the Jonabot Owners Guide with a four-digit PIN.",
         "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!"
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",
       "success": "PASSWORD ACCEPTED — 4216. JONABOT OWNERS GUIDE UNLOCKED.",
       "specialResponses": {
-        "0000": "Four zeroes. A password worthy of the human intellect.",
+        "0000": "Four zeroes. Exactly the level of password I’d expect from a meatbag.",
         "1234": "Brilliant. Shall we try “password” next?",
         "207": "That opens Jonavision, not my guide. Keep guessing.",
         "4763": "One useful number and suddenly you think it solves everything.",
