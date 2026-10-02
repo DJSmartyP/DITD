@@ -229,37 +229,97 @@ function diagnostic() {
 function privateChannel(scene) {
   const wrapper = el("section", "private-channel");
   wrapper.setAttribute("aria-label", "Read-only moderator conversation");
+
   if (scene.interceptMessage) {
-    const incoming = el("article", "channel-message channel-message--jonabot");
-    incoming.append(
-      el("strong", "", "INCOMING MESSAGE // JONABOT"),
-      el("p", "", scene.interceptMessage)
+    const incoming = el("article", "channel-intercept channel-message--jonabot");
+    const avatar = el("span", "channel-intercept-avatar", "J");
+    avatar.setAttribute("aria-hidden", "true");
+    const content = el("div", "channel-intercept-content");
+    const heading = el("div", "channel-intercept-heading");
+    heading.append(
+      el("strong", "", "JONABOT"),
+      el("span", "channel-intercept-live", "INCOMING NOW")
     );
+    content.append(heading, el("p", "", scene.interceptMessage));
+    incoming.append(avatar, content);
     wrapper.append(incoming);
   }
-  const banner = el("div", "channel-access-banner");
-  banner.append(
-    el("strong", "", "PRIVATE FREQUENCY INTERCEPT"),
-    el("span", "", "MOD-ONLY CHANNEL // READ-ONLY MIRROR")
+
+  const channel = el("section", "discord-channel");
+  channel.setAttribute("aria-label", "Read-only Discord channel: moderator-chat");
+
+  const channelHeader = el("header", "discord-channel-header");
+  const channelIdentity = el("div", "discord-channel-identity");
+  channelIdentity.append(
+    el("span", "discord-channel-hash", "#"),
+    el("strong", "", "moderator-chat")
   );
-  wrapper.append(banner);
+  channelHeader.append(
+    channelIdentity,
+    el("span", "discord-channel-topic", "PPEC moderators"),
+    el("span", "discord-channel-status", "PRIVATE FREQUENCY INTERCEPT · READ ONLY")
+  );
+
+  const messageList = el("div", "discord-message-list");
+  messageList.setAttribute("aria-label", "Intercepted moderator messages");
+
   (scene.messages || []).forEach((message) => {
-    const moderatorClass = ["Smarty", "Neven", "Arty", "Gray"].includes(message.author)
-      ? ` channel-message--moderator channel-message--${message.author.toLowerCase()}`
+    const isSystem = message.author === "System";
+    const authorKey = message.author.toLowerCase();
+    const moderatorClass = ["smarty", "neven", "arty", "gray"].includes(authorKey)
+      ? ` channel-message--${authorKey}`
       : "";
-    const item = el("article", `channel-message${message.author === "System" ? " system" : moderatorClass}`);
-    const paragraph = el("p", "", message.text);
-    (message.links || []).forEach((link, index) => {
-      paragraph.append(document.createTextNode(index === 0 ? " " : " · "));
-      const anchor = el("a", "channel-link", link.label);
-      anchor.href = link.href;
-      anchor.target = "_blank";
-      anchor.rel = "noopener";
-      paragraph.append(anchor);
-    });
-    item.append(el("strong", "", message.author), paragraph);
-    wrapper.append(item);
+    const item = el("article", `discord-message${moderatorClass}${isSystem ? " discord-message--system" : ""}`);
+    const avatarLabel = isSystem ? "PDF" : message.author.slice(0, 1).toUpperCase();
+    const avatar = el("span", "discord-avatar", avatarLabel);
+    avatar.setAttribute("aria-hidden", "true");
+
+    const content = el("div", "discord-message-content");
+    const meta = el("header", "discord-message-meta");
+    meta.append(el("strong", "discord-author", isSystem ? "Trail Console" : message.author));
+    if (isSystem) meta.append(el("span", "discord-bot-tag", "SYSTEM"));
+    meta.append(el("span", "discord-message-state", "intercepted"));
+    content.append(meta);
+
+    if (isSystem) {
+      const [fileLead, statusText] = message.text.split(" — ");
+      const fileName = fileLead.split(":").slice(1).join(":").trim() || fileLead;
+      const attachment = el("div", "discord-attachment");
+      const fileIcon = el("span", "discord-attachment-icon", "PDF");
+      fileIcon.setAttribute("aria-hidden", "true");
+      const fileCopy = el("div", "discord-attachment-copy");
+      fileCopy.append(
+        el("strong", "", fileName),
+        el("span", "", statusText || "Attachment copied to the restricted reader.")
+      );
+      attachment.append(fileIcon, fileCopy);
+      content.append(attachment);
+    } else {
+      const paragraph = el("p", "discord-message-text", message.text);
+      content.append(paragraph);
+      (message.links || []).forEach((link) => {
+        const anchor = el("a", "channel-link", link.label);
+        anchor.href = link.href;
+        anchor.target = "_blank";
+        anchor.rel = "noopener";
+        content.append(anchor);
+      });
+    }
+
+    item.append(avatar, content);
+    messageList.append(item);
   });
+
+  const composer = el("div", "discord-composer");
+  composer.setAttribute("aria-label", "Message composer disabled in this read-only intercept");
+  composer.append(
+    el("span", "discord-composer-plus", "+"),
+    el("span", "discord-composer-placeholder", "Message #moderator-chat"),
+    el("span", "discord-composer-lock", "READ ONLY")
+  );
+
+  channel.append(channelHeader, messageList, composer);
+  wrapper.append(channel);
   return wrapper;
 }
 

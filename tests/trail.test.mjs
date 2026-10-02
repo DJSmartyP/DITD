@@ -400,17 +400,21 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
   );
 });
 
-test("the growing trail keeps a persistent page scrollbar", async () => {
+test("the growing trail scrolls in the middle column while desktop rails stay visible", async () => {
   const css = await readFile(join(root, "css", "main.css"), "utf8");
   const html = await readFile(join(root, "index.html"), "utf8");
-  assert.match(css, /html\s*\{[^}]*overflow-y:\s*scroll;/s);
-  assert.match(css, /scrollbar-gutter:\s*stable/);
-  assert.match(css, /html::\-webkit-scrollbar\s*\{\s*width:\s*14px;/);
+  assert.doesNotMatch(css, /html::\-webkit-scrollbar/);
+  assert.doesNotMatch(css, /html\s*\{[^}]*overflow-y:\s*scroll;/s);
+  assert.match(css, /html, body\s*\{\s*height:\s*100%;\s*overflow:\s*hidden;/);
+  assert.match(css, /\.console\s*\{[^}]*grid-template-rows:\s*64px minmax\(0, 1fr\)[^}]*height:\s*100vh[^}]*overflow:\s*hidden;/s);
+  assert.match(css, /\.workspace\s*\{[^}]*height:\s*100%[^}]*min-height:\s*0[^}]*overflow-y:\s*auto;/s);
+  assert.match(css, /\.jonabot-rail\s*\{[^}]*position:\s*static[^}]*align-self:\s*stretch/s);
+  assert.match(css, /\.tool-rail\s*\{[^}]*position:\s*static[^}]*height:\s*100%/s);
   assert.match(css, /body\s*\{[^}]*overflow-x:\s*hidden;/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261001-1/);
+  assert.match(html, /main\.css\?v=20261002-1/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
@@ -508,6 +512,15 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.doesNotMatch(machines.match(/COUNTER-COMMAND ACCESS GRANTED[\s\S]*?Awaiting instruction/)?.[0] || "", /cancel-plan/i);
   assert.equal(trap.hints.at(-1).includes("cancel-plan"), true);
   assert.match(machines, /PRIVATE FREQUENCY INTERCEPT/);
+  assert.match(machines, /moderator-chat/);
+  assert.match(machines, /discord-channel-header/);
+  assert.match(machines, /discord-message-list/);
+  assert.match(machines, /discord-avatar/);
+  assert.match(machines, /discord-attachment/);
+  assert.match(machines, /Message #moderator-chat/);
+  assert.match(machines, /READ ONLY/);
+  assert.match(mainCss, /\.discord-channel\s*\{/);
+  assert.match(mainCss, /background:\s*#313338/);
   for (const moderator of ["smarty", "neven", "arty", "gray"]) {
     assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));
   }

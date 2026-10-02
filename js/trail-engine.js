@@ -1,4 +1,4 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261001-1";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261001-2";
 import { renderMedia } from "./media.js?v=20260930-5";
 
 function el(tag, className, text) {
