@@ -266,6 +266,8 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 .document-lock-card p { margin-bottom: 0; }
 
 .video-shell { overflow: hidden; background: #071816; }
+.video-fallback { display: grid; place-content: center; gap: .75rem; min-height: 15rem; padding: 1.25rem; color: var(--paper); text-align: center; }
+.video-fallback p { margin: 0; }
 .video-poster {
   position: relative;
   display: block;
@@ -297,6 +299,28 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
   pointer-events: none;
 }
 .video-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease, filter .3s ease; }
+.video-artwork-loading,
+.video-playback-loading {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  color: #fff2c4;
+  background: repeating-linear-gradient(-45deg, #0d302d 0 16px, #09221f 16px 32px);
+  font: 900 clamp(.85rem, 2.8vw, 1.3rem)/1.4 var(--mono);
+  letter-spacing: .04em;
+  text-align: center;
+  pointer-events: none;
+}
+.video-poster:not(.video-artwork-pending) .video-artwork-loading { display: none; }
+.video-shell-rogue .video-artwork-loading,
+.video-shell-corrupted .video-artwork-loading { background: repeating-linear-gradient(-45deg, #3e1013 0 16px, #24090c 16px 32px); }
+.video-shell-tourism .video-artwork-loading { color: #fff4d0; background: repeating-linear-gradient(-45deg, #67421c 0 16px, #503215 16px 32px); }
+.video-loading-stage { position: relative; aspect-ratio: 16 / 9; background: #071816; }
+.video-loading-stage .video-frame { width: 100%; height: 100%; }
+.video-loading-stage.video-ready .video-playback-loading { display: none; }
 .video-poster:hover img { transform: scale(1.025); filter: brightness(1.07) saturate(1.04); }
 .video-poster:focus-visible { outline-offset: -6px; }
 .video-archive-label {
@@ -371,6 +395,28 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
   text-transform: uppercase;
   text-shadow: 0 2px 3px #000;
 }
+.video-continue-prompt {
+  position: absolute;
+  z-index: 4;
+  right: .8rem;
+  bottom: .65rem;
+  left: .8rem;
+  padding: .35rem .55rem;
+  color: #092522;
+  background: #f4d27d;
+  box-shadow: 3px 3px 0 #061815;
+  font: 900 clamp(.62rem, 1.8vw, .88rem)/1.25 var(--mono);
+  letter-spacing: .04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.video-poster:has(.video-continue-prompt) .video-play-text { display: none; }
+.video-shell-corrupted .video-continue-prompt,
+.video-shell-rogue .video-continue-prompt { color: white; background: #a52c24; }
+.video-shell-call .video-continue-prompt { background: #8de0d3; }
+.video-watch-gate { margin: 0; padding: .7rem .85rem; color: #14322e; background: #f0d890; border-left: 5px solid #a06b21; font: 800 .85rem/1.4 var(--mono); }
+.video-gated-continue[hidden] { display: none; }
+.video-backup-confirm { margin: .65rem; }
 .video-shell-tourism .video-poster::after { background: linear-gradient(90deg, rgba(36, 19, 5, .08), rgba(63, 27, 4, .72)); box-shadow: inset 0 0 0 4px #e4b95d; }
 .video-shell-tourism .video-archive-label { color: #3b2108; background: #f1cf77; }
 .video-shell-tourism .video-poster-headline { color: #fff2c4; font-family: Georgia, serif; letter-spacing: .04em; }
@@ -525,9 +571,9 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 .fine-print { color: var(--muted); font-size: .78rem; }
 
 .welcome-dialog {
-  width: min(96vw, 34rem);
+  width: min(100vw - 1rem, 75rem);
   max-width: none;
-  max-height: 96dvh;
+  max-height: calc(100dvh - 1rem);
   padding: 0;
   color: var(--ink);
   background: var(--paper);
@@ -537,23 +583,23 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 }
 .welcome-dialog::backdrop { background: rgba(1, 14, 13, .9); }
 .welcome-hero {
-  display: flex;
-  align-items: flex-end;
-  min-height: min(94dvh, 50rem);
-  padding: clamp(15rem, 48dvh, 23rem) .7rem .8rem;
-  background:
-    linear-gradient(180deg, transparent 18%, rgba(7, 25, 23, .08) 38%, rgba(7, 25, 23, .96) 68%),
-    url("../assets/images/ditd-landing-hero.jpg") 31% top / cover no-repeat;
+  display: grid;
+  grid-template-rows: minmax(7rem, 22dvh) minmax(0, 1fr);
+  min-height: min(100dvh - 1.4rem, 52rem);
+  background: #f1e3c2;
+}
+.welcome-art {
+  min-height: 0;
+  background: url("../assets/images/ditd-landing-hero.jpg") 21% 21% / cover no-repeat;
+  border-bottom: 4px solid var(--brass);
 }
 .welcome-copy {
   width: 100%;
-  padding: .9rem;
+  padding: clamp(.65rem, 2dvh, 1rem);
   color: var(--ink);
-  background: rgba(255, 250, 240, .95);
-  border: 3px solid #171d1b;
-  box-shadow: 4px 4px 0 rgba(7, 25, 23, .8);
+  background: #fffaf0;
 }
-.welcome-copy h2 { margin: .5rem 0 .2rem; font: 900 clamp(1.8rem, 9vw, 2.8rem)/.9 var(--mono); letter-spacing: -.07em; text-transform: uppercase; }
+.welcome-copy h2 { margin: .3rem 0 .15rem; font: 900 clamp(1.7rem, 8vw, 2.8rem)/.92 var(--mono); letter-spacing: -.07em; text-transform: uppercase; }
 .welcome-copy .dialog-subtitle { margin: .4rem 0; color: var(--teal-dark); font: 900 clamp(.9rem, 4vw, 1.25rem) var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .welcome-deck { max-width: 43ch; margin: .65rem 0 .35rem; font-size: .92rem; font-weight: 900; }
 .welcome-copy #welcome-message { max-width: 52ch; margin: .35rem 0; color: #3f4d49; font-size: .82rem; line-height: 1.35; }
@@ -576,22 +622,60 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 .welcome-actions .primary-button, .welcome-actions .quiet-button { width: 100%; font-size: 1rem; }
 
 @media (min-width: 760px) {
-  .welcome-dialog { width: min(94vw, 76rem); max-height: 92vh; border-width: 4px; box-shadow: 12px 12px 0 rgba(2, 17, 15, .88); }
+  .welcome-dialog { width: min(96vw, 76rem); max-height: 94dvh; border-width: 4px; box-shadow: 12px 12px 0 rgba(2, 17, 15, .88); }
   .welcome-hero {
-    align-items: center;
-    justify-content: flex-end;
-    min-height: min(84vh, 43rem);
-    padding: clamp(1.4rem, 4vw, 3.5rem);
-    background:
-      linear-gradient(90deg, transparent 25%, rgba(244, 237, 216, .08) 48%, rgba(7, 25, 23, .2) 100%),
-      url("../assets/images/ditd-landing-hero.jpg") center / cover no-repeat;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    grid-template-rows: minmax(0, 1fr);
+    min-height: min(92dvh, 44rem);
   }
-  .welcome-copy { width: min(58%, 39rem); padding: clamp(1.2rem, 3vw, 2rem); }
-  .welcome-copy h2 { font-size: clamp(2.8rem, 6vw, 5rem); }
+  .welcome-art { background-position: 16% center; border-right: 4px solid var(--brass); border-bottom: 0; }
+  .welcome-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(1rem, 2.2vw, 2rem); }
+  .welcome-copy h2 { font-size: clamp(2.2rem, 4vw, 4rem); }
   .welcome-deck { font-size: 1rem; }
-  .welcome-copy #welcome-message { font-size: 1rem; line-height: 1.55; }
+  .welcome-copy #welcome-message { font-size: .9rem; line-height: 1.35; }
   .welcome-actions { display: flex; gap: .8rem; margin-top: 1rem; }
   .welcome-actions .primary-button, .welcome-actions .quiet-button { width: auto; font-size: 1.03rem; }
+}
+
+@media (max-height: 740px) {
+  .welcome-hero { grid-template-rows: minmax(5.5rem, 19dvh) minmax(0, 1fr); }
+  .welcome-copy h2 { font-size: clamp(1.55rem, 6vw, 2.3rem); }
+  .welcome-deck, .welcome-copy #welcome-message { margin: .2rem 0; line-height: 1.2; }
+  .player-name-field { margin-top: .35rem; }
+  .player-name-field input { min-height: 40px; padding: .35rem .55rem; }
+  .player-name-note { margin: .12rem 0; }
+  .timer-mode-picker { gap: .3rem; margin-top: .4rem; padding: .35rem; }
+  .timer-mode-option { padding: .35rem; }
+  .timer-mode-option small { line-height: 1.15; }
+  .welcome-actions { margin-top: .45rem; }
+}
+
+@media (min-width: 580px) and (max-height: 740px) {
+  .welcome-hero { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); grid-template-rows: minmax(0, 1fr); min-height: 0; height: calc(100dvh - 2rem); }
+  .welcome-art { background-position: 16% center; border-right: 4px solid var(--brass); border-bottom: 0; }
+  .welcome-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(.5rem, 2dvh, 1rem); }
+  .welcome-copy .dialog-badge { align-self: flex-start; }
+  .welcome-copy h2 { font-size: clamp(1.3rem, 3vw, 2.25rem); }
+  .welcome-copy .dialog-subtitle { margin: .1rem 0; font-size: .85rem; }
+  .welcome-deck { display: none; }
+  .welcome-copy #welcome-message { font-size: .72rem; }
+  .player-name-note { display: none; }
+  .timer-mode-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .timer-mode-picker legend { grid-column: 1 / -1; }
+  .timer-mode-option { gap: .3rem; }
+  .timer-mode-option strong { font-size: .7rem; }
+  .timer-mode-option small { font-size: .61rem; }
+  .welcome-actions { display: flex; }
+  .welcome-actions .primary-button, .welcome-actions .quiet-button { width: auto; font-size: .8rem; }
+}
+
+@media (max-width: 360px) and (max-height: 650px) {
+  .welcome-hero { grid-template-rows: 4.5rem minmax(0, 1fr); }
+  .welcome-art { background-position: 20% 22%; }
+  .welcome-deck, .player-name-note { display: none; }
+  .welcome-copy .dialog-subtitle { margin: .1rem 0; }
+  .welcome-copy #welcome-message { font-size: .7rem; }
+  .timer-mode-option small { font-size: .68rem; }
 }
 
 .private-channel { display: grid; gap: 1rem; min-width: 0; margin: 1rem 0; }
