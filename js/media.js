@@ -20,13 +20,17 @@ function placeholder(item) {
   return shell;
 }
 
-function youtube(item) {
+function youtube(item, options = {}) {
   const id = youtubeId(item.src);
   if (!item.localSrc && !id) return placeholder(item);
   const shell = el("figure", `media-shell video-shell video-shell-${item.posterStyle || "archive"}`);
   const poster = el("button", "video-poster");
   poster.type = "button";
   poster.setAttribute("aria-label", item.playLabel || `Play ${item.title}`);
+  const loadingText = item.loadingText || "Preparing recording…";
+  const markWatched = () => options.onWatched?.();
+  const artworkLoading = el("span", "video-artwork-loading", loadingText);
+  poster.classList.add("video-artwork-pending");
 
   if (item.thumbnail) {
     const image = document.createElement("img");
@@ -34,6 +38,9 @@ function youtube(item) {
     image.alt = item.thumbnailAlt || "";
     image.loading = "lazy";
     image.decoding = "async";
+    const finishArtworkLoad = () => poster.classList.remove("video-artwork-pending");
+    image.addEventListener("load", finishArtworkLoad, { once: true });
+    image.addEventListener("error", finishArtworkLoad, { once: true });
     poster.append(image);
   }
 
@@ -43,10 +50,37 @@ function youtube(item) {
   const playGlyph = el("span", "video-play-glyph");
   playGlyph.setAttribute("aria-hidden", "true");
   const playText = el("span", "video-play-text", item.playText || "Play recording");
-  poster.append(archiveLabel, headline, status, playGlyph, playText);
+  poster.append(archiveLabel, headline, status, playGlyph, playText, artworkLoading);
+  if (options.playToContinue) {
+    poster.append(el("span", "video-continue-prompt", item.continuePrompt || "Play to continue"));
+  }
 
   const caption = el("figcaption", "media-caption video-caption");
   caption.append(el("strong", "", item.title));
+
+  const fallbackToYoutube = () => {
+    if (!id) return;
+    const iframe = document.createElement("iframe");
+    iframe.className = "document-frame video-frame";
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1`;
+    iframe.title = item.title;
+    iframe.loading = "lazy";
+    iframe.allow = "autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    const stage = el("div", "video-loading-stage");
+    stage.append(iframe, el("span", "video-playback-loading", loadingText));
+    iframe.addEventListener("load", () => stage.classList.add("video-ready"), { once: true });
+    shell.querySelector(".video-loading-stage, .video-fallback, .video-poster")?.replaceWith(stage);
+    if (options.playToContinue) {
+      const acknowledge = el("button", "secondary-button video-backup-confirm", "I finished watching the backup recording");
+      acknowledge.type = "button";
+      acknowledge.addEventListener("click", () => {
+        markWatched();
+        acknowledge.remove();
+      }, { once: true });
+      stage.after(acknowledge);
+    }
+  };
 
   poster.addEventListener("click", () => {
     if (item.localSrc) {
@@ -57,18 +91,28 @@ function youtube(item) {
       video.controls = true;
       video.autoplay = true;
       video.playsInline = true;
+      video.preload = "metadata";
       video.setAttribute("aria-label", item.title);
-      poster.replaceWith(video);
+      const stage = el("div", "video-loading-stage");
+      stage.append(video, el("span", "video-playback-loading", loadingText));
+      video.addEventListener("loadeddata", () => stage.classList.add("video-ready"), { once: true });
+      video.addEventListener("playing", () => stage.classList.add("video-ready"), { once: true });
+      video.addEventListener("ended", markWatched, { once: true });
+      video.addEventListener("error", () => {
+        const fallback = el("div", "video-fallback");
+        fallback.append(el("p", "", "This recording could not play on your device."));
+        if (id) {
+          const retry = el("button", "primary-button", "Play backup recording");
+          retry.type = "button";
+          retry.addEventListener("click", fallbackToYoutube);
+          fallback.append(retry);
+        }
+        stage.replaceWith(fallback);
+      }, { once: true });
+      poster.replaceWith(stage);
       return;
     }
-    const iframe = document.createElement("iframe");
-    iframe.className = "document-frame video-frame";
-    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1`;
-    iframe.title = item.title;
-    iframe.loading = "lazy";
-    iframe.allow = "autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    poster.replaceWith(iframe);
+    fallbackToYoutube();
   }, { once: true });
   shell.append(poster, caption);
   return shell;
@@ -214,7 +258,8 @@ function image(item, options = {}) {
   const sourcePath = timed && item.timedSrc ? item.timedSrc : item.src;
   img.src = sourcePath;
   img.alt = `${item.alt || item.title}${options.playerName ? ` Passenger: ${options.playerName}.` : ""}${timed ? ` Official trail time: ${options.completionTimeLabel}.` : options.playerClass ? ` Class: ${options.playerClass}.` : ""}`;
-  img.loading = "lazy";
+  img.loading = options.eager ? "eager" : "lazy";
+  if (options.eager) img.fetchPriority = "high";
   const caption = el("figcaption", "media-caption");
   caption.append(el("strong", "", item.title));
   if (item.kind === "image-region") {
@@ -419,7 +464,7 @@ function documentViewer(item, { locked = false } = {}) {
 
 export function renderMedia(item, options = {}) {
   if (!item) return null;
-  if (item.kind === "youtube") return youtube(item);
+  if (item.kind === "youtube") return youtube(item, options);
   if (item.kind === "image" || item.kind === "image-region") return image(item, options);
   if (item.kind === "document") return documentViewer(item, options);
   if (item.kind === "generated-interface") return generatedInterface(item);
