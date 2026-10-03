@@ -269,6 +269,7 @@ test("Jonabot's wrong-answer messages escalate in his live voice", () => {
 });
 
 test("secret inputs return their authored Jonabot responses", () => {
+  const agent = trail.scenes.find((scene) => scene.id === "bodach-bay");
   const map = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
   const booking = trail.scenes.find((scene) => scene.id === "repair-jonatravel");
   const trap = trail.scenes.find((scene) => scene.id === "fake-cancel-plan");
@@ -298,6 +299,12 @@ test("secret inputs return their authored Jonabot responses", () => {
   }
   assert.equal(specialResponse(password, "4216"), null);
   assert.equal(answerMatches("4216", password.validation), true);
+  for (const input of ["Joanna", "Joanna Peel", "Banana", "Banana Peel"]) {
+    assert.equal(specialResponse(agent, input.toLowerCase()), agent.specialResponses[input]);
+    assert.equal(answerMatches(input, agent.validation), false);
+  }
+  assert.equal(specialResponse(agent, "Jonana Peel"), null);
+  assert.equal(answerMatches("Jonana Peel", agent.validation), true);
 
   for (const [input, response] of Object.entries({
     ...booking.specialResponses,

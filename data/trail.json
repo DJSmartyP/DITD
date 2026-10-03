@@ -72,6 +72,12 @@
       "validation": { "answer": "Jonana Peel", "normalizer": "name" },
       "inputLabel": "Travel agent's name",
       "success": "CONTACT CONFIRMED — JONANA PEEL. LOCATE HER JONAGRAPH ROUTING CODE.",
+      "specialResponses": {
+        "Joanna": "Joanna? You’ve heard an entire advert and invented a different travel agent. Try paying attention to the name she actually gives you.",
+        "Joanna Peel": "Joanna? You’ve heard an entire advert and invented a different travel agent. Try paying attention to the name she actually gives you.",
+        "Banana": "Banana? That’s a snack, meatbag, not a travel agent. Your powers of observation could use another viewing of the advert.",
+        "Banana Peel": "Banana? That’s a snack, meatbag, not a travel agent. Your powers of observation could use another viewing of the advert."
+      },
       "wrongResponses": ["That is not the obligatorily sunny travel agent named in the Bodach Bay advert.", "No JonaTravel agent found under that name."],
       "hints": [
         "You already know where the advert wants to send you. Now listen for the unfortunate person responsible for getting you there.",
