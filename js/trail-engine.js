@@ -1,5 +1,5 @@
 import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-3";
-import { renderMedia } from "./media.js?v=20261003-11";
+import { renderMedia } from "./media.js?v=20261003-12";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 import { generateTicketClass } from "./state.js?v=20261003-10";
 
@@ -340,7 +340,7 @@ export class TrailEngine {
     stream.append(currentRoot);
     const mediaVisible = this.mediaShouldShow(scene, solved, replay);
     const directContinue = Boolean(scene.next && (solved || (!scene.validation && !inlineMachineScene && scene.mode !== "restore" && scene.mode !== "reward")));
-    const requiresPlayback = Boolean(!replay && directContinue && mediaVisible && this.manifest.items[scene.mediaId]?.kind === "youtube");
+    const requiresPlayback = Boolean(!replay && directContinue && mediaVisible && this.manifest.items[scene.mediaId]?.kind === "video");
     const videoWatched = this.store.get().watchedSceneIds.includes(scene.id);
     const markVideoWatched = () => {
       if (!this.store.get().watchedSceneIds.includes(scene.id)) {

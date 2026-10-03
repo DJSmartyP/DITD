@@ -4,8 +4,7 @@
   "sourceDocument": "https://docs.google.com/document/d/1_JLZ6GsC-ILbwJdITtZuuqmhXJzBEQYYRh9HmboL6hE/edit?usp=drivesdk",
   "items": {
     "intro": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=o4-d7swjHQA",
+      "kind": "video",
       "title": "Jonabot trail introduction",
       "thumbnail": "./assets/video-thumbnails/intro.webp",
       "thumbnailAlt": "Jonabot leans over a glowing route console while a distant town and the Ridge wait beyond the workshop.",
@@ -61,8 +60,7 @@
       "scenes": ["noticeboard", "corrupted-ridge-map"]
     },
     "bodach-bay-tourism": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=NBgHzkGyLH8",
+      "kind": "video",
       "title": "Bodach Bay tourism item",
       "thumbnail": "./assets/video-thumbnails/bodach-bay-tourism.webp",
       "thumbnailAlt": "A silver blimp approaches a dazzling coastal town hidden beyond a dark and desolate mountain ridge.",
@@ -92,8 +90,7 @@
       "scenes": ["corrupted-ridge-map"]
     },
     "jonatravel-jonana-peel": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=XZTUwUgWQ0w",
+      "kind": "video",
       "title": "JonaTravel call with Jonana Peel",
       "thumbnail": "./assets/video-thumbnails/jonatravel-call.webp",
       "thumbnailAlt": "A cheerful artificial travel agent appears on a brass video terminal as red digital corruption breaks into the call.",
@@ -132,8 +129,7 @@
       "scenes": ["repair-jonatravel"]
     },
     "videomatic-4763-hacker": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=3Xmr5k-s2Uo",
+      "kind": "video",
       "title": "Videomatic recording 4763",
       "thumbnail": "./assets/video-thumbnails/videomatic-4763.webp",
       "thumbnailAlt": "An anonymous hooded hacker controls a room of red-lit monitors connected across the Ridge.",
@@ -153,8 +149,7 @@
       "scenes": ["videomatic-4763", "licence-failure"]
     },
     "videomatic-8345-reveal": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=0Q03cm6mG4U",
+      "kind": "video",
       "title": "Videomatic recording 8345",
       "thumbnail": "./assets/video-thumbnails/videomatic-8345.jpg",
       "thumbnailAlt": "An unidentified cowboy-hatted figure stands in silhouette inside a red-corrupted Videomatic server room.",
@@ -174,8 +169,7 @@
       "scenes": ["test-videomatic", "jonabot-reveal"]
     },
     "cancel-plan-mockery": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=UZvwzrTpF4M",
+      "kind": "video",
       "title": "Jonabot cancel-plan response",
       "thumbnail": "./assets/video-thumbnails/cancel-plan.webp",
       "thumbnailAlt": "Jonabot mocks the player beside a shattered brass command control marked by a red rejection symbol.",
@@ -209,8 +203,7 @@
       "scenes": ["recovery-manual", "jonabot-taunt", "recovery-console"]
     },
     "restore-finale": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=3Bau9qcTICE",
+      "kind": "video",
       "title": "Jonabot restore finale",
       "thumbnail": "./assets/video-thumbnails/restore-finale.webp",
       "thumbnailAlt": "A teal and gold recovery wave rebuilds Jonabot while red corruption breaks away into harmless fragments.",
@@ -230,8 +223,7 @@
       "scenes": ["restore"]
     },
     "final-jonana-peel": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=UBRdKAB_FL8",
+      "kind": "video",
       "title": "Final Jonana Peel call",
       "thumbnail": "./assets/video-thumbnails/final-jonana-peel.webp",
       "thumbnailAlt": "The restored artificial travel agent smiles from a polished terminal beside a Bodach Bay ticket and passing blimp.",
@@ -251,8 +243,7 @@
       "scenes": ["bodach-bay-booking"]
     },
     "post-trail-credits": {
-      "kind": "youtube",
-      "src": "https://www.youtube.com/watch?v=QUs3g0damK4",
+      "kind": "video",
       "title": "Post-trail credits",
       "thumbnail": "./assets/video-thumbnails/post-trail-credits.webp",
       "thumbnailAlt": "An empty trail console rests in a warm workshop as a blimp crosses the Ridge toward Bodach Bay at sunset.",

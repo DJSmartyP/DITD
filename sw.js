@@ -1,4 +1,4 @@
-const MEDIA_CACHE = "ppec-trail-media-v2";
+const MEDIA_CACHE = "ppec-trail-media-v3";
 const MEDIA_PREFIX = "ppec-trail-media-";
 const scope = new URL(self.registration.scope);
 const assetPrefix = new URL("assets/", scope).pathname;

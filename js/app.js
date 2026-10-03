@@ -1,8 +1,8 @@
 import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-10";
-import { TrailEngine } from "./trail-engine.js?v=20261003-11";
+import { TrailEngine } from "./trail-engine.js?v=20261003-12";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
-import { clearTrailMediaCache, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-1";
+import { clearTrailMediaCache, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-3";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -88,7 +88,6 @@ try {
     let taskIndex = 0;
     let lastPaint = 0;
     $("#preload-retry").hidden = true;
-    $("#preload-skip").textContent = "Start now; stream media";
     $("#preload-task").textContent = preloadTasks[0];
     $("#preload-progress").value = 0;
     setText("#preload-percent", "0%");
@@ -127,9 +126,10 @@ try {
     } catch (error) {
       if (controller.signal.aborted) return;
       console.warn("Trail media preparation stopped", error);
-      $("#preload-task").textContent = "Jonabot couldn't pack every recording. The trail can still run online.";
+      $("#preload-task").textContent = error?.name === "QuotaExceededError"
+        ? "This device needs more free storage before Jonabot can pack the trail. Clear some space, then try again."
+        : "Jonabot's packing has stalled. Check your connection, then try preparation again.";
       setText("#preload-eta", "Preparation paused");
-      $("#preload-skip").textContent = "Start trail online";
       $("#preload-retry").hidden = false;
     } finally {
       clearInterval(taskTimer);
@@ -347,10 +347,6 @@ try {
   successDialog.addEventListener("cancel", (event) => event.preventDefault());
   welcomeDialog.addEventListener("cancel", (event) => event.preventDefault());
   preloadDialog.addEventListener("cancel", (event) => event.preventDefault());
-  $("#preload-skip").addEventListener("click", () => {
-    preloadController?.abort();
-    enterTrail();
-  });
   $("#preload-retry").addEventListener("click", startMediaPreparation);
 
   notes.value = store.get().notes;

@@ -1,4 +1,4 @@
-export const MEDIA_CACHE = "ppec-trail-media-v2";
+export const MEDIA_CACHE = "ppec-trail-media-v3";
 
 let workerPromise;
 
@@ -6,22 +6,19 @@ export function registerMediaWorker() {
   if (workerPromise) return workerPromise;
   workerPromise = (async () => {
     if (!("serviceWorker" in navigator) || !("caches" in window)) return false;
-    await navigator.serviceWorker.register(new URL("../sw.js", import.meta.url), {
+    const scriptUrl = new URL("../sw.js?v=3", import.meta.url);
+    const registration = await navigator.serviceWorker.register(scriptUrl, {
       scope: new URL("../", import.meta.url).pathname
     });
+    await registration.update();
     await navigator.serviceWorker.ready;
-    if (navigator.serviceWorker.controller) return true;
-    return new Promise((resolve) => {
-      const timeout = window.setTimeout(() => {
-        navigator.serviceWorker.removeEventListener("controllerchange", onChange);
-        resolve(Boolean(navigator.serviceWorker.controller));
-      }, 8000);
-      function onChange() {
-        clearTimeout(timeout);
-        resolve(true);
-      }
-      navigator.serviceWorker.addEventListener("controllerchange", onChange, { once: true });
-    });
+    const deadline = performance.now() + 10000;
+    while (performance.now() < deadline) {
+      if (navigator.serviceWorker.controller?.scriptURL === scriptUrl.href) return true;
+      await new Promise((resolve) => window.setTimeout(resolve, 200));
+    }
+    workerPromise = null;
+    return false;
   })().catch((error) => {
     console.warn("Trail media worker unavailable", error);
     workerPromise = null;
@@ -49,7 +46,7 @@ export async function preloadTrailMedia(index, onProgress, { signal } = {}) {
     throw new Error("Trail media list contains duplicate entries.");
   }
 
-  const total = assets.reduce((sum, asset) => sum + asset.bytes, 0);
+  let total = assets.reduce((sum, asset) => sum + asset.bytes, 0);
   const cache = await caches.open(MEDIA_CACHE);
   let loaded = 0;
   let transferred = 0;
@@ -91,7 +88,14 @@ export async function preloadTrailMedia(index, onProgress, { signal } = {}) {
       update();
     }
     const blob = new Blob(chunks, { type: response.headers.get("Content-Type") || "application/octet-stream" });
-    if (blob.size !== asset.bytes) throw new Error("A trail recording did not finish downloading.");
+    const servedSize = Number(response.headers.get("Content-Length"));
+    if (Number.isSafeInteger(servedSize) && servedSize > 0 && blob.size !== servedSize) {
+      throw new Error("A trail asset did not finish downloading.");
+    }
+    if (blob.size !== asset.bytes) {
+      total += blob.size - asset.bytes;
+      update();
+    }
     if (signal?.aborted) throw new DOMException("Download cancelled", "AbortError");
     await cache.put(asset.url.href, new Response(blob, {
       headers: { "Content-Type": blob.type, "Content-Length": String(blob.size) }

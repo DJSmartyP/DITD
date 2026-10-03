@@ -30,11 +30,22 @@ test("the start download covers every active trail asset at its real size", asyn
 });
 
 test("video artwork and playback have scene-specific loading messages", () => {
-  const videos = Object.values(manifest.items).filter((item) => item.kind === "youtube");
+  const videos = Object.values(manifest.items).filter((item) => item.kind === "video");
   assert.equal(videos.length, 9);
   videos.forEach((item) => assert.ok(item.loadingText?.length > 12, item.title));
   assert.match(mediaSource, /video-artwork-loading/);
   assert.match(mediaSource, /video-playback-loading/);
+  assert.doesNotMatch(mediaSource, /youtube-nocookie|Play backup recording|video-backup-confirm/);
+});
+
+test("preparation cannot bypass the current recordings and PDFs are stored as binary", async () => {
+  const html = await readFile(join(root, "index.html"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const attributes = await readFile(join(root, ".gitattributes"), "utf8");
+  assert.doesNotMatch(html, /preload-skip|Start trail online|stream media/);
+  assert.doesNotMatch(app, /preload-skip|Start trail online|stream media/);
+  assert.match(html, /id="welcome-reset"[^>]*>Start a New Trail</);
+  assert.match(attributes, /\*\.pdf binary/);
 });
 
 test("the corrupted map loads independently of the optional noticeboard drawer", () => {
@@ -46,7 +57,7 @@ test("the corrupted map loads independently of the optional noticeboard drawer",
 });
 
 test("video beats gate their direct Continue action until playback finishes", () => {
-  const gatedVideos = Object.values(manifest.items).filter((item) => item.kind === "youtube" && item.scenes?.[0] !== "trail-complete");
+  const gatedVideos = Object.values(manifest.items).filter((item) => item.kind === "video" && item.scenes?.[0] !== "trail-complete");
   gatedVideos.forEach((item) => assert.ok(item.continuePrompt?.length <= 42, item.title));
   assert.equal(new Set(gatedVideos.map((item) => item.promptTheme)).size, gatedVideos.length);
   assert.match(mediaSource, /video\.addEventListener\("ended", markWatched/);
@@ -391,8 +402,8 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
       assert.match(previewPage, /^\.\/assets\/documents\/previews\/[\w/-]+\.png$/, `${id} local preview page`);
       await access(join(root, previewPage.slice(2)));
     }
-    if (item.kind === "youtube") {
-      assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
+    if (item.kind === "video") {
+      assert.equal(item.src, undefined, `${id} has no outdated streaming fallback`);
       assert.match(item.thumbnail, /^\.\/assets\/video-thumbnails\/[\w-]+\.(?:webp|jpg)$/, `${id} local story-art thumbnail`);
       assert.ok(item.thumbnailAlt, `${id} thumbnail alt text`);
       assert.ok(item.playLabel, `${id} play label`);

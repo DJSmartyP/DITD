@@ -34,11 +34,11 @@ The browser icon is also packaged as root `favicon.ico`. A 1200×630 JPEG crop o
 
 The responsive home advert uses original generated artwork at `assets/images/ditd-landing-hero.jpg` (warm expedition-map setting with Jonabot on the left). Its title and Start/Resume controls remain live HTML rather than generated image text.
 
-`Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction because the intro is already mapped from the YouTube playlist.
+`Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction. The opening now uses the updated local MP4 listed below.
 
 ## Local video copies
 
-The nine original MOV masters remain in the authoritative source folder. MP4 exports from that folder play directly in the trail. Six recordings were replaced on 2026-10-03 with the updated MP4 exports in `Updated Videos/`; the other three retain their prior exports. The existing YouTube URLs remain optional backups if a local MP4 cannot play on a device.
+The nine original MOV masters remain in the authoritative source folder. MP4 exports from that folder play directly in the trail. Six recordings were replaced on 2026-10-03 with the updated MP4 exports in `Updated Videos/`; the other three retain their prior exports. Historical YouTube links in the source inventory are not player fallbacks.
 
 | Semantic ID | Source MP4 | Repository file |
 |---|---|---|

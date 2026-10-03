@@ -5,12 +5,6 @@ function el(tag, className, text) {
   return node;
 }
 
-export function youtubeId(url) {
-  if (typeof url !== "string") return null;
-  const match = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-  return match ? match[1] : null;
-}
-
 function placeholder(item) {
   const shell = el("figure", "media-shell");
   const body = el("div", "media-placeholder");
@@ -20,9 +14,8 @@ function placeholder(item) {
   return shell;
 }
 
-function youtube(item, options = {}) {
-  const id = youtubeId(item.src);
-  if (!item.localSrc && !id) return placeholder(item);
+function video(item, options = {}) {
+  if (!item.localSrc) return placeholder(item);
   const shell = el("figure", `media-shell video-shell video-shell-${item.posterStyle || "archive"}`);
   shell.dataset.promptTheme = item.promptTheme || item.posterStyle || "archive";
   const poster = el("button", "video-poster");
@@ -68,33 +61,7 @@ function youtube(item, options = {}) {
   const caption = el("figcaption", "media-caption video-caption");
   caption.append(el("strong", "", item.title));
 
-  const fallbackToYoutube = () => {
-    if (!id) return;
-    const iframe = document.createElement("iframe");
-    iframe.className = "document-frame video-frame";
-    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1`;
-    iframe.title = item.title;
-    iframe.loading = "lazy";
-    iframe.allow = "autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    const stage = el("div", "video-loading-stage");
-    stage.append(iframe, el("span", "video-playback-loading", loadingText));
-    iframe.addEventListener("load", () => stage.classList.add("video-ready"), { once: true });
-    shell.querySelector(".video-loading-stage, .video-fallback, .video-poster")?.replaceWith(stage);
-    showPlaybackPrompt(stage);
-    if (options.playToContinue) {
-      const acknowledge = el("button", "secondary-button video-backup-confirm", "I finished watching the backup recording");
-      acknowledge.type = "button";
-      acknowledge.addEventListener("click", () => {
-        markWatched();
-        acknowledge.remove();
-      }, { once: true });
-      stage.after(acknowledge);
-    }
-  };
-
-  poster.addEventListener("click", () => {
-    if (item.localSrc) {
+  const playLocal = () => {
       const video = document.createElement("video");
       video.className = "document-frame video-frame";
       video.src = item.localSrc;
@@ -112,20 +79,16 @@ function youtube(item, options = {}) {
       video.addEventListener("error", () => {
         const fallback = el("div", "video-fallback");
         fallback.append(el("p", "", "This recording could not play on your device."));
-        if (id) {
-          const retry = el("button", "primary-button", "Play backup recording");
-          retry.type = "button";
-          retry.addEventListener("click", fallbackToYoutube);
-          fallback.append(retry);
-        }
+        const retry = el("button", "primary-button", "Retry recording");
+        retry.type = "button";
+        retry.addEventListener("click", playLocal);
+        fallback.append(retry);
         stage.replaceWith(fallback);
       }, { once: true });
-      poster.replaceWith(stage);
+      shell.querySelector(".video-fallback, .video-poster")?.replaceWith(stage);
       showPlaybackPrompt(stage);
-      return;
-    }
-    fallbackToYoutube();
-  }, { once: true });
+  };
+  poster.addEventListener("click", playLocal, { once: true });
   shell.append(poster, caption);
   return shell;
 }
@@ -476,7 +439,7 @@ function documentViewer(item, { locked = false } = {}) {
 
 export function renderMedia(item, options = {}) {
   if (!item) return null;
-  if (item.kind === "youtube") return youtube(item, options);
+  if (item.kind === "video") return video(item, options);
   if (item.kind === "image" || item.kind === "image-region") return image(item, options);
   if (item.kind === "document") return documentViewer(item, options);
   if (item.kind === "generated-interface") return generatedInterface(item);
