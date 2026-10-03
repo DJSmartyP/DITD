@@ -2,7 +2,7 @@ import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-10";
 import { TrailEngine } from "./trail-engine.js?v=20261003-15";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
-import { clearTrailMediaCache, hasPreparedTrailMedia, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-5";
+import { clearTrailMediaCache, hasPreparedTrailMedia, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-6";
 
 const $ = (selector) => document.querySelector(selector);
 

@@ -58,7 +58,7 @@ export async function hasPreparedTrailMedia(index) {
   return true;
 }
 
-export async function preloadTrailMedia(index, onProgress, { signal } = {}) {
+export async function preloadTrailMedia(index, onProgress, { signal, idleTimeoutMs = 30000, retryDelayMs = 1200 } = {}) {
   if (!("caches" in window)) throw new Error("Browser media storage is unavailable.");
   const assets = resolveAssets(index);
 
@@ -93,35 +93,45 @@ export async function preloadTrailMedia(index, onProgress, { signal } = {}) {
       const controller = new AbortController();
       const cancelAttempt = () => controller.abort();
       signal?.addEventListener("abort", cancelAttempt, { once: true });
-      let idleTimer;
-      const resetIdleTimer = () => {
-        clearTimeout(idleTimer);
-        idleTimer = window.setTimeout(cancelAttempt, 30000);
+      // Abort alone does not always settle a stalled mobile fetch or stream read.
+      // Race each wait against its own deadline so the retry loop can continue.
+      const waitForSignal = async (operation) => {
+        let timeoutId;
+        try {
+          return await Promise.race([
+            operation,
+            new Promise((_, reject) => {
+              timeoutId = window.setTimeout(() => {
+                cancelAttempt();
+                reject(new Error("The media signal stalled."));
+              }, idleTimeoutMs);
+            })
+          ]);
+        } finally {
+          clearTimeout(timeoutId);
+        }
       };
       try {
-        resetIdleTimer();
-        const response = await fetch(asset.url.href, { signal: controller.signal, cache: "no-store" });
+        const response = await waitForSignal(fetch(asset.url.href, { signal: controller.signal, cache: "no-store" }));
         if (!response.ok || response.status !== 200) throw new Error("A trail asset could not be prepared.");
         const reader = response.body?.getReader();
         const chunks = [];
         if (reader) {
           while (true) {
-            const { done, value } = await reader.read();
+            const { done, value } = await waitForSignal(reader.read());
             if (done) break;
-            resetIdleTimer();
             chunks.push(value);
             transferred += value.byteLength;
             loaded += value.byteLength;
             update();
           }
         } else {
-          const data = await response.arrayBuffer();
+          const data = await waitForSignal(response.arrayBuffer());
           chunks.push(data);
           transferred += data.byteLength;
           loaded += data.byteLength;
           update();
         }
-        clearTimeout(idleTimer);
         const blob = new Blob(chunks, { type: response.headers.get("Content-Type") || "application/octet-stream" });
         const servedSize = Number(response.headers.get("Content-Length"));
         if (Number.isSafeInteger(servedSize) && servedSize > 0 && blob.size !== servedSize) {
@@ -143,9 +153,8 @@ export async function preloadTrailMedia(index, onProgress, { signal } = {}) {
           error.assetCount = assets.length;
           throw error;
         }
-        await new Promise((resolve) => window.setTimeout(resolve, attempt * 1200));
+        await new Promise((resolve) => window.setTimeout(resolve, attempt * retryDelayMs));
       } finally {
-        clearTimeout(idleTimer);
         signal?.removeEventListener("abort", cancelAttempt);
       }
     }
