@@ -2,7 +2,7 @@ import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-10";
 import { TrailEngine } from "./trail-engine.js?v=20261003-12";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
-import { clearTrailMediaCache, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-3";
+import { clearTrailMediaCache, hasPreparedTrailMedia, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-5";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -87,6 +87,8 @@ try {
     const controller = preloadController;
     let taskIndex = 0;
     let lastPaint = 0;
+    let lastProgressAt = performance.now();
+    let previousLoaded = 0;
     $("#preload-retry").hidden = true;
     $("#preload-task").textContent = preloadTasks[0];
     $("#preload-progress").value = 0;
@@ -97,6 +99,9 @@ try {
     const taskTimer = window.setInterval(() => {
       taskIndex = (taskIndex + 1) % preloadTasks.length;
       $("#preload-task").textContent = preloadTasks[taskIndex];
+      if (performance.now() - lastProgressAt > 8000) {
+        setText("#preload-eta", "Waiting for the next signal…");
+      }
     }, 5200);
     try {
       await preloadCleanup;
@@ -104,9 +109,11 @@ try {
       if (!(await registerMediaWorker())) throw new Error("Browser media storage is unavailable.");
       await preloadTrailMedia(index, ({ loaded, total, transferred, elapsedMs }) => {
         const now = performance.now();
+        if (loaded !== previousLoaded) lastProgressAt = now;
+        previousLoaded = loaded;
         if (now - lastPaint < 120 && loaded < total) return;
         lastPaint = now;
-        const percent = Math.min(100, Math.floor(loaded / total * 100));
+        const percent = Math.min(99, Math.floor(loaded / total * 100));
         $("#preload-progress").value = percent;
         setText("#preload-percent", `${percent}%`);
         setText("#preload-size", `${formatMediaAmount(loaded)} of ${formatMediaAmount(total)} ready`);
@@ -126,10 +133,11 @@ try {
     } catch (error) {
       if (controller.signal.aborted) return;
       console.warn("Trail media preparation stopped", error);
+      const crate = error?.assetIndex ? ` (crate ${error.assetIndex} of ${error.assetCount})` : "";
       $("#preload-task").textContent = error?.name === "QuotaExceededError"
         ? "This device needs more free storage before Jonabot can pack the trail. Clear some space, then try again."
-        : "Jonabot's packing has stalled. Check your connection, then try preparation again.";
-      setText("#preload-eta", "Preparation paused");
+        : "Jonabot lost a package in transit. Retry will pick up where it left off.";
+      setText("#preload-eta", `Preparation paused${crate}`);
       $("#preload-retry").hidden = false;
     } finally {
       clearInterval(taskTimer);
@@ -420,7 +428,9 @@ try {
   $("#welcome-reset").addEventListener("click", () => {
     confirmReset();
   });
-  $("#continue-trail").addEventListener("click", () => {
+  $("#continue-trail").addEventListener("click", async () => {
+    const continueButton = $("#continue-trail");
+    if (continueButton.disabled) return;
     const playerName = playerNameInput.value.replace(/\s+/g, " ").trim().slice(0, 32);
     if (!playerName) {
       playerNameFeedback.hidden = false;
@@ -437,8 +447,28 @@ try {
         state.timerMode = mode;
       }
     });
-    welcomeDialog.close();
     if (nameChanged && engine.currentScene().mode === "reward") engine.render();
+    if (!startingNewTrail) {
+      continueButton.disabled = true;
+      $("#welcome-reset").disabled = true;
+      continueButton.textContent = "Checking trail media…";
+      try {
+        await preloadCleanup;
+        const index = await loadJson("../data/preload-assets.json");
+        if (await hasPreparedTrailMedia(index) && await registerMediaWorker()) {
+          welcomeDialog.close();
+          enterTrail();
+          return;
+        }
+      } catch (error) {
+        console.warn("Trail media check needs preparation", error);
+      } finally {
+        continueButton.disabled = false;
+        $("#welcome-reset").disabled = false;
+        continueButton.textContent = "Resume trail";
+      }
+    }
+    welcomeDialog.close();
     startMediaPreparation();
   });
 

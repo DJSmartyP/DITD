@@ -34,14 +34,6 @@
     { "path": "./assets/video-thumbnails/final-jonana-peel.webp", "bytes": 265738 },
     { "path": "./assets/videos/final-jonatravel-call.mp4", "bytes": 1146089 },
     { "path": "./assets/video-thumbnails/post-trail-credits.webp", "bytes": 229152 },
-    { "path": "./assets/videos/post-trail-credits.mp4", "bytes": 3788954 },
-    { "path": "./assets/tickets/bodach-bay-ticket-casual.png", "bytes": 3963936 },
-    { "path": "./assets/tickets/bodach-bay-ticket-timed.png", "bytes": 3913757 },
-    { "path": "./assets/images/ditd-landing-hero.jpg", "bytes": 410928 },
-    { "path": "./assets/images/jonabot-portrait.webp", "bytes": 121654 },
-    { "path": "./assets/images/jonabot-favicon.png", "bytes": 10602 },
-    { "path": "./favicon.ico", "bytes": 10791 },
-    { "path": "./assets/images/jonabot-touch-icon.png", "bytes": 64462 },
-    { "path": "./assets/images/ditd-social-preview.jpg", "bytes": 233645 }
+    { "path": "./assets/videos/post-trail-credits.mp4", "bytes": 3788954 }
   ]
 }

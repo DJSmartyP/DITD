@@ -67,7 +67,7 @@ Completed story beats remain above the current interactive section instead of be
 
 Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails. Live HTML overlays turn each cover into an in-world state such as `VISIT BODACH BAY`, `ROGUE UPLOAD DETECTED` or `INCOMING JONAGRAPH`, with a large accessible play control.
 
-Each video manifest entry points to an included `assets/videos/*.mp4` file. Start or Resume prepares the current trail media before entry and offers a retry if preparation stops; there is no online bypass. If playback fails, the player can retry that same local recording; no older recording is substituted.
+Each video manifest entry points to an included `assets/videos/*.mp4` file. Start prepares recordings, thumbnails, map artwork, and PDFs with their page previews; Resume checks the local cache and enters immediately if all required media is already present, otherwise it prepares only the missing files. Tickets and page branding load normally when needed. Preparation retries stalled downloads; there is no outdated-video bypass. If playback fails, the player can retry that same local recording; no older recording is substituted.
 
 Video artwork and playback show scene-specific in-world loading messages. Where a recording leads directly to Continue, that button appears only after the local MP4 finishes; this watched state is saved on the device. The corrupted map itself loads eagerly, independently of the optional noticeboard reference.
 

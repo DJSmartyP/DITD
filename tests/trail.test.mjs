@@ -16,8 +16,9 @@ const trailEngineSource = await readFile(join(root, "js", "trail-engine.js"), "u
 
 test("the start download covers every active trail asset at its real size", async () => {
   const preload = JSON.parse(await readFile(join(root, "data", "preload-assets.json"), "utf8"));
-  const expected = new Set(["./favicon.ico", "./assets/images/jonabot-touch-icon.png", "./assets/images/jonabot-favicon.png", "./assets/images/ditd-social-preview.jpg"]);
-  for (const item of Object.values(manifest.items)) {
+  const expected = new Set();
+  for (const [id, item] of Object.entries(manifest.items)) {
+    if (["landing-hero", "jonabot-portrait", "bodach-bay-tickets"].includes(id)) continue;
     for (const value of [item.localSrc, item.thumbnail, item.src, item.timedSrc, ...(item.previewPages || [])]) {
       if (typeof value === "string" && value.startsWith("./assets/")) expected.add(value);
     }
