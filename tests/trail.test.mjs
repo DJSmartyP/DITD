@@ -69,6 +69,16 @@ test("video beats gate their direct Continue action until playback finishes", ()
   assert.deepEqual(saved.watchedSceneIds, ["intro"]);
 });
 
+test("video posters keep their themed play bar without a separate title below", () => {
+  const videoRenderer = mediaSource.split("function video(")[1].split("function typewriterText")[0];
+  assert.match(videoRenderer, /poster\.append\(el\("span", "video-continue-prompt"/);
+  assert.doesNotMatch(videoRenderer, /figcaption|video-caption|video-continue-prompt-inline/);
+  assert.match(videoRenderer, /shell\.append\(poster\)/);
+  for (const item of Object.values(manifest.items).filter((entry) => entry.kind === "video")) {
+    assert.ok(item.continuePrompt || item.posterPrompt, item.title);
+  }
+});
+
 test("canonical flow contains exactly scenes 00-22 in one chain", () => {
   assert.equal(trail.scenes.length, 23);
   assert.deepEqual(trail.scenes.map((scene) => scene.order), [...Array(23).keys()]);
@@ -526,7 +536,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261003-12/);
+  assert.match(html, /main\.css\?v=20261003-13/);
   assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 

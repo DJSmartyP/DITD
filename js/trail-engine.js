@@ -1,5 +1,5 @@
 import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-3";
-import { renderMedia } from "./media.js?v=20261003-12";
+import { renderMedia } from "./media.js?v=20261003-13";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 import { generateTicketClass } from "./state.js?v=20261003-10";
 

@@ -411,11 +411,6 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
   text-align: center;
   text-transform: uppercase;
 }
-.video-continue-prompt-inline {
-  position: static;
-  display: block;
-  margin: .55rem .7rem 0;
-}
 .video-poster:has(.video-continue-prompt) .video-play-text { display: none; }
 .video-shell[data-prompt-theme="jonabot"] { --video-prompt-bg: #ead399; --video-prompt-ink: #16332e; --video-prompt-edge: #9d7841; }
 .video-shell[data-prompt-theme="tourism"] { --video-prompt-bg: #eec371; --video-prompt-ink: #432710; --video-prompt-edge: #a3662c; }
@@ -450,8 +445,6 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
   .video-poster-headline { top: .55rem; right: .55rem; bottom: auto; left: 44%; font-size: .72rem; }
   .video-play-text { left: .7rem; bottom: .55rem; font-size: .68rem; }
 }
-.video-caption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .35rem 1rem; }
-.video-caption small { color: #bed5cd; }
 .video-frame { display: block; min-height: 0; aspect-ratio: 16 / 9; }
 
 .scene-media-layout { display: grid; gap: 1rem; min-width: 0; }

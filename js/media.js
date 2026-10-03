@@ -22,15 +22,8 @@ function video(item, options = {}) {
   poster.type = "button";
   poster.setAttribute("aria-label", item.playLabel || `Play ${item.title}`);
   const loadingText = item.loadingText || "Preparing recording…";
-  const playbackPrompt = options.playToContinue
-    ? el("span", "video-continue-prompt video-continue-prompt-inline", item.continuePrompt || "Play to continue")
-    : null;
   const markWatched = () => {
-    playbackPrompt?.remove();
     options.onWatched?.();
-  };
-  const showPlaybackPrompt = (stage) => {
-    if (playbackPrompt && !playbackPrompt.isConnected) stage.after(playbackPrompt);
   };
   const artworkLoading = el("span", "video-artwork-loading", loadingText);
   poster.classList.add("video-artwork-pending");
@@ -54,12 +47,7 @@ function video(item, options = {}) {
   playGlyph.setAttribute("aria-hidden", "true");
   const playText = el("span", "video-play-text", item.playText || "Play recording");
   poster.append(archiveLabel, headline, status, playGlyph, playText, artworkLoading);
-  if (options.playToContinue || item.posterPrompt) {
-    poster.append(el("span", "video-continue-prompt", options.playToContinue ? item.continuePrompt || "Play to continue" : item.posterPrompt));
-  }
-
-  const caption = el("figcaption", "media-caption video-caption");
-  caption.append(el("strong", "", item.title));
+  poster.append(el("span", "video-continue-prompt", item.continuePrompt || item.posterPrompt || item.playText || "Play recording"));
 
   const playLocal = () => {
       const video = document.createElement("video");
@@ -86,10 +74,9 @@ function video(item, options = {}) {
         stage.replaceWith(fallback);
       }, { once: true });
       shell.querySelector(".video-fallback, .video-poster")?.replaceWith(stage);
-      showPlaybackPrompt(stage);
   };
   poster.addEventListener("click", playLocal, { once: true });
-  shell.append(poster, caption);
+  shell.append(poster);
   return shell;
 }
 
