@@ -126,7 +126,7 @@ test("critical answers and deliberate failure remain exact", () => {
     ["videomatic-4763", "4763"],
     ["activation-centre", "WD54L"],
     ["test-videomatic", "8345"],
-    ["fake-cancel-plan", "!.jonabot cancel-plan"],
+    ["fake-cancel-plan", "!Jonabot Cancel-plan"],
     ["jonabot-taunt", "4216"],
     ["recovery-console", "INITIATE JONABOT RESTORE"]
   ]);
@@ -167,13 +167,15 @@ test("normalizers accept harmless variations without weakening answers", () => {
   assert.equal(answerMatches("!jonabot reboot-jonanapeel.exe", { answer: "reboot-jonanapeel.exe", normalizer: "command" }), false);
   assert.equal(normalizeAnswer("initiate-jonabot-restore", "command"), "initiate jonabot restore");
   assert.equal(answerMatches(" initiate-jonabot-restore ", { answer: "INITIATE JONABOT RESTORE", normalizer: "command" }), true);
-  const cancelPlan = { answer: "!.jonabot cancel-plan", normalizer: "jonabot-command" };
+  const cancelPlan = { answer: "!Jonabot Cancel-plan", normalizer: "jonabot-command" };
+  assert.equal(answerMatches("!Jonabot Cancel-plan", cancelPlan), true);
   assert.equal(answerMatches("!.jonabot cancel-plan", cancelPlan), true);
   assert.equal(answerMatches("!jonabot cancel-plan", cancelPlan), true);
   assert.equal(answerMatches("Jonabot cancel plan", cancelPlan), true);
   assert.equal(answerMatches("JONABOT: CANCEL_PLAN", cancelPlan), true);
   assert.equal(answerMatches("cancel-plan", cancelPlan), false);
   assert.equal(answerMatches("cancel plan", cancelPlan), false);
+  assert.match(trail.scenes.find((scene) => scene.id === "fake-cancel-plan").hints.at(-1), /!Jonabot Cancel-plan/);
   assert.equal(answerMatches("!jonabot reboot", cancelPlan), false);
   assert.equal(answerMatches("2LF", { answer: "2JP", normalizer: "jonagraph" }), false);
 });
@@ -674,7 +676,7 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(machines, /Manual counter-command required/);
   assert.doesNotMatch(trap.body.join(" "), /cancel-plan/i);
   assert.doesNotMatch(machines.match(/COUNTER-COMMAND ACCESS GRANTED[\s\S]*?Awaiting instruction/)?.[0] || "", /cancel-plan/i);
-  assert.equal(trap.hints.at(-1).includes("cancel-plan"), true);
+  assert.match(trap.hints.at(-1), /!Jonabot Cancel-plan/);
   assert.match(machines, /PRIVATE FREQUENCY INTERCEPT/);
   assert.match(machines, /ai-issues/);
   assert.doesNotMatch(machines, /moderator-chat/);
