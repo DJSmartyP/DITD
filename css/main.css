@@ -187,6 +187,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .scene-header h2 { margin: .2rem 0 .45rem; font: 900 clamp(1.7rem, 8vw, 3.1rem)/.98 var(--mono); letter-spacing: -.045em; }
 .scene-mode { display: inline-block; margin-bottom: .7rem; padding: .16rem .45rem; color: var(--paper); background: var(--teal); font: 700 .7rem var(--mono); text-transform: uppercase; }
 .scene-live-transmission .scene-mode { color: #fff7f3; background: #a5262d; border: 1px solid #e85a50; box-shadow: .18rem .18rem 0 #3b0910; }
+body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff4; background: #104b3c; border-color: #5bd1a1; box-shadow: .18rem .18rem 0 #06271f; }
 
 .story-copy { font-size: 1.02rem; }
 .story-copy p { max-width: 68ch; }
@@ -206,8 +207,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .story-copy-live-transmission p:first-child { margin-top: 0; }
 .story-copy-live-transmission .speaker-line-live { padding: 0; border: 0; color: #fff4ed !important; background: transparent !important; box-shadow: none !important; }
 .story-copy-live-transmission .speaker-label { color: #ffd0b8 !important; }
+.story-copy-transmission-green { position: relative; margin: 1.8rem 0 1rem; padding: 1.65rem 1rem 1rem; border: 2px solid #5bd1a1; border-left: 8px solid #91edbf; color: #eafff4; background: repeating-linear-gradient(135deg, #104b3c 0 14px, #0d4035 14px 28px); box-shadow: .32rem .35rem 0 #06271f, inset 0 0 1.5rem rgb(0 24 16 / .3); }
+.story-copy-transmission-green::before { content: "JONABOT // LIVE MESSAGE"; position: absolute; top: -.78rem; left: .75rem; padding: .2rem .65rem; border: 1px solid #c4f5d8; color: #effff5; background: #147553; box-shadow: .18rem .2rem 0 #06271f; font: 900 .68rem var(--mono); letter-spacing: .12em; }
+.story-copy-transmission-green p { margin: .75rem 0 0; color: #eafff4 !important; text-shadow: 0 1px 2px #06271f; }
+.story-copy-transmission-green p:first-child { margin-top: 0; }
+.story-copy-transmission-green .speaker-line-live { padding: 0; border: 0; color: #eafff4 !important; background: transparent !important; box-shadow: none !important; }
+.story-copy-transmission-green .speaker-label { color: #baf2d2 !important; }
 .scene-transmission-typing > :not(.scene-header):not(.story-copy) { display: none !important; }
 .scene-transmission-hold .story-copy { box-shadow: inset .4rem 0 0 #a5262d, 0 0 1rem rgb(178 33 42 / .3); }
+.scene-transmission-hold .story-copy-transmission-green { box-shadow: inset .4rem 0 0 #60dfa8, 0 0 1rem rgb(28 189 121 / .3); }
 .scene-transmission-ready > :not(.scene-header):not(.story-copy) { animation: system-entry .42s ease-out both; }
 
 @keyframes system-entry {
@@ -226,17 +234,26 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .media-placeholder span { display: block; font: 900 1rem var(--mono); }
 .media-placeholder small { display: block; max-width: 34rem; margin-top: .6rem; color: #bed5cd; }
 .activation-visual { color: #f5e8c7; background: #081d1b; }
-.activation-visual-panel { padding: clamp(.7rem, 3vw, 1.35rem); background: repeating-linear-gradient(90deg, #1c504b 0 2px, #123a36 2px 5px); border: .55rem solid #af8538; box-shadow: inset 0 0 0 .25rem #e8c46d, inset 0 0 2.5rem #04110f; }
+.activation-visual-panel { position: relative; padding: clamp(.7rem, 3vw, 1.35rem); background: repeating-linear-gradient(90deg, #1c504b 0 2px, #123a36 2px 5px); border: .55rem solid #af8538; box-shadow: inset 0 0 0 .25rem #e8c46d, inset 0 0 2.5rem #04110f; }
 .activation-visual-header, .activation-visual-lamps { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; font: 900 .68rem var(--mono); letter-spacing: .08em; }
 .activation-visual-brand { color: #ffe7a8; }
 .activation-visual-generation { color: #a7ccc4; }
 .activation-visual-screen { position: relative; overflow: hidden; margin: .8rem 0; padding: clamp(1rem, 4vw, 2rem); border: 4px double #78b8aa; color: #b7eadc; background: radial-gradient(circle at 50% 20%, #164f47, #031411 72%); box-shadow: inset 0 0 2rem #000; text-align: center; }
 .activation-visual-screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(180deg, transparent 0 4px, rgb(176 255 234 / .08) 4px 5px); }
 .activation-visual-kicker { display: block; margin-bottom: .8rem; color: #f0cf77; font: 900 clamp(.78rem, 2.5vw, 1rem) var(--mono); letter-spacing: .1em; }
-.activation-visual-screen strong { display: block; color: #ff8d75; font: 900 clamp(1.15rem, 4vw, 2rem) var(--mono); text-shadow: 0 0 .8rem #aa3026; }
+.activation-visual-status { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .45rem .7rem; margin: .2rem auto .6rem; }
+.activation-visual-alert { padding: .18rem .45rem; color: #fff4e9; background: #ab302b; font: 900 .68rem var(--mono); letter-spacing: .1em; }
+.activation-visual-status > strong { color: #ff8d75; font: 900 clamp(1.05rem, 4vw, 1.85rem)/1.2 var(--mono); text-shadow: 0 0 .8rem #aa3026; }
 .activation-visual-screen p { margin: .7rem auto; max-width: 44ch; }
-.activation-visual-code { display: inline-block; margin-top: .6rem; padding: .35rem .8rem; color: #f0cf77; border: 1px solid #6d9d92; font: 900 1.1rem var(--mono); letter-spacing: .25em; }
+.activation-visual-telemetry { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .4rem; margin: .8rem 0; text-align: left; }
+.activation-visual-metric { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .6rem; padding: .42rem .5rem; border: 1px solid #40776c; color: #8eb8ad; background: rgb(0 0 0 / .26); font: 700 .62rem var(--mono); letter-spacing: .04em; }
+.activation-visual-metric strong { color: #ffe39b; text-align: right; }
+.activation-visual-challenge { display: grid; gap: .35rem; width: min(100%, 17rem); margin: .8rem auto 0; padding: .45rem .7rem; border: 1px solid #6d9d92; }
+.activation-visual-challenge > span { color: #8eb8ad; font: 800 .6rem var(--mono); letter-spacing: .12em; }
+.activation-visual-code { display: inline-block; color: #f0cf77; font: 900 clamp(1.15rem, 5vw, 1.7rem) var(--mono); letter-spacing: .22em; }
 .activation-visual-lamps span::before { content: "●"; margin-right: .4rem; color: #f06d58; text-shadow: 0 0 .4rem #ef3f32; }
+.diagnostic-loading .scene-actions { display: none; }
+.ticket-name-caption { padding: .45rem .6rem; color: #ebfff7; background: #104b3c; border-left: 4px solid #5bd1a1; font: 900 .92rem var(--mono); overflow-wrap: anywhere; }
 .ticket-time-caption { padding: .35rem .55rem; color: #f8e7b8; background: #0b4642; border-left: 4px solid #d7ae4e; font: 900 .9rem var(--mono); letter-spacing: .05em; }
 .document-frame { width: 100%; min-height: 60vh; border: 0; background: white; }
 .document-preview { color: var(--paper); background: #071816; }
@@ -541,6 +558,11 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 .welcome-copy .dialog-subtitle { margin: .4rem 0; color: var(--teal-dark); font: 900 clamp(.9rem, 4vw, 1.25rem) var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .welcome-deck { max-width: 43ch; margin: .65rem 0 .35rem; font-size: .92rem; font-weight: 900; }
 .welcome-copy #welcome-message { max-width: 52ch; margin: .35rem 0; color: #3f4d49; font-size: .82rem; line-height: 1.35; }
+.player-name-field { display: grid; gap: .3rem; max-width: 26rem; margin-top: .7rem; color: #174a46; font: 900 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.player-name-field input { min-width: 0; min-height: 46px; padding: .6rem .7rem; border: 2px solid #0d6865; color: #122d29; background: #fffaf0; font: 700 1rem var(--sans); letter-spacing: normal; text-transform: none; }
+.player-name-note { max-width: 42ch; margin: .3rem 0; color: #52605c; font-size: .72rem; }
+.player-name-feedback { margin: .25rem 0; color: #872c26; font-weight: 900; }
+.player-name-feedback[hidden] { display: none; }
 .timer-mode-picker { display: grid; gap: .5rem; margin: .75rem 0 0; padding: .65rem; border: 2px solid #a47c2e; background: rgb(255 250 240 / .92); }
 .timer-mode-picker[hidden] { display: none; }
 .timer-mode-picker legend { padding: 0 .35rem; color: #174a46; font: 900 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }

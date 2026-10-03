@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { answerMatches, normalizeAnswer } from "../js/machines.js";
 import { formatTrailTime, timerElapsedMs } from "../js/timer.js";
+import { validateState } from "../js/state.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -376,8 +377,11 @@ test("the final reward includes tickets and shows the credits video with the wri
   assert.equal(tickets.status, "generated-reward-asset");
   assert.match(tickets.src, /completion-pass\.png$/);
   assert.match(tickets.timedSrc, /completion-pass-timed\.png$/);
-  assert.match(mediaSource, /img\.src = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
-  assert.match(mediaSource, /source\.src = item\.timedSrc \|\| item\.src/);
+  assert.equal(tickets.personalised, true);
+  assert.match(mediaSource, /const sourcePath = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
+  assert.match(mediaSource, /img\.src = sourcePath/);
+  assert.match(mediaSource, /source\.src = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
+  assert.match(mediaSource, /context\.fillText\(playerName/);
   assert.match(mediaSource, /context\.fillText\(completionTimeLabel/);
   assert.equal(tickets.downloadLabel, "Download your completion pass");
   assert.ok(finale.credits.includes("Originally programmed by Arty"));
@@ -442,7 +446,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261003-1/);
+  assert.match(html, /main\.css\?v=20261003-2/);
   assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 
@@ -571,7 +575,11 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.ok(privateFrequency.messages.some((message) => message.author === "Grayfitz"));
   assert.equal(privateFrequency.messages.some((message) => message.author === "Gray"), false);
   assert.equal(recoveryManual.cta, "Attempt to unlock the guide");
-  assert.match(machines, /Threat scan complete/);
+  assert.match(machines, /JonAssist launch trace has detected/);
+  assert.match(machines, /\(index \+ 1\) \* 1500/);
+  assert.match(machines, /diagnostic-result-pending/);
+  assert.match(engine, /onScanComplete/);
+  assert.match(engine, /completedSceneIds\.includes\(scene\.id\)/);
   assert.match(machines, /Next JonAssist request/);
   assert.match(machines, /Manual counter-command required/);
   assert.doesNotMatch(trap.body.join(" "), /cancel-plan/i);
@@ -609,7 +617,7 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(mainCss, /repeating-linear-gradient\(135deg, #7e1720/);
   assert.match(mainCss, /story-copy\[data-voice="jonabot"\].*#104b3c/);
   assert.match(mainCss, /\.story-copy > \.speaker-line:not\(\.speaker-line-live\).*#123b59/);
-  assert.match(mediaSource, /Preparing your timed completion pass/);
+  assert.match(mediaSource, /Preparing your completion pass/);
   assert.match(mediaSource, /link\.href = url/);
   assert.doesNotMatch(mediaSource, /download\.click\(\)/);
   assert.match(mainCss, /\.scene-transmission-typing > :not\(\.scene-header\):not\(\.story-copy\)/);
@@ -619,6 +627,21 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.doesNotMatch(engine, /scene-number|SCENE \$\{/);
   assert.doesNotMatch(app, /padStart\(2, "0"\)/);
   assert.doesNotMatch(hints, /padStart\(2, "0"\)/);
+});
+
+test("player name is normalized safely and bounded in saved state", () => {
+  const candidate = validateState({ playerName: "  Ada\u0000 Lovelace\n" }, trail);
+  assert.equal(candidate.playerName, "Ada Lovelace");
+  assert.equal(validateState({ playerName: "A".repeat(40) }, trail).playerName.length, 32);
+  assert.equal(validateState({ playerName: 42 }, trail).playerName, "");
+});
+
+test("boot sequence is a green live Jonabot transmission", () => {
+  const boot = trail.scenes.find((scene) => scene.id === "factory-jonabot");
+  assert.equal(boot.speaker, "Jonabot");
+  assert.equal(boot.typewriterTransmission, true);
+  assert.equal(boot.transmissionTone, "green");
+  assert.equal(boot.modeLabel, "LIVE MESSAGE");
 });
 
 test("the welcome page hands off to the opening video, then Start trail loads the first message", async () => {

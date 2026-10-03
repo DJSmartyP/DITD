@@ -1,5 +1,5 @@
-import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20261003-1";
+import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-2";
+import { TrailEngine } from "./trail-engine.js?v=20261003-2";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
@@ -39,6 +39,8 @@ try {
   const welcomeDialog = $("#welcome-dialog");
   const menuDialog = $("#menu-dialog");
   const successDialog = $("#success-dialog");
+  const playerNameInput = $("#player-name");
+  const playerNameFeedback = $("#player-name-feedback");
   let pendingSuccess = null;
   let lastRenderedPhase = null;
   let phaseTransitionTimer = null;
@@ -303,7 +305,10 @@ try {
     if (!approved) return false;
     store.reset();
     notes.value = "";
+    playerNameInput.value = "";
+    playerNameFeedback.hidden = true;
     toolRail.dataset.open = "false";
+    document.querySelector('input[name="timer-mode"][value="timed"]').checked = true;
     $("#timer-mode-picker").hidden = false;
     $("#continue-trail").textContent = "Start trail";
     $("#welcome-reset").hidden = true;
@@ -321,11 +326,24 @@ try {
     confirmReset();
   });
   $("#continue-trail").addEventListener("click", () => {
-    if (!store.hadProgress()) {
-      const mode = document.querySelector('input[name="timer-mode"]:checked')?.value === "casual" ? "casual" : "timed";
-      store.update((state) => { state.timerMode = mode; });
+    const playerName = playerNameInput.value.replace(/\s+/g, " ").trim().slice(0, 32);
+    if (!playerName) {
+      playerNameFeedback.hidden = false;
+      playerNameInput.focus();
+      return;
     }
+    playerNameFeedback.hidden = true;
+    const startingNewTrail = !store.hadProgress();
+    const nameChanged = store.get().playerName !== playerName;
+    store.update((state) => {
+      state.playerName = playerName;
+      if (startingNewTrail) {
+        const mode = document.querySelector('input[name="timer-mode"]:checked')?.value === "casual" ? "casual" : "timed";
+        state.timerMode = mode;
+      }
+    });
     welcomeDialog.close();
+    if (nameChanged && engine.currentScene().mode === "reward") engine.render();
     engine.scrollToScene(engine.currentScene().id, { focus: true });
   });
 
@@ -337,6 +355,7 @@ try {
   engine.render();
 
   const hasProgress = store.hadProgress();
+  playerNameInput.value = store.get().playerName || "";
   $("#timer-mode-picker").hidden = hasProgress;
   $("#continue-trail").textContent = hasProgress ? "Resume trail" : "Start trail";
   $("#welcome-reset").hidden = !hasProgress;

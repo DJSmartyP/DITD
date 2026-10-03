@@ -167,18 +167,43 @@ function terminal(scene, onSubmit, intentionalFailure = false) {
 function activation(scene, onSubmit) {
   const machine = machineFrame("LEGACY ACTIVATION CENTRE", "VIDEOMATIC LICENCE");
   const panel = el("div", "activation-panel");
-  const notice = el("p", "tbd-copy", "ARCHIVE VISUAL UNAVAILABLE — fallback activation terminal loaded.");
+  const screen = el("section", "activation-control-screen");
+  screen.setAttribute("aria-label", "Legacy licence controller status");
+  const screenHeader = el("div", "activation-control-header");
+  screenHeader.append(el("span", "", "JONACO // VM-04"), el("span", "activation-live-indicator", "CONTROLLER ONLINE"));
+  const status = el("strong", "activation-control-status", "LICENCE EXPIRED");
+  const screenPrompt = el("p", "activation-control-prompt", "The legacy controller is responding. Operator verification is required to restore playback.");
+  const procedure = el("ol", "activation-procedure");
+  const procedureRows = [
+    ["01", "Controller handshake", "ESTABLISHED"],
+    ["02", "Legacy licence", "EXPIRED"],
+    ["03", "Human verification", "AWAITING OPERATOR"]
+  ].map(([step, label, result]) => {
+    const row = el("li", "activation-procedure-row");
+    row.append(el("span", "activation-procedure-step", step), el("span", "activation-procedure-name", label), el("strong", "activation-procedure-result", result));
+    procedure.append(row);
+    return row;
+  });
+  screen.append(screenHeader, status, screenPrompt, procedure);
   const fields = el("div", "licence-fields");
-  const licence = document.createElement("input");
-  licence.value = "PPEC-VIDEOMATIC-LEGACY";
-  licence.readOnly = true;
-  licence.setAttribute("aria-label", "Legacy licence identifier");
-  const machineId = document.createElement("input");
-  machineId.value = "VM-4763-RECOVERY";
-  machineId.readOnly = true;
-  machineId.setAttribute("aria-label", "Videomatic recovery identifier");
-  fields.append(licence, machineId);
-  const activate = el("button", "primary-button", "Re-activate licence");
+  const fieldDefinitions = [
+    ["Legacy licence identifier", "PPEC-VIDEOMATIC-LEGACY"],
+    ["Recovery node", "VM-4763-RECOVERY"]
+  ];
+  fieldDefinitions.forEach(([labelText, value], index) => {
+    const field = el("div", "licence-field");
+    const label = document.createElement("label");
+    label.htmlFor = `licence-field-${index}`;
+    label.textContent = labelText;
+    const input = document.createElement("input");
+    input.id = `licence-field-${index}`;
+    input.value = value;
+    input.readOnly = true;
+    input.setAttribute("aria-label", labelText);
+    field.append(label, input);
+    fields.append(field);
+  });
+  const activate = el("button", "primary-button", "Begin licence validation");
   activate.type = "button";
   const captcha = el("div", "captcha-card");
   captcha.hidden = true;
@@ -187,12 +212,16 @@ function activation(scene, onSubmit) {
   form.hidden = true;
   activate.addEventListener("click", () => {
     activate.disabled = true;
-    activate.textContent = "Licence staged";
+    activate.textContent = "Operator check loaded";
+    panel.classList.add("activation-panel-check-loaded");
+    status.textContent = "HUMAN VERIFICATION REQUIRED";
+    screenPrompt.textContent = "The controller is ready. Complete the operator check below to resume Videomatic playback.";
+    procedureRows[2].querySelector(".activation-procedure-result").textContent = "GENERATED";
     captcha.hidden = false;
     form.hidden = false;
     form.querySelector("input").focus();
   });
-  panel.append(notice, fields, activate, captcha, form);
+  panel.append(screen, fields, activate, captcha, form);
   machine.append(panel);
   return machine;
 }
@@ -204,12 +233,17 @@ function systemLog(scene) {
   return wrapper;
 }
 
-function diagnostic() {
+function diagnostic({ animate = true, onScanComplete = () => {} } = {}) {
   const wrapper = machineFrame("DEVICE DIAGNOSTIC", "LOCAL SYSTEM CHECK");
   wrapper.classList.add("fake-diagnostic");
-  const summary = el("p", "diagnostic-summary", "Threat scan complete. An unauthorised process has attached itself to the JonAssist launch routine.");
+  const summary = el("p", "diagnostic-summary", "JonAssist launch trace has detected an unauthorised process; local results are being recovered.");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const shouldAnimate = animate && !reducedMotion;
+  const scanStatus = el("p", "diagnostic-scan-status", shouldAnimate ? "LOCAL TRACE RUNNING // RESULTS RECOVERING" : "LOCAL TRACE COMPLETE");
+  scanStatus.setAttribute("role", "status");
+  scanStatus.setAttribute("aria-live", "polite");
   const readout = el("dl", "diagnostic-grid");
-  [
+  const results = [
     ["Process", "no-more-trails.exe"],
     ["Signature", "Unauthorised"],
     ["State", "Armed — awaiting trigger"],
@@ -218,11 +252,31 @@ function diagnostic() {
     ["Trigger", "Next JonAssist request"],
     ["Detected effect", "Interrupt trail access"],
     ["Automatic removal", "Failed"]
-  ].forEach(([label, value]) => {
-    readout.append(el("dt", "", label), el("dd", "", value));
+  ].map(([label, value]) => {
+    const dt = el("dt", "", label);
+    const dd = el("dd", "diagnostic-result", shouldAnimate ? "PENDING" : value);
+    if (shouldAnimate) dd.classList.add("diagnostic-result-pending");
+    dd.setAttribute("aria-live", "polite");
+    readout.append(dt, dd);
+    return { dd, value };
   });
+  if (shouldAnimate) {
+    results.forEach(({ dd, value }, index) => {
+      window.setTimeout(() => {
+        dd.textContent = value;
+        dd.classList.remove("diagnostic-result-pending");
+        dd.classList.add("diagnostic-result-loaded");
+        if (index === results.length - 1) {
+          scanStatus.textContent = "LOCAL TRACE COMPLETE // RECOVERY ROUTE AVAILABLE";
+          onScanComplete();
+        }
+      }, (index + 1) * 1500);
+    });
+  } else {
+    onScanComplete();
+  }
   const action = el("p", "diagnostic-action", "RECOVERY ROUTE: Manual counter-command required.");
-  wrapper.append(el("span", "armed-badge", "THREAT ACTIVE"), summary, readout, action);
+  wrapper.append(el("span", "armed-badge", "THREAT ACTIVE"), summary, scanStatus, readout, action);
   return wrapper;
 }
 
@@ -445,7 +499,7 @@ function reward(scene, { completionTimeLabel = null } = {}) {
   return stack;
 }
 
-export function renderMachine(scene, { onSubmit, onComplete, animate = true, completionTimeLabel = null }) {
+export function renderMachine(scene, { onSubmit, onComplete, onScanComplete, animate = true, completionTimeLabel = null }) {
   switch (scene.mode) {
     case "jonavision": return jonavision(scene, onSubmit);
     case "videomatic": return videomatic(scene, onSubmit);
@@ -461,7 +515,7 @@ export function renderMachine(scene, { onSubmit, onComplete, animate = true, com
       return frame;
     }
     case "system-log": return systemLog(scene);
-    case "diagnostic": return diagnostic(scene);
+    case "diagnostic": return diagnostic({ animate, onScanComplete });
     case "private-channel": return privateChannel(scene, { animate });
     case "restore": return restore(scene, onComplete);
     case "reward": return reward(scene, { completionTimeLabel });

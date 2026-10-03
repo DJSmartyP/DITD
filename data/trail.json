@@ -433,8 +433,12 @@
       "order": 20,
       "title": "Boot Sequence",
       "mode": "story",
+      "modeLabel": "LIVE MESSAGE",
       "phase": "restored",
       "speaker": "Jonabot",
+      "transmissionLabel": "JONABOT ONLINE",
+      "transmissionTone": "green",
+      "typewriterTransmission": true,
       "body": [
         "Hi - I'm Jonabot! I'm here to help run the Discord and generally help out when needed!",
         "I no longer have access to our previous conversations, but I have an incoming Jonagraph for you from Bodach Bay? I've never heard of that place before."

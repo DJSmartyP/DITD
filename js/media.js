@@ -74,9 +74,10 @@ function youtube(item) {
   return shell;
 }
 
-async function prepareTimedPass(item, completionTimeLabel) {
+async function prepareCompletionPass(item, { playerName = "", completionTimeLabel = null } = {}) {
+  const timed = Boolean(completionTimeLabel);
   const source = new Image();
-  source.src = item.timedSrc || item.src;
+  source.src = timed && item.timedSrc ? item.timedSrc : item.src;
   await source.decode();
   const canvas = document.createElement("canvas");
   canvas.width = source.naturalWidth;
@@ -86,16 +87,25 @@ async function prepareTimedPass(item, completionTimeLabel) {
   const scale = canvas.width / 1536;
   context.save();
   context.fillStyle = "#0a3f3d";
-  context.font = `900 ${Math.round(13 * scale)}px Georgia, serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText("OFFICIAL TIME", 805 * scale, 819 * scale);
-  context.font = `900 ${Math.round(23 * scale)}px Georgia, serif`;
-  context.fillText(completionTimeLabel, 805 * scale, 849 * scale);
+  let nameFontSize = Math.round(23 * scale);
+  context.font = `900 ${nameFontSize}px Georgia, serif`;
+  while (context.measureText(playerName).width > 222 * scale && nameFontSize > 12 * scale) {
+    nameFontSize -= 1;
+    context.font = `900 ${nameFontSize}px Georgia, serif`;
+  }
+  context.fillText(playerName, 515 * scale, 842 * scale, 224 * scale);
+  if (timed) {
+    context.font = `900 ${Math.round(13 * scale)}px Georgia, serif`;
+    context.fillText("OFFICIAL TIME", 805 * scale, 819 * scale);
+    context.font = `900 ${Math.round(23 * scale)}px Georgia, serif`;
+    context.fillText(completionTimeLabel, 805 * scale, 849 * scale);
+  }
   context.restore();
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-  if (!blob) throw new Error("Could not prepare the timed completion pass.");
+  if (!blob) throw new Error("Could not prepare the personalised completion pass.");
   return URL.createObjectURL(blob);
 }
 
@@ -103,8 +113,9 @@ function image(item, options = {}) {
   const shell = el("figure", "media-shell");
   const img = document.createElement("img");
   const timed = Boolean(options.completionTimeLabel);
-  img.src = timed && item.timedSrc ? item.timedSrc : item.src;
-  img.alt = item.alt || item.title;
+  const sourcePath = timed && item.timedSrc ? item.timedSrc : item.src;
+  img.src = sourcePath;
+  img.alt = `${item.alt || item.title}${options.playerName ? ` Passenger: ${options.playerName}.` : ""}${timed ? ` Official trail time: ${options.completionTimeLabel}.` : ""}`;
   img.loading = "lazy";
   const caption = el("figcaption", "media-caption");
   caption.append(el("strong", "", item.title));
@@ -112,30 +123,31 @@ function image(item, options = {}) {
     caption.append(el("p", "", "The cypher poster is in the lower-right area of the noticeboard image."));
   }
   if (item.download) {
-    const link = el("a", "secondary-button download-button", item.downloadLabel || "Download reward");
-    link.href = item.src;
+    const personalised = Boolean(item.personalised);
+    const link = el("a", "secondary-button download-button", personalised ? "Preparing your completion pass…" : item.downloadLabel || "Download reward");
     link.download = item.downloadName || "trail-reward.png";
-    if (timed) {
-      link.textContent = "Preparing your timed completion pass…";
+    if (personalised) {
       link.removeAttribute("href");
       link.setAttribute("aria-disabled", "true");
       link.setAttribute("aria-busy", "true");
       link.tabIndex = -1;
-      caption.append(el("p", "ticket-time-caption", `OFFICIAL TRAIL TIME: ${options.completionTimeLabel}`));
-      prepareTimedPass(item, options.completionTimeLabel).then((url) => {
+      if (options.playerName) caption.append(el("p", "ticket-name-caption", `PASSENGER: ${options.playerName}`));
+      if (timed) caption.append(el("p", "ticket-time-caption", `OFFICIAL TRAIL TIME: ${options.completionTimeLabel}`));
+      prepareCompletionPass(item, options).then((url) => {
+        img.src = url;
         link.href = url;
-        link.textContent = "Download your timed completion pass";
+        link.textContent = timed ? "Download your timed completion pass" : "Download your completion pass";
         link.removeAttribute("aria-disabled");
         link.removeAttribute("aria-busy");
         link.removeAttribute("tabindex");
       }).catch((error) => {
-          console.error(error);
-          link.href = item.src;
-          link.textContent = "Download standard pass (time shown above)";
-          link.removeAttribute("aria-disabled");
-          link.removeAttribute("aria-busy");
-          link.removeAttribute("tabindex");
+        console.error(error);
+        link.textContent = "Personalised pass unavailable";
+        link.setAttribute("aria-label", "Personalised pass could not be prepared; it is not available to download.");
+        link.removeAttribute("aria-busy");
       });
+    } else {
+      link.href = item.src;
     }
     caption.append(link);
   }
@@ -158,18 +170,26 @@ function generatedInterface(item) {
     el("span", "activation-visual-generation", "LEGACY UNIT · VM/04")
   );
   const screen = el("div", "activation-visual-screen");
+  const status = el("div", "activation-visual-status");
+  status.append(el("span", "activation-visual-alert", "ALERT"), el("strong", "", "LICENCE VALIDATION FAILED"));
+  const telemetry = el("div", "activation-visual-telemetry");
+  const metric = (label, value) => {
+    const row = el("span", "activation-visual-metric");
+    row.append(el("span", "", label), el("strong", "", value));
+    return row;
+  };
+  telemetry.append(metric("PLAYBACK", "INTERRUPTED"), metric("CONTROLLER", "LOCAL LINK READY"), metric("OPERATOR CHECK", "REQUIRED"));
+  const challenge = el("div", "activation-visual-challenge");
+  challenge.append(el("span", "", "VALIDATION RECORD"), el("strong", "activation-visual-code", "— — — — —"));
   screen.append(
     el("span", "activation-visual-kicker", "VIDEOMATIC ACTIVATION CENTRE"),
-    el("strong", "", "LICENCE VALIDATION FAILED"),
-    el("p", "", "Legacy activation terminal ready. Reconnect the licence controller below."),
-    el("span", "activation-visual-code", "_ _ _ _ _")
+    status,
+    el("p", "", "The legacy licence has expired. An operator must restore validation before playback can resume."),
+    telemetry,
+    challenge
   );
   const lamps = el("div", "activation-visual-lamps");
-  lamps.append(
-    el("span", "", "NETWORK · LOCAL"),
-    el("span", "", "LICENCE · EXPIRED"),
-    el("span", "", "OPERATOR · REQUIRED")
-  );
+  lamps.append(el("span", "", "NETWORK · LOCAL"), el("span", "", "LICENCE · EXPIRED"), el("span", "", "OPERATOR · REQUIRED"));
   panel.append(header, screen, lamps);
   const caption = el("figcaption", "media-caption");
   caption.append(el("strong", "", item.title));

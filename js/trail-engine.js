@@ -1,5 +1,5 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-1";
-import { renderMedia } from "./media.js?v=20261003-1";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-2";
+import { renderMedia } from "./media.js?v=20261003-2";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
 function el(tag, className, text) {
@@ -182,8 +182,9 @@ export class TrailEngine {
     container.append(header);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const shouldType = Boolean(scene.typewriterTransmission && !completed && scene.body?.length && !reducedMotion);
-    const copy = el("div", `story-copy${scene.typewriterTransmission ? " story-copy-live-transmission" : ""}`);
+    const alreadySolved = this.store.get().completedSceneIds.includes(scene.id);
+    const shouldType = Boolean(scene.typewriterTransmission && !completed && !alreadySolved && scene.body?.length && !reducedMotion);
+    const copy = el("div", `story-copy${scene.typewriterTransmission && scene.transmissionTone !== "green" ? " story-copy-live-transmission" : ""}${scene.transmissionTone === "green" ? " story-copy-transmission-green" : ""}`);
     if (scene.speaker?.toLowerCase().includes("jonabot")) copy.dataset.voice = "jonabot";
     const typedParagraphs = [];
     (scene.body || []).forEach((paragraph, index) => {
@@ -263,7 +264,10 @@ export class TrailEngine {
 
     if (mediaLayout.childElementCount) container.append(mediaLayout);
     if (scene.ticketMediaId) {
-      const tickets = renderMedia(this.manifest.items[scene.ticketMediaId], { completionTimeLabel: this.completionTimeLabel() });
+      const tickets = renderMedia(this.manifest.items[scene.ticketMediaId], {
+        playerName: this.store.get().playerName,
+        completionTimeLabel: this.completionTimeLabel()
+      });
       if (tickets) container.append(tickets);
     }
   }
@@ -279,7 +283,7 @@ export class TrailEngine {
       && !this.store.get().completedSceneIds.includes(scene.next);
     this.appendSceneMedia(section, scene, { locked: remainsLocked });
     if (["system-log", "private-channel", "diagnostic"].includes(scene.mode)) {
-      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {} });
+      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {}, animate: false });
       if (machine) section.append(machine);
     }
     return section;
@@ -321,6 +325,7 @@ export class TrailEngine {
       .forEach((candidate) => stream.append(this.renderCompletedScene(candidate)));
 
     const currentRoot = el("section", "trail-entry trail-entry-current");
+    if (scene.mode === "diagnostic" && !solved) currentRoot.classList.add("diagnostic-loading");
     if (scene.typewriterTransmission) currentRoot.classList.add("scene-live-transmission");
     currentRoot.id = `trail-scene-${scene.id}`;
     currentRoot.setAttribute("aria-label", `Current trail section: ${scene.title}`);
@@ -372,7 +377,8 @@ export class TrailEngine {
           this.complete(scene, { stay: true });
           this.render(scene.id);
           this.scrollToScene(scene.id, { focus: true });
-        }
+        },
+        onScanComplete: () => currentRoot.classList.remove("diagnostic-loading")
       });
       if (machine) currentRoot.append(machine);
     } else if (scene.mode === "reward") {

@@ -8,6 +8,7 @@ function freshState(startSceneId) {
     evidenceIds: [],
     pinnedEvidenceIds: [],
     notes: "",
+    playerName: "",
     hintLevels: {},
     attemptCounts: {},
     timerMode: null,
@@ -39,6 +40,9 @@ export function validateState(candidate, trail) {
     evidenceIds: uniqueAllowed(candidate.evidenceIds, evidenceIds),
     pinnedEvidenceIds: uniqueAllowed(candidate.pinnedEvidenceIds, evidenceIds),
     notes: typeof candidate.notes === "string" ? candidate.notes.slice(0, 50000) : "",
+    playerName: typeof candidate.playerName === "string"
+      ? candidate.playerName.replace(/[\u0000-\u001f\u007f]/g, "").replace(/\s+/g, " ").trim().slice(0, 32)
+      : "",
     hintLevels: candidate.hintLevels && typeof candidate.hintLevels === "object" ? candidate.hintLevels : {},
     attemptCounts: candidate.attemptCounts && typeof candidate.attemptCounts === "object" ? candidate.attemptCounts : {},
     timerMode: ["timed", "casual"].includes(candidate.timerMode) ? candidate.timerMode : null,

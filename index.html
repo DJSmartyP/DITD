@@ -16,8 +16,8 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="./assets/images/jonabot-favicon.png">
   <link rel="apple-touch-icon" href="./assets/images/jonabot-touch-icon.png">
-  <link rel="stylesheet" href="./css/main.css?v=20261003-1">
-  <link rel="stylesheet" href="./css/machines.css?v=20260930-7">
+  <link rel="stylesheet" href="./css/main.css?v=20261003-2">
+  <link rel="stylesheet" href="./css/machines.css?v=20261003-2">
   <link rel="stylesheet" href="./css/corruption.css?v=20261003-1">
 </head>
 <body data-phase="normal">
@@ -117,6 +117,11 @@
         <p class="dialog-subtitle">A Jonabot Trail</p>
         <p class="welcome-deck">An online mystery across Jonavision, Videomatic, Discord and the Ridge.</p>
         <p id="welcome-message">One persistent console. Twenty-three canonical scenes. Your progress stays on this device.</p>
+        <label class="player-name-field" for="player-name">Name for your blimp ticket
+          <input id="player-name" name="player-name" type="text" maxlength="32" autocomplete="name" placeholder="Passenger name" required>
+        </label>
+        <p class="player-name-note">Saved only on this device. You can change it before you continue.</p>
+        <p class="player-name-feedback" id="player-name-feedback" role="status" hidden>Please enter a name for your ticket.</p>
         <fieldset class="timer-mode-picker" id="timer-mode-picker">
           <legend>Choose your trail</legend>
           <label class="timer-mode-option">
@@ -157,6 +162,6 @@
     <p class="fine-print">All compromise, activation, installation and diagnostic effects are part of the story. The trail requests no device permissions and installs nothing.</p>
   </dialog>
 
-  <script type="module" src="./js/app.js?v=20261003-1"></script>
+  <script type="module" src="./js/app.js?v=20261003-2"></script>
 </body>
 </html>

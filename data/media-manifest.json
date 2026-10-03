@@ -260,6 +260,7 @@
       "sourceFile": "Generated as the final DITD trail reward on 2026-09-30",
       "status": "generated-reward-asset",
       "download": true,
+      "personalised": true,
       "downloadLabel": "Download your completion pass",
       "downloadName": "discord-in-the-discord-completion-pass.png",
       "scenes": ["trail-complete"]
