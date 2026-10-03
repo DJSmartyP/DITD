@@ -651,7 +651,7 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 }
 
 @media (min-width: 580px) and (max-height: 740px) {
-  .welcome-hero { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); grid-template-rows: minmax(0, 1fr); min-height: 0; height: calc(100dvh - 2rem); }
+  .welcome-hero { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); grid-template-rows: minmax(0, 1fr); min-height: 0; height: min(calc(100dvh - 2rem), calc(94dvh - 8px)); }
   .welcome-art { background-position: 16% center; border-right: 4px solid var(--brass); border-bottom: 0; }
   .welcome-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(.5rem, 2dvh, 1rem); }
   .welcome-copy .dialog-badge { align-self: flex-start; }
