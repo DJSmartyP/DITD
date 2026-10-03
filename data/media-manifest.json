@@ -19,7 +19,7 @@
       "continuePrompt": "Hear Jonabot to begin",
       "localSrc": "./assets/videos/intro.mp4",
       "thumbnailStatus": "generated-original-story-art",
-      "sourceFile": "Updated Videos/Ppec 01 Intro.mp4",
+      "sourceFile": "Downloads/wetransfer_ppec_01_intro_alt-mov_2026-10-03_1546/Ppec 01 Intro Alt.mp4",
       "status": "mapped-local-mp4",
       "scenes": ["intro"]
     },
@@ -238,7 +238,7 @@
       "continuePrompt": "Answer Jonana for tickets",
       "localSrc": "./assets/videos/final-jonatravel-call.mp4",
       "thumbnailStatus": "generated-original-story-art",
-      "sourceFile": "Ppec 12 Jonatravel Video 02 240211.mp4",
+      "sourceFile": "Downloads/wetransfer_ppec_01_intro_alt-mov_2026-10-03_1546/Ppec 12 Jonatravel Video 02.mp4",
       "status": "mapped-local-mp4",
       "scenes": ["bodach-bay-booking"]
     },

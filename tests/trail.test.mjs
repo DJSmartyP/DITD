@@ -4,6 +4,7 @@ import { readFile, access, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { answerMatches, normalizeAnswer } from "../js/machines.js";
+import { TrailEngine } from "../js/trail-engine.js";
 import { formatTrailTime, timerElapsedMs } from "../js/timer.js";
 import { generateTicketClass, TICKET_CLASSES, validateState } from "../js/state.js";
 
@@ -33,6 +34,8 @@ test("the start download covers every active trail asset at its real size", asyn
 test("video artwork and playback have scene-specific loading messages", () => {
   const videos = Object.values(manifest.items).filter((item) => item.kind === "video");
   assert.equal(videos.length, 9);
+  assert.match(manifest.items.intro.sourceFile, /Ppec 01 Intro Alt\.mp4$/);
+  assert.match(manifest.items["final-jonana-peel"].sourceFile, /Ppec 12 Jonatravel Video 02\.mp4$/);
   videos.forEach((item) => assert.ok(item.loadingText?.length > 12, item.title));
   assert.match(mediaSource, /video-artwork-loading/);
   assert.match(mediaSource, /video-playback-loading/);
@@ -47,6 +50,7 @@ test("preparation cannot bypass the current recordings and PDFs are stored as bi
   assert.doesNotMatch(app, /preload-skip|Start trail online|stream media/);
   assert.match(html, /id="welcome-reset"[^>]*>Start a New Trail</);
   assert.match(attributes, /\*\.pdf binary/);
+  assert.match(attributes, /\*\.mp4 binary/);
 });
 
 test("the corrupted map loads independently of the optional noticeboard drawer", () => {
@@ -487,6 +491,32 @@ test("the final reward includes tickets and shows the credits video with the wri
   assert.ok(finale.credits.includes("Originally programmed by Arty"));
   assert.ok(finale.credits.includes("Redesign by Smarty"));
   assert.equal(finale.credits.some((credit) => credit.includes("Founder Neven")), false);
+});
+
+test("finishing the trail clears prepared media without forcing ticket holders to redownload", async () => {
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const penultimate = { id: "final-call", next: "trail-complete", phase: "restored" };
+  const reward = { id: "trail-complete", mode: "reward", phase: "restored", completeOnEntry: true };
+  const state = { currentSceneId: penultimate.id, completedSceneIds: [], timerMode: "casual", playerClass: "Cargo" };
+  const store = { get: () => state, update: (change) => change(state) };
+  let cleanupCalls = 0;
+  const engine = new TrailEngine({
+    root: null,
+    trail: { scenes: [penultimate, reward], startSceneId: penultimate.id },
+    manifest: { items: {} },
+    store,
+    onTrailComplete: () => { cleanupCalls += 1; }
+  });
+  engine.render = () => {};
+  engine.scrollToScene = () => {};
+  engine.advance(penultimate);
+  assert.equal(state.currentSceneId, reward.id);
+  assert.ok(state.completedSceneIds.includes(reward.id));
+  assert.equal(cleanupCalls, 1);
+  engine.advance(penultimate);
+  assert.equal(cleanupCalls, 1);
+  assert.match(app, /onTrailComplete: \(\) => \{\s*preloadCleanup = clearTrailMediaCache\(\)/);
+  assert.match(app, /if \(store\.get\(\)\.completedSceneIds\.includes\("trail-complete"\)\) \{\s*await preloadCleanup;\s*welcomeDialog\.close\(\);\s*enterTrail\(\)/);
 });
 
 test("HTML uses repository-relative local URLs", async () => {

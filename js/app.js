@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-10";
-import { TrailEngine } from "./trail-engine.js?v=20261003-14";
+import { TrailEngine } from "./trail-engine.js?v=20261003-15";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 import { clearTrailMediaCache, hasPreparedTrailMedia, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-5";
@@ -341,7 +341,10 @@ try {
     store,
     onRender: renderInterface,
     onOpenTool: (tool) => selectTool(tool),
-    onCorrect: openSuccessDialog
+    onCorrect: openSuccessDialog,
+    onTrailComplete: () => {
+      preloadCleanup = clearTrailMediaCache().catch((error) => console.warn("Could not clear completed trail media", error));
+    }
   });
 
   $("#success-continue").addEventListener("click", () => {
@@ -448,6 +451,12 @@ try {
       }
     });
     if (nameChanged && engine.currentScene().mode === "reward") engine.render();
+    if (store.get().completedSceneIds.includes("trail-complete")) {
+      await preloadCleanup;
+      welcomeDialog.close();
+      enterTrail();
+      return;
+    }
     if (!startingNewTrail) {
       continueButton.disabled = true;
       $("#welcome-reset").disabled = true;
@@ -481,6 +490,9 @@ try {
   void registerMediaWorker();
 
   const hasProgress = store.hadProgress();
+  if (store.get().completedSceneIds.includes("trail-complete")) {
+    preloadCleanup = clearTrailMediaCache().catch((error) => console.warn("Could not clear completed trail media", error));
+  }
   playerNameInput.value = store.get().playerName || "";
   $("#timer-mode-picker").hidden = hasProgress;
   $("#continue-trail").textContent = hasProgress ? "Resume trail" : "Start trail";

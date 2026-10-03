@@ -11,7 +11,7 @@ function el(tag, className, text) {
 }
 
 export class TrailEngine {
-  constructor({ root, trail, manifest, store, onRender, onOpenTool, onCorrect }) {
+  constructor({ root, trail, manifest, store, onRender, onOpenTool, onCorrect, onTrailComplete }) {
     this.root = root;
     this.trail = trail;
     this.manifest = manifest;
@@ -19,6 +19,7 @@ export class TrailEngine {
     this.onRender = onRender;
     this.onOpenTool = onOpenTool;
     this.onCorrect = onCorrect;
+    this.onTrailComplete = onTrailComplete;
     this.sceneById = new Map(trail.scenes.map((scene) => [scene.id, scene]));
     this.feedback = null;
     this.pendingFeedback = null;
@@ -146,6 +147,7 @@ export class TrailEngine {
   }
 
   advance(scene) {
+    const wasTrailComplete = this.store.get().completedSceneIds.includes("trail-complete");
     this.pendingFeedback = null;
     if (!this.store.get().completedSceneIds.includes(scene.id)) this.complete(scene, { stay: false });
     else if (scene.next) {
@@ -162,6 +164,9 @@ export class TrailEngine {
     this.feedback = null;
     this.render();
     this.scrollToScene(this.store.get().currentSceneId, { focus: true });
+    if (!wasTrailComplete && this.store.get().completedSceneIds.includes("trail-complete")) {
+      this.onTrailComplete?.();
+    }
   }
 
   mediaShouldShow(scene, solved, replay) {
@@ -459,6 +464,7 @@ export class TrailEngine {
         this.complete(scene, { stay: true });
         this.render(scene.id);
         this.scrollToScene(scene.id, { focus: true });
+        this.onTrailComplete?.();
       });
       actions.append(finish);
     } else if (scene.mode === "reward" && solved) {

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "assets": [
     { "path": "./assets/video-thumbnails/intro.webp", "bytes": 219942 },
-    { "path": "./assets/videos/intro.mp4", "bytes": 4455622 },
+    { "path": "./assets/videos/intro.mp4", "bytes": 4418269 },
     { "path": "./assets/images/town-noticeboard.jpg", "bytes": 2097008 },
     { "path": "./assets/video-thumbnails/bodach-bay-tourism.webp", "bytes": 247372 },
     { "path": "./assets/videos/bodach-bay-tourism.mp4", "bytes": 23098626 },
@@ -32,7 +32,7 @@
     { "path": "./assets/video-thumbnails/restore-finale.webp", "bytes": 251060 },
     { "path": "./assets/videos/restore-finale.mp4", "bytes": 19058614 },
     { "path": "./assets/video-thumbnails/final-jonana-peel.webp", "bytes": 265738 },
-    { "path": "./assets/videos/final-jonatravel-call.mp4", "bytes": 1146089 },
+    { "path": "./assets/videos/final-jonatravel-call.mp4", "bytes": 1457121 },
     { "path": "./assets/video-thumbnails/post-trail-credits.webp", "bytes": 229152 },
     { "path": "./assets/videos/post-trail-credits.mp4", "bytes": 3788954 }
   ]
