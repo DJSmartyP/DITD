@@ -1,6 +1,7 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-2";
-import { renderMedia } from "./media.js?v=20261003-2";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-3";
+import { renderMedia } from "./media.js?v=20261003-7";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
+import { generateTicketClass } from "./state.js?v=20261003-4";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -49,6 +50,9 @@ export class TrailEngine {
     }
     if (state.timerMode === "timed" && next?.mode === "reward" && state.timerStartedAt && !state.timerFinishedAt) {
       state.timerFinishedAt = new Date().toISOString();
+    }
+    if (next?.mode === "reward" && state.timerMode !== "timed" && !state.playerClass) {
+      state.playerClass = generateTicketClass();
     }
   }
 
@@ -266,6 +270,7 @@ export class TrailEngine {
     if (scene.ticketMediaId) {
       const tickets = renderMedia(this.manifest.items[scene.ticketMediaId], {
         playerName: this.store.get().playerName,
+        playerClass: this.store.get().playerClass,
         completionTimeLabel: this.completionTimeLabel()
       });
       if (tickets) container.append(tickets);
@@ -312,6 +317,9 @@ export class TrailEngine {
 
   render(sceneId = null, { replay = false } = {}) {
     const scene = this.sceneById.get(sceneId || this.store.get().currentSceneId) || this.trail.scenes[0];
+    if (scene.mode === "reward" && this.store.get().timerMode !== "timed" && !this.store.get().playerClass) {
+      this.store.update((currentState) => { currentState.playerClass = generateTicketClass(); });
+    }
     const state = this.store.get();
     const solved = state.completedSceneIds.includes(scene.id);
     const inlineMachineScene = scene.inlineMachineSceneId ? this.sceneById.get(scene.inlineMachineSceneId) : null;

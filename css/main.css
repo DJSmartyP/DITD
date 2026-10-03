@@ -253,7 +253,7 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 .activation-visual-code { display: inline-block; color: #f0cf77; font: 900 clamp(1.15rem, 5vw, 1.7rem) var(--mono); letter-spacing: .22em; }
 .activation-visual-lamps span::before { content: "●"; margin-right: .4rem; color: #f06d58; text-shadow: 0 0 .4rem #ef3f32; }
 .diagnostic-loading .scene-actions { display: none; }
-.ticket-name-caption { padding: .45rem .6rem; color: #ebfff7; background: #104b3c; border-left: 4px solid #5bd1a1; font: 900 .92rem var(--mono); overflow-wrap: anywhere; }
+.ticket-name-caption, .ticket-class-caption { padding: .45rem .6rem; color: #ebfff7; background: #104b3c; border-left: 4px solid #5bd1a1; font: 900 .92rem var(--mono); overflow-wrap: anywhere; }
 .ticket-time-caption { padding: .35rem .55rem; color: #f8e7b8; background: #0b4642; border-left: 4px solid #d7ae4e; font: 900 .9rem var(--mono); letter-spacing: .05em; }
 .document-frame { width: 100%; min-height: 60vh; border: 0; background: white; }
 .document-preview { color: var(--paper); background: #071816; }

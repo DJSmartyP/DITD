@@ -5,13 +5,14 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { answerMatches, normalizeAnswer } from "../js/machines.js";
 import { formatTrailTime, timerElapsedMs } from "../js/timer.js";
-import { validateState } from "../js/state.js";
+import { generateTicketClass, TICKET_CLASSES, validateState } from "../js/state.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const trail = JSON.parse(await readFile(join(root, "data", "trail.json"), "utf8"));
 const manifest = JSON.parse(await readFile(join(root, "data", "media-manifest.json"), "utf8"));
 const mediaSource = await readFile(join(root, "js", "media.js"), "utf8");
+const trailEngineSource = await readFile(join(root, "js", "trail-engine.js"), "utf8");
 
 test("canonical flow contains exactly scenes 00-22 in one chain", () => {
   assert.equal(trail.scenes.length, 23);
@@ -60,7 +61,7 @@ test("critical answers and deliberate failure remain exact", () => {
     ["videomatic-4763", "4763"],
     ["activation-centre", "WD54L"],
     ["test-videomatic", "8345"],
-    ["fake-cancel-plan", "cancel-plan"],
+    ["fake-cancel-plan", "!.jonabot cancel-plan"],
     ["jonabot-taunt", "4216"],
     ["recovery-console", "INITIATE JONABOT RESTORE"]
   ]);
@@ -101,6 +102,14 @@ test("normalizers accept harmless variations without weakening answers", () => {
   assert.equal(answerMatches("!jonabot reboot-jonanapeel.exe", { answer: "reboot-jonanapeel.exe", normalizer: "command" }), false);
   assert.equal(normalizeAnswer("initiate-jonabot-restore", "command"), "initiate jonabot restore");
   assert.equal(answerMatches(" initiate-jonabot-restore ", { answer: "INITIATE JONABOT RESTORE", normalizer: "command" }), true);
+  const cancelPlan = { answer: "!.jonabot cancel-plan", normalizer: "jonabot-command" };
+  assert.equal(answerMatches("!.jonabot cancel-plan", cancelPlan), true);
+  assert.equal(answerMatches("!jonabot cancel-plan", cancelPlan), true);
+  assert.equal(answerMatches("Jonabot cancel plan", cancelPlan), true);
+  assert.equal(answerMatches("JONABOT: CANCEL_PLAN", cancelPlan), true);
+  assert.equal(answerMatches("cancel-plan", cancelPlan), false);
+  assert.equal(answerMatches("cancel plan", cancelPlan), false);
+  assert.equal(answerMatches("!jonabot reboot", cancelPlan), false);
   assert.equal(answerMatches("2LF", { answer: "2JP", normalizer: "jonagraph" }), false);
 });
 
@@ -332,6 +341,9 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
     if (typeof item.timedSrc === "string" && item.timedSrc.startsWith("./")) {
       await access(join(root, item.timedSrc.slice(2)));
     }
+    if (typeof item.clubBadgeSrc === "string" && item.clubBadgeSrc.startsWith("./")) {
+      await access(join(root, item.clubBadgeSrc.slice(2)));
+    }
     for (const previewPage of item.previewPages || []) {
       assert.match(previewPage, /^\.\/assets\/documents\/previews\/[\w/-]+\.png$/, `${id} local preview page`);
       await access(join(root, previewPage.slice(2)));
@@ -375,15 +387,25 @@ test("the final reward includes tickets and shows the credits video with the wri
   assert.equal(tickets.kind, "image");
   assert.equal(tickets.download, true);
   assert.equal(tickets.status, "generated-reward-asset");
-  assert.match(tickets.src, /completion-pass\.png$/);
-  assert.match(tickets.timedSrc, /completion-pass-timed\.png$/);
+  assert.match(tickets.src, /bodach-bay-ticket-casual\.png$/);
+  assert.match(tickets.timedSrc, /bodach-bay-ticket-timed\.png$/);
   assert.equal(tickets.personalised, true);
   assert.match(mediaSource, /const sourcePath = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
   assert.match(mediaSource, /img\.src = sourcePath/);
   assert.match(mediaSource, /source\.src = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
-  assert.match(mediaSource, /context\.fillText\(playerName/);
-  assert.match(mediaSource, /context\.fillText\(completionTimeLabel/);
-  assert.equal(tickets.downloadLabel, "Download your completion pass");
+  assert.match(mediaSource, /typewriterText\(context, canvas, playerName, 510, 775, \{ fontSize: 62/);
+  assert.match(mediaSource, /typewriterText\(context, canvas, completionTimeLabel, 1280, 775, \{ fontSize: 62/);
+  assert.match(mediaSource, /typewriterText\(context, canvas, playerClass, 1280, 775, \{ fontSize: 56/);
+  assert.doesNotMatch(mediaSource, /drawImage\(badge/);
+  assert.match(mediaSource, /function removeExteriorBackground\(context, canvas\)/);
+  assert.match(mediaSource, /pixels\[index \* 4 \+ 3\] = 0/);
+  assert.match(mediaSource, /img\.hidden = true/);
+  assert.match(mediaSource, /Courier New/);
+  assert.match(mediaSource, /globalCompositeOperation = "destination-out"/);
+  assert.match(trailEngineSource, /state\.playerClass = generateTicketClass\(\)/);
+  assert.doesNotMatch(mediaSource, /seatAssignment/);
+  assert.doesNotMatch(tickets.alt, /seat/i);
+  assert.equal(tickets.downloadLabel, "Download your blimp ticket");
   assert.ok(finale.credits.includes("Originally programmed by Arty"));
   assert.ok(finale.credits.includes("Redesign by Smarty"));
   assert.equal(finale.credits.some((credit) => credit.includes("Founder Neven")), false);
@@ -446,7 +468,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261003-2/);
+  assert.match(html, /main\.css\?v=20261003-4/);
   assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 
@@ -617,7 +639,7 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(mainCss, /repeating-linear-gradient\(135deg, #7e1720/);
   assert.match(mainCss, /story-copy\[data-voice="jonabot"\].*#104b3c/);
   assert.match(mainCss, /\.story-copy > \.speaker-line:not\(\.speaker-line-live\).*#123b59/);
-  assert.match(mediaSource, /Preparing your completion pass/);
+  assert.match(mediaSource, /Preparing your blimp ticket/);
   assert.match(mediaSource, /link\.href = url/);
   assert.doesNotMatch(mediaSource, /download\.click\(\)/);
   assert.match(mainCss, /\.scene-transmission-typing > :not\(\.scene-header\):not\(\.story-copy\)/);
@@ -634,6 +656,21 @@ test("player name is normalized safely and bounded in saved state", () => {
   assert.equal(candidate.playerName, "Ada Lovelace");
   assert.equal(validateState({ playerName: "A".repeat(40) }, trail).playerName.length, 32);
   assert.equal(validateState({ playerName: 42 }, trail).playerName, "");
+});
+
+test("casual ticket classes are selected from the approved low-status pool and persist safely", () => {
+  assert.deepEqual(TICKET_CLASSES, [
+    "Luggage Class",
+    "Cattle Class",
+    "Economy Meatbag Class",
+    "Probationary Passenger Class",
+    "Lowest Available Class",
+    "Cargo Class"
+  ]);
+  assert.equal(generateTicketClass(() => 0), "Luggage Class");
+  assert.equal(generateTicketClass(() => 0.99999), "Cargo Class");
+  assert.equal(validateState({ playerClass: "Cargo Class" }, trail).playerClass, "Cargo Class");
+  assert.equal(validateState({ playerClass: "First Class" }, trail).playerClass, "");
 });
 
 test("boot sequence is a green live Jonabot transmission", () => {

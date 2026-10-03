@@ -253,16 +253,16 @@
     },
     "bodach-bay-tickets": {
       "kind": "image",
-      "src": "./assets/tickets/bodach-bay-trail-completion-pass.png",
-      "timedSrc": "./assets/tickets/bodach-bay-trail-completion-pass-timed.png",
-      "title": "Bodach Bay Blimp Completion Pass",
-      "alt": "An ornate gold, cream, red and deep teal JonaTravel completion pass featuring Jonabot, a Bodach Bay blimp, a gold trail-completion seal, a tear-off booking stub and blank passenger, date and seat fields.",
-      "sourceFile": "Generated as the final DITD trail reward on 2026-09-30",
+      "src": "./assets/tickets/bodach-bay-ticket-casual.png",
+      "timedSrc": "./assets/tickets/bodach-bay-ticket-timed.png",
+      "title": "Bodach Bay Blimp Ticket",
+      "alt": "A richly illustrated steampunk JonaTravel Bodach Bay blimp ticket featuring Jonabot, the supplied Phantom Peak Explorers' Club badge, an airship, and large passenger and class or official-time fields.",
+      "sourceFile": "Generated as the final DITD trail reward on 2026-10-03",
       "status": "generated-reward-asset",
       "download": true,
       "personalised": true,
-      "downloadLabel": "Download your completion pass",
-      "downloadName": "discord-in-the-discord-completion-pass.png",
+      "downloadLabel": "Download your blimp ticket",
+      "downloadName": "bodach-bay-blimp-ticket.png",
       "scenes": ["trail-complete"]
     }
   }

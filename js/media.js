@@ -74,7 +74,74 @@ function youtube(item) {
   return shell;
 }
 
-async function prepareCompletionPass(item, { playerName = "", completionTimeLabel = null } = {}) {
+function typewriterText(context, canvas, text, x, y, { fontSize, maxWidth, rotation = 0 } = {}) {
+  if (!text) return;
+  const scale = canvas.width / 1774;
+  const inkCanvas = document.createElement("canvas");
+  inkCanvas.width = canvas.width;
+  inkCanvas.height = canvas.height;
+  const ink = inkCanvas.getContext("2d");
+  let pixels = fontSize * scale;
+  const limit = maxWidth * scale;
+  ink.font = `700 ${pixels}px "Courier New", Courier, monospace`;
+  ink.textAlign = "center";
+  ink.textBaseline = "middle";
+  while (ink.measureText(text).width > limit && pixels > 14 * scale) {
+    pixels -= scale;
+    ink.font = `700 ${pixels}px "Courier New", Courier, monospace`;
+  }
+  const measuredWidth = Math.min(ink.measureText(text).width, limit);
+  ink.save();
+  ink.translate(x * scale, y * scale);
+  ink.rotate(rotation);
+
+  // Build a heavy, imperfect imprint: the first strike supplies the dark body,
+  // while the offset second strike mimics a slightly tired typewriter ribbon.
+  ink.globalAlpha = 0.94;
+  ink.fillStyle = "#6f2824";
+  ink.strokeStyle = "#5a211e";
+  ink.lineWidth = Math.max(0.85, scale * 1.15);
+  ink.strokeText(text, 0, 0, limit);
+  ink.fillText(text, 0, 0, limit);
+  ink.globalAlpha = 0.3;
+  ink.translate(scale * 0.85, -scale * 0.55);
+  ink.strokeText(text, 0, 0, limit);
+  ink.fillText(text, 0, 0, limit);
+  ink.translate(-scale * 0.85, scale * 0.55);
+
+  // Hairline cracks and tiny faded flecks make the ribbon ink feel used without
+  // reducing the legibility of long passenger or class names.
+  ink.globalCompositeOperation = "destination-out";
+  ink.globalAlpha = 0.26;
+  ink.lineWidth = Math.max(0.7, scale);
+  ink.lineCap = "round";
+  const skipCount = Math.max(3, Math.ceil(measuredWidth / (92 * scale)));
+  for (let index = 0; index < skipCount; index += 1) {
+    const startX = -measuredWidth / 2 + (measuredWidth * (index + 0.5)) / skipCount;
+    const startY = ((index % 3) - 1) * pixels * 0.17;
+    ink.beginPath();
+    ink.moveTo(startX - pixels * 0.12, startY - pixels * 0.34);
+    ink.lineTo(startX - pixels * 0.07, startY - pixels * 0.08);
+    ink.lineTo(startX + pixels * 0.08, startY + pixels * 0.12);
+    ink.lineTo(startX + pixels * 0.11, startY + pixels * 0.34);
+    ink.stroke();
+  }
+  ink.globalAlpha = 0.18;
+  const fleckCount = Math.max(5, Math.ceil(measuredWidth / (70 * scale)));
+  const seed = [...text].reduce((value, character) => value + character.charCodeAt(0), 0);
+  for (let index = 0; index < fleckCount; index += 1) {
+    const position = ((seed * (index + 5) * 37) % 997) / 997;
+    const vertical = (((seed + index * 71) % 89) / 88 - 0.5) * pixels * 0.72;
+    const radius = Math.max(scale * 0.7, pixels * (0.018 + (index % 3) * 0.006));
+    ink.beginPath();
+    ink.ellipse(-measuredWidth / 2 + position * measuredWidth, vertical, radius * 1.8, radius, 0, 0, Math.PI * 2);
+    ink.fill();
+  }
+  ink.restore();
+  context.drawImage(inkCanvas, 0, 0);
+}
+
+async function prepareCompletionPass(item, { playerName = "", playerClass = "", completionTimeLabel = null } = {}) {
   const timed = Boolean(completionTimeLabel);
   const source = new Image();
   source.src = timed && item.timedSrc ? item.timedSrc : item.src;
@@ -84,29 +151,60 @@ async function prepareCompletionPass(item, { playerName = "", completionTimeLabe
   canvas.height = source.naturalHeight;
   const context = canvas.getContext("2d");
   context.drawImage(source, 0, 0);
-  const scale = canvas.width / 1536;
-  context.save();
-  context.fillStyle = "#0a3f3d";
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  let nameFontSize = Math.round(23 * scale);
-  context.font = `900 ${nameFontSize}px Georgia, serif`;
-  while (context.measureText(playerName).width > 222 * scale && nameFontSize > 12 * scale) {
-    nameFontSize -= 1;
-    context.font = `900 ${nameFontSize}px Georgia, serif`;
-  }
-  context.fillText(playerName, 515 * scale, 842 * scale, 224 * scale);
+  removeExteriorBackground(context, canvas);
+  typewriterText(context, canvas, playerName, 510, 775, { fontSize: 62, maxWidth: 675 });
   if (timed) {
-    context.font = `900 ${Math.round(13 * scale)}px Georgia, serif`;
-    context.fillText("OFFICIAL TIME", 805 * scale, 819 * scale);
-    context.font = `900 ${Math.round(23 * scale)}px Georgia, serif`;
-    context.fillText(completionTimeLabel, 805 * scale, 849 * scale);
+    typewriterText(context, canvas, completionTimeLabel, 1280, 775, { fontSize: 62, maxWidth: 620 });
+  } else {
+    typewriterText(context, canvas, playerClass, 1280, 775, { fontSize: 56, maxWidth: 620 });
   }
-  context.restore();
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-  if (!blob) throw new Error("Could not prepare the personalised completion pass.");
+  if (!blob) throw new Error("Could not prepare the personalised blimp ticket.");
   return URL.createObjectURL(blob);
+}
+
+function removeExteriorBackground(context, canvas) {
+  const { width, height } = canvas;
+  const imageData = context.getImageData(0, 0, width, height);
+  const pixels = imageData.data;
+  const visited = new Uint8Array(width * height);
+  const queue = new Int32Array(width * height);
+  let head = 0;
+  let tail = 0;
+  const isExteriorColor = (index) => {
+    const offset = index * 4;
+    const red = pixels[offset];
+    const green = pixels[offset + 1];
+    const blue = pixels[offset + 2];
+    const range = Math.max(red, green, blue) - Math.min(red, green, blue);
+    const brightness = (red + green + blue) / 3;
+    return range < 16 && (brightness > 150 || brightness < 36);
+  };
+  const enqueue = (index) => {
+    if (visited[index] || !isExteriorColor(index)) return;
+    visited[index] = 1;
+    queue[tail++] = index;
+  };
+
+  for (let x = 0; x < width; x += 1) {
+    enqueue(x);
+    enqueue((height - 1) * width + x);
+  }
+  for (let y = 1; y < height - 1; y += 1) {
+    enqueue(y * width);
+    enqueue(y * width + width - 1);
+  }
+  while (head < tail) {
+    const index = queue[head++];
+    pixels[index * 4 + 3] = 0;
+    const x = index % width;
+    if (x > 0) enqueue(index - 1);
+    if (x + 1 < width) enqueue(index + 1);
+    if (index >= width) enqueue(index - width);
+    if (index + width < width * height) enqueue(index + width);
+  }
+  context.putImageData(imageData, 0, 0);
 }
 
 function image(item, options = {}) {
@@ -115,7 +213,7 @@ function image(item, options = {}) {
   const timed = Boolean(options.completionTimeLabel);
   const sourcePath = timed && item.timedSrc ? item.timedSrc : item.src;
   img.src = sourcePath;
-  img.alt = `${item.alt || item.title}${options.playerName ? ` Passenger: ${options.playerName}.` : ""}${timed ? ` Official trail time: ${options.completionTimeLabel}.` : ""}`;
+  img.alt = `${item.alt || item.title}${options.playerName ? ` Passenger: ${options.playerName}.` : ""}${timed ? ` Official trail time: ${options.completionTimeLabel}.` : options.playerClass ? ` Class: ${options.playerClass}.` : ""}`;
   img.loading = "lazy";
   const caption = el("figcaption", "media-caption");
   caption.append(el("strong", "", item.title));
@@ -124,26 +222,29 @@ function image(item, options = {}) {
   }
   if (item.download) {
     const personalised = Boolean(item.personalised);
-    const link = el("a", "secondary-button download-button", personalised ? "Preparing your completion pass…" : item.downloadLabel || "Download reward");
+    const link = el("a", "secondary-button download-button", personalised ? "Preparing your blimp ticket…" : item.downloadLabel || "Download reward");
     link.download = item.downloadName || "trail-reward.png";
     if (personalised) {
+      img.hidden = true;
       link.removeAttribute("href");
       link.setAttribute("aria-disabled", "true");
       link.setAttribute("aria-busy", "true");
       link.tabIndex = -1;
       if (options.playerName) caption.append(el("p", "ticket-name-caption", `PASSENGER: ${options.playerName}`));
+      if (!timed && options.playerClass) caption.append(el("p", "ticket-class-caption", `CLASS: ${options.playerClass}`));
       if (timed) caption.append(el("p", "ticket-time-caption", `OFFICIAL TRAIL TIME: ${options.completionTimeLabel}`));
       prepareCompletionPass(item, options).then((url) => {
         img.src = url;
+        img.hidden = false;
         link.href = url;
-        link.textContent = timed ? "Download your timed completion pass" : "Download your completion pass";
+        link.textContent = timed ? "Download your timed blimp ticket" : "Download your blimp ticket";
         link.removeAttribute("aria-disabled");
         link.removeAttribute("aria-busy");
         link.removeAttribute("tabindex");
       }).catch((error) => {
         console.error(error);
-        link.textContent = "Personalised pass unavailable";
-        link.setAttribute("aria-label", "Personalised pass could not be prepared; it is not available to download.");
+        link.textContent = "Personalised blimp ticket unavailable";
+        link.setAttribute("aria-label", "Personalised blimp ticket could not be prepared; it is not available to download.");
         link.removeAttribute("aria-busy");
       });
     } else {

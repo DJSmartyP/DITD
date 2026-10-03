@@ -11,6 +11,13 @@ export function normalizeAnswer(value, kind = "text") {
   if (kind === "name") return raw.toLocaleLowerCase("en-GB").replace(/[^a-z\s'-]/g, "").replace(/\s+/g, " ").trim();
   if (kind === "captcha") return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (kind === "jonagraph") return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (kind === "jonabot-command") {
+    return raw
+      .toLocaleLowerCase("en-GB")
+      .replace(/[^a-z0-9]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
   if (kind === "command") {
     return raw
       .toLocaleLowerCase("en-GB")
@@ -485,7 +492,7 @@ function reward(scene, { completionTimeLabel = null } = {}) {
   }
   booking.append(
     el("div", "armed-badge", "BLIMP PASS: RESERVED"),
-    el("p", "reward-instructions", "Your collectible completion pass is ready above. Download it, add your details and keep it as proof that you completed the trail.")
+    el("p", "reward-instructions", "Your personalised blimp ticket is ready above. Download it and keep it as proof that you completed the trail.")
   );
 
   const creditsPanel = el("section", "credits-panel");

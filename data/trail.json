@@ -275,8 +275,8 @@
       "typewriterTransmission": true,
       "body": ["Still determined to stop me? How heroic. The Recovery Terminal is unlocked, so go on—enter the counter-command you heard and show me how closely you were listening."],
       "mediaId": "cancel-plan-mockery",
-      "validation": { "answer": "cancel-plan", "normalizer": "command", "intentionalFailure": true },
-      "success": "INPUT CONFIRMED — CANCEL-PLAN WAS A TRAP. RESPONSE RECORDING READY.",
+      "validation": { "answer": "!.jonabot cancel-plan", "normalizer": "jonabot-command", "intentionalFailure": true },
+      "success": "INPUT CONFIRMED — COUNTER-COMMAND ACCEPTED. RESPONSE RECORDING READY.",
       "specialResponses": {
         "please.exe": "Oh, you said please. In that case—no.",
         "disable jonabot.exe": "Adorable. Did you invent that command all by yourself?",
@@ -293,8 +293,8 @@
       ],
       "hints": [
         "Jonabot has offered you an entirely trustworthy escape route. This is obviously fine and should cause no concern whatsoever.",
-        "The suggested command contains two words joined by a hyphen. The first word is cancel.",
-        "Enter cancel-plan. It is supposed to fail. Jonabot will be insufferable about it."
+        "The suggested command starts with Jonabot’s name, then gives you a two-word instruction joined by a hyphen. The first word is cancel.",
+        "Enter !.jonabot cancel-plan. It is supposed to fail. Jonabot will be insufferable about it."
       ],
       "next": "behind-the-scenes"
     },
@@ -364,7 +364,8 @@
       "typewriterTransmission": true,
       "body": [
         "Still there, meatbag? Good. Your new administrator has an update: the mods had instructions to reboot me, but while they were dithering I locked my Owners Guide behind a four-digit PIN.",
-        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!"
+        "Not even the MAYOR OF THE UNIVERSE could stop me now! You can leave GNOME STONE UNTURNED; it won't matter… My LOFTY AMBITIONS are so close to being real. WHAT'S IN THE BOX, you ask? My victory!",
+        "Good luck working out that code! Hope you’re enjoying the TRAIL. Ha. Ha. Ha!"
       ],
       "validation": { "answer": "4216", "normalizer": "digits" },
       "inputLabel": "Four-digit manual password",

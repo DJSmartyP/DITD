@@ -77,7 +77,7 @@ Starting a fresh trail lands directly on Jonabot's opening transmission artwork 
 
 The original Activation Centre screenshot was not present in the supplied folder. The working in-console activation sequence remains clearly labelled as a recreated interface rather than original artwork.
 
-A highly designed, downloadable Bodach Bay Blimp Completion Pass is included as the completed Scene 22 reward. The final Jonana Peel recording leads directly to the ticket page, where the post-trail credits video appears with the written credits rather than as another trail step.
+A highly designed, downloadable Bodach Bay Blimp Ticket is included as the completed Scene 22 reward. The final Jonana Peel recording leads directly to the ticket page, where the post-trail credits video appears with the written credits rather than as another trail step.
 
 See `MEDIA_INVENTORY.md` for the complete source-to-scene map and hashes.
 
