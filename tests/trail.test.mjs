@@ -770,16 +770,23 @@ test("player name is normalized safely and bounded in saved state", () => {
 
 test("casual ticket classes are selected from the approved low-status pool and persist safely", () => {
   assert.deepEqual(TICKET_CLASSES, [
-    "Luggage Class",
-    "Cattle Class",
-    "Economy Meatbag Class",
-    "Probationary Passenger Class",
-    "Lowest Available Class",
-    "Cargo Class"
+    "Luggage",
+    "Cattle",
+    "Economy Meatbag",
+    "Probationary Passenger",
+    "Lowest Available",
+    "Cargo",
+    "Ballast",
+    "Mega Budget",
+    "Jonas Wannabe",
+    "Idiot Tourist"
   ]);
-  assert.equal(generateTicketClass(() => 0), "Luggage Class");
-  assert.equal(generateTicketClass(() => 0.99999), "Cargo Class");
-  assert.equal(validateState({ playerClass: "Cargo Class" }, trail).playerClass, "Cargo Class");
+  assert.equal(generateTicketClass(() => 0), "Luggage");
+  assert.equal(generateTicketClass(() => 0.99999), "Idiot Tourist");
+  assert.equal(validateState({ playerClass: "Cargo Class" }, trail).playerClass, "Cargo");
+  for (const playerClass of TICKET_CLASSES) {
+    assert.equal(validateState({ playerClass }, trail).playerClass, playerClass);
+  }
   assert.equal(validateState({ playerClass: "First Class" }, trail).playerClass, "");
 });
 

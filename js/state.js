@@ -1,11 +1,15 @@
 export const STORAGE_KEY = "ppecTrailState:v1";
 export const TICKET_CLASSES = Object.freeze([
-  "Luggage Class",
-  "Cattle Class",
-  "Economy Meatbag Class",
-  "Probationary Passenger Class",
-  "Lowest Available Class",
-  "Cargo Class"
+  "Luggage",
+  "Cattle",
+  "Economy Meatbag",
+  "Probationary Passenger",
+  "Lowest Available",
+  "Cargo",
+  "Ballast",
+  "Mega Budget",
+  "Jonas Wannabe",
+  "Idiot Tourist"
 ]);
 
 export function generateTicketClass(random = Math.random) {
@@ -48,6 +52,9 @@ export function validateState(candidate, trail) {
   const currentSceneId = sceneIds.has(candidate.currentSceneId)
     ? candidate.currentSceneId
     : trail.startSceneId;
+  const playerClass = typeof candidate.playerClass === "string"
+    ? candidate.playerClass.replace(/ Class$/, "")
+    : "";
   const state = {
     ...fallback,
     currentSceneId,
@@ -59,7 +66,7 @@ export function validateState(candidate, trail) {
     playerName: typeof candidate.playerName === "string"
       ? candidate.playerName.replace(/[\u0000-\u001f\u007f]/g, "").replace(/\s+/g, " ").trim().slice(0, 32)
       : "",
-    playerClass: TICKET_CLASSES.includes(candidate.playerClass) ? candidate.playerClass : "",
+    playerClass: TICKET_CLASSES.includes(playerClass) ? playerClass : "",
     hintLevels: candidate.hintLevels && typeof candidate.hintLevels === "object" ? candidate.hintLevels : {},
     attemptCounts: candidate.attemptCounts && typeof candidate.attemptCounts === "object" ? candidate.attemptCounts : {},
     timerMode: ["timed", "casual"].includes(candidate.timerMode) ? candidate.timerMode : null,
