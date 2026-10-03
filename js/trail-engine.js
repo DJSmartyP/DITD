@@ -1,5 +1,6 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261002-3";
-import { renderMedia } from "./media.js?v=20260930-5";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261002-4";
+import { renderMedia } from "./media.js?v=20261002-6";
+import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -30,6 +31,7 @@ export class TrailEngine {
   complete(scene, { stay = false } = {}) {
     const next = scene.next ? this.sceneById.get(scene.next) : null;
     this.store.update((state) => {
+      this.applyTimerTransition(state, scene, next);
       if (!state.completedSceneIds.includes(scene.id)) state.completedSceneIds.push(scene.id);
       state.phase = next?.phase || scene.phase;
       if (!stay && next) {
@@ -39,6 +41,19 @@ export class TrailEngine {
         }
       }
     });
+  }
+
+  applyTimerTransition(state, scene, next) {
+    if (state.timerMode === "timed" && scene.id === this.trail.startSceneId && !state.timerStartedAt) {
+      state.timerStartedAt = new Date().toISOString();
+    }
+    if (state.timerMode === "timed" && next?.mode === "reward" && state.timerStartedAt && !state.timerFinishedAt) {
+      state.timerFinishedAt = new Date().toISOString();
+    }
+  }
+
+  completionTimeLabel() {
+    return formatTrailTime(timerElapsedMs(this.store.get()));
   }
 
   setFeedback(message, kind = "error", sceneId = this.currentScene().id) {
@@ -132,6 +147,7 @@ export class TrailEngine {
     else if (scene.next) {
       const next = this.sceneById.get(scene.next);
       this.store.update((state) => {
+        this.applyTimerTransition(state, scene, next);
         state.currentSceneId = scene.next;
         state.phase = next?.phase || state.phase;
         if (next?.completeOnEntry && !state.completedSceneIds.includes(next.id)) {
@@ -211,8 +227,11 @@ export class TrailEngine {
           return;
         }
         cursor.remove();
-        container.classList.remove("scene-transmission-typing");
-        container.classList.add("scene-transmission-ready");
+        container.classList.add("scene-transmission-hold");
+        window.setTimeout(() => {
+          container.classList.remove("scene-transmission-typing", "scene-transmission-hold");
+          container.classList.add("scene-transmission-ready");
+        }, 1250);
       };
       window.setTimeout(typeNextCharacter, 350);
     } else if (scene.typewriterTransmission) {
@@ -243,13 +262,14 @@ export class TrailEngine {
 
     if (mediaLayout.childElementCount) container.append(mediaLayout);
     if (scene.ticketMediaId) {
-      const tickets = renderMedia(this.manifest.items[scene.ticketMediaId]);
+      const tickets = renderMedia(this.manifest.items[scene.ticketMediaId], { completionTimeLabel: this.completionTimeLabel() });
       if (tickets) container.append(tickets);
     }
   }
 
   renderCompletedScene(scene) {
     const section = el("section", "trail-entry trail-entry-complete");
+    if (scene.typewriterTransmission) section.classList.add("scene-live-transmission");
     if (scene.retainWithNext) section.classList.add("trail-entry-retain");
     section.id = `trail-scene-${scene.id}`;
     section.setAttribute("aria-label", `Completed trail section: ${scene.title}`);
@@ -300,6 +320,7 @@ export class TrailEngine {
       .forEach((candidate) => stream.append(this.renderCompletedScene(candidate)));
 
     const currentRoot = el("section", "trail-entry trail-entry-current");
+    if (scene.typewriterTransmission) currentRoot.classList.add("scene-live-transmission");
     currentRoot.id = `trail-scene-${scene.id}`;
     currentRoot.setAttribute("aria-label", `Current trail section: ${scene.title}`);
     currentRoot.setAttribute("aria-live", "polite");
@@ -354,7 +375,7 @@ export class TrailEngine {
       });
       if (machine) currentRoot.append(machine);
     } else if (scene.mode === "reward") {
-      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {}, animate: false });
+      const machine = renderMachine(scene, { onSubmit: () => {}, onComplete: () => {}, animate: false, completionTimeLabel: this.completionTimeLabel() });
       if (machine) currentRoot.append(machine);
     }
 

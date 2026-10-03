@@ -1,6 +1,7 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20261002-4";
+import { TrailEngine } from "./trail-engine.js?v=20261002-5";
 import { renderHints, revealNextHint } from "./hints.js";
+import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -41,6 +42,21 @@ try {
   let pendingSuccess = null;
   let lastRenderedPhase = null;
   let phaseTransitionTimer = null;
+  let timerInterval = null;
+
+  function renderTimer() {
+    const state = store.get();
+    const label = formatTrailTime(timerElapsedMs(state));
+    const visible = state.timerMode === "timed" && Boolean(state.timerStartedAt);
+    $("#timer-readout").hidden = !visible;
+    $("#header-timer").hidden = !visible;
+    if (visible && label) {
+      setText("#trail-timer", label);
+      setText("#header-timer", state.timerFinishedAt ? `FINAL ${label}` : label);
+    }
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = visible && !state.timerFinishedAt ? window.setInterval(renderTimer, 1000) : null;
+  }
 
   function setSuccessVariant(sceneId) {
     const variants = {
@@ -94,7 +110,7 @@ try {
     if (!className) return;
     document.body.classList.add(className);
     clearTimeout(phaseTransitionTimer);
-    phaseTransitionTimer = setTimeout(() => document.body.classList.remove(className), 1800);
+    phaseTransitionTimer = setTimeout(() => document.body.classList.remove(className), phase === "restored" ? 3600 : 1800);
   }
 
   function openSuccessDialog(result) {
@@ -186,6 +202,7 @@ try {
     };
     setText("#phase-label", labels[phase]);
     setText("#trail-progress", `${Math.round((state.completedSceneIds.length / trail.scenes.length) * 100)}%`);
+    renderTimer();
     setText("#narrator-name", phase === "corrupted" ? "Administrator: Jonabot" : phase === "restored" ? "Jonabot (Dec 2023)" : "Jonabot v2.3");
     const uneasyLevel = Number(document.body.dataset.uneasyLevel || 0);
     const corruptionLevel = Number(document.body.dataset.corruptionLevel || 0);
@@ -235,6 +252,7 @@ try {
     else engine.advance(result.scene);
   });
   successDialog.addEventListener("cancel", (event) => event.preventDefault());
+  welcomeDialog.addEventListener("cancel", (event) => event.preventDefault());
 
   notes.value = store.get().notes;
   const saveNotes = debounce(() => {
@@ -286,7 +304,12 @@ try {
     store.reset();
     notes.value = "";
     toolRail.dataset.open = "false";
+    $("#timer-mode-picker").hidden = false;
+    $("#continue-trail").textContent = "Start trail";
+    $("#welcome-reset").hidden = true;
+    $("#welcome-message").textContent = "Choose how you would like to play. Your progress will stay on this device.";
     engine.render();
+    if (!welcomeDialog.open) welcomeDialog.showModal();
     return true;
   }
 
@@ -295,9 +318,13 @@ try {
     if (confirmReset()) menuDialog.close();
   });
   $("#welcome-reset").addEventListener("click", () => {
-    if (confirmReset()) welcomeDialog.close();
+    confirmReset();
   });
   $("#continue-trail").addEventListener("click", () => {
+    if (!store.hadProgress()) {
+      const mode = document.querySelector('input[name="timer-mode"]:checked')?.value === "casual" ? "casual" : "timed";
+      store.update((state) => { state.timerMode = mode; });
+    }
     welcomeDialog.close();
     engine.scrollToScene(engine.currentScene().id, { focus: true });
   });
@@ -310,13 +337,15 @@ try {
   engine.render();
 
   const hasProgress = store.hadProgress();
+  $("#timer-mode-picker").hidden = hasProgress;
   $("#continue-trail").textContent = hasProgress ? "Resume trail" : "Start trail";
   $("#welcome-reset").hidden = !hasProgress;
   if (store.recoveredMalformedState) {
     $("#welcome-message").textContent = "Saved progress was unreadable, so the Trail Console recovered safely with a fresh trail. Other browser data was untouched.";
   } else if (hasProgress) {
     const current = engine.currentScene();
-    $("#welcome-message").textContent = `Progress found on this device at ${current.title}.`;
+    const mode = store.get().timerMode === "timed" ? "Timed Trail" : "Casual Trail";
+    $("#welcome-message").textContent = `Progress found on this device at ${current.title}. ${mode} selected.`;
   }
   welcomeDialog.showModal();
 } catch (error) {

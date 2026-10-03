@@ -10,6 +10,9 @@ function freshState(startSceneId) {
     notes: "",
     hintLevels: {},
     attemptCounts: {},
+    timerMode: null,
+    timerStartedAt: null,
+    timerFinishedAt: null,
     phase: "normal",
     updatedAt: new Date().toISOString()
   };
@@ -38,6 +41,9 @@ export function validateState(candidate, trail) {
     notes: typeof candidate.notes === "string" ? candidate.notes.slice(0, 50000) : "",
     hintLevels: candidate.hintLevels && typeof candidate.hintLevels === "object" ? candidate.hintLevels : {},
     attemptCounts: candidate.attemptCounts && typeof candidate.attemptCounts === "object" ? candidate.attemptCounts : {},
+    timerMode: ["timed", "casual"].includes(candidate.timerMode) ? candidate.timerMode : null,
+    timerStartedAt: typeof candidate.timerStartedAt === "string" ? candidate.timerStartedAt : null,
+    timerFinishedAt: typeof candidate.timerFinishedAt === "string" ? candidate.timerFinishedAt : null,
     phase: ["normal", "uneasy", "corrupted", "restored"].includes(candidate.phase) ? candidate.phase : "normal",
     updatedAt: typeof candidate.updatedAt === "string" ? candidate.updatedAt : fallback.updatedAt
   };
@@ -73,7 +79,7 @@ export function createStateStore(trail) {
   return {
     get() { return state; },
     hadProgress() {
-      return state.completedSceneIds.length > 0 || state.currentSceneId !== trail.startSceneId || Boolean(state.notes);
+      return state.completedSceneIds.length > 0 || state.currentSceneId !== trail.startSceneId || Boolean(state.notes) || Boolean(state.timerMode);
     },
     recoveredMalformedState,
     update(mutator, { save = true } = {}) {

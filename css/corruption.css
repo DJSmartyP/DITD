@@ -340,7 +340,27 @@ body[data-corruption-level="9"] .trail-entry-current {
 
   body.phase-transition-uneasy .console { animation: uneasy-impact .8s ease-out; }
   body.phase-transition-corrupted .console { animation: takeover-impact 1.35s steps(1); }
-  body.phase-transition-restored .console { animation: restoration-impact 1.05s ease-out; }
+  body.phase-transition-restored .console { animation: restoration-impact 3.2s ease-out; }
+
+  body.phase-transition-restored::before,
+  body.phase-transition-restored::after {
+    content: "";
+    position: fixed;
+    z-index: 60;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  body.phase-transition-restored::before {
+    background: linear-gradient(90deg, transparent 0 38%, rgb(102 235 214 / .92) 48%, rgb(248 220 126 / .76) 52%, transparent 62%);
+    transform: translateX(-115%);
+    animation: restoration-sweep 2.7s cubic-bezier(.2,.7,.2,1) .2s both;
+  }
+
+  body.phase-transition-restored::after {
+    background: radial-gradient(circle at 50% 45%, rgb(84 222 202 / .18), transparent 62%), rgb(91 0 17 / .64);
+    animation: restoration-curtain 3.35s ease-in-out both;
+  }
 
   body[data-phase="corrupted"]::before {
     animation: corruption-scan calc(7s - var(--corruption-level) * .45s) linear infinite;
@@ -425,9 +445,23 @@ body[data-corruption-level="9"] .trail-entry-current {
   }
 
   @keyframes restoration-impact {
-    0% { filter: brightness(2.1) saturate(.4) hue-rotate(120deg); }
-    34% { filter: brightness(1.35) saturate(1.5); }
+    0%, 16% { filter: brightness(.55) saturate(2.1) hue-rotate(-16deg); }
+    34% { filter: brightness(1.8) saturate(.55) hue-rotate(105deg); }
+    58% { filter: brightness(1.25) saturate(1.45); }
     100% { filter: none; }
+  }
+
+  @keyframes restoration-sweep {
+    0% { transform: translateX(-115%); opacity: 0; }
+    12% { opacity: 1; }
+    100% { transform: translateX(115%); opacity: 0; }
+  }
+
+  @keyframes restoration-curtain {
+    0%, 18% { opacity: 1; background-color: rgb(91 0 17 / .64); }
+    44% { opacity: .82; background-color: rgb(61 20 25 / .48); }
+    68% { opacity: .48; background-color: rgb(6 92 83 / .32); }
+    100% { opacity: 0; background-color: transparent; }
   }
 
   @keyframes diagnostic-sweep {

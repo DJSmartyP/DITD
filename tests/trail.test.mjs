@@ -4,6 +4,7 @@ import { readFile, access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { answerMatches, normalizeAnswer } from "../js/machines.js";
+import { formatTrailTime, timerElapsedMs } from "../js/timer.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -144,6 +145,9 @@ test("corruption begins with the reveal, escalates by scene and clears on reset"
   assert.match(app, /data\.currentScene|dataset\.currentScene/);
   assert.match(app, /phase-transition-corrupted/);
   assert.match(app, /phase-transition-restored/);
+  assert.match(css, /restoration-sweep/);
+  assert.match(css, /restoration-curtain/);
+  assert.match(app, /phase === "restored" \? 3600 : 1800/);
   assert.match(app, /ACCESS CONTROL OVERRIDE/);
   assert.match(app, /RECOVERY ROUTE OPEN/);
   assert.match(app, /External administrator signature detected/);
@@ -259,6 +263,7 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   const puzzle = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
   const lockedGuide = trail.scenes.find((scene) => scene.id === "recovery-manual");
   const recoveryConsole = trail.scenes.find((scene) => scene.id === "recovery-console");
+  const reveal = trail.scenes.find((scene) => scene.id === "jonabot-reveal");
   const protectedGuide = manifest.items["jonabot-operator-manual-protected"];
   assert.ok(channel.messages.some((message) => message.text.includes("#trail-note-pdfs")));
   assert.equal(channel.messages.some((message) => message.links?.some((link) => link.href === protectedGuide.src)), false);
@@ -273,7 +278,7 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   assert.equal(puzzle.modeLabel, "LIVE MESSAGE");
   assert.equal(puzzle.transmissionLabel, "LIVE NOW");
   assert.equal(puzzle.speaker, "Administrator: Jonabot");
-  for (const scene of [lockedGuide, puzzle, recoveryConsole]) {
+  for (const scene of [reveal, lockedGuide, puzzle, recoveryConsole]) {
     assert.equal(scene.typewriterTransmission, true);
     assert.equal(scene.transmissionLabel, "LIVE NOW");
     assert.equal(scene.speaker, "Administrator: Jonabot");
@@ -289,6 +294,8 @@ test("Videomatic 8345 preserves its reveal until playback", () => {
   assert.equal(recording.posterHeadline, "RESTRICTED RECORDING");
   assert.equal(recording.posterStatus, "SIGNAL READY");
   assert.equal(recording.playLabel, "Play Videomatic recording 8345");
+  assert.match(recording.thumbnailAlt, /cowboy-hatted figure.*silhouette/i);
+  assert.match(recording.thumbnail, /videomatic-8345\.jpg$/);
   for (const value of [recording.title, recording.thumbnailAlt, recording.posterHeadline, recording.posterStatus]) {
     assert.doesNotMatch(value, /jonabot|reveal|administrator/i);
   }
@@ -323,7 +330,7 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
     }
     if (item.kind === "youtube") {
       assert.match(item.src, /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/i, `${id} YouTube URL`);
-      assert.match(item.thumbnail, /^\.\/assets\/video-thumbnails\/[\w-]+\.webp$/, `${id} local story-art thumbnail`);
+      assert.match(item.thumbnail, /^\.\/assets\/video-thumbnails\/[\w-]+\.(?:webp|jpg)$/, `${id} local story-art thumbnail`);
       assert.ok(item.thumbnailAlt, `${id} thumbnail alt text`);
       assert.ok(item.playLabel, `${id} play label`);
       assert.ok(item.playText, `${id} in-world play text`);
@@ -424,7 +431,8 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261002-4/);
+  assert.match(html, /main\.css\?v=20261002-6/);
+  assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 
 test("answer feedback appears only after submission and has distinct result states", async () => {
@@ -460,12 +468,43 @@ test("every answer-controlled media beat is routed through Continue before a lat
   assert.deepEqual(lockedMediaScenes, [
     "jonavision-207",
     "videomatic-4763",
-    "activation-centre",
     "test-videomatic",
     "fake-cancel-plan"
   ]);
   const inlineTargets = trail.scenes.map((scene) => scene.inlineMachineSceneId).filter(Boolean);
   assert.deepEqual(inlineTargets, ["jonavision-207"]);
+});
+
+test("the failed Activation Centre visual appears before opening the live machine", () => {
+  const interruption = trail.scenes.find((scene) => scene.id === "licence-failure");
+  const activation = trail.scenes.find((scene) => scene.id === "activation-centre");
+  const artwork = manifest.items["activation-centre"];
+  assert.equal(interruption.mediaId, "activation-centre");
+  assert.equal(activation.mediaId, undefined);
+  assert.equal(artwork.kind, "generated-interface");
+  assert.deepEqual(artwork.scenes, ["licence-failure"]);
+  assert.equal(artwork.status, "rendered-in-world-interface");
+});
+
+test("timed and casual trails preserve the intended timer boundaries", async () => {
+  const engine = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+  const state = await readFile(join(root, "js", "state.js"), "utf8");
+  const app = await readFile(join(root, "js", "app.js"), "utf8");
+  const html = await readFile(join(root, "index.html"), "utf8");
+  assert.equal(formatTrailTime(0), "0:00");
+  assert.equal(formatTrailTime(2_537_000), "42:17");
+  assert.equal(formatTrailTime(3_661_000), "1:01:01");
+  assert.equal(timerElapsedMs({ timerMode: "casual", timerStartedAt: new Date(0).toISOString() }, 5000), null);
+  assert.equal(timerElapsedMs({ timerMode: "timed", timerStartedAt: new Date(1000).toISOString(), timerFinishedAt: new Date(5000).toISOString() }, 9000), 4000);
+  assert.match(engine, /scene\.id === this\.trail\.startSceneId/);
+  assert.match(engine, /next\?\.mode === "reward"/);
+  assert.match(state, /timerMode/);
+  assert.match(state, /timerStartedAt/);
+  assert.match(state, /timerFinishedAt/);
+  assert.match(app, /input\[name="timer-mode"\]/);
+  assert.match(html, /Timed Trail/);
+  assert.match(html, /Casual Trail/);
+  assert.match(html, /id="header-timer"/);
 });
 
 test("player-facing copy stays inside the story world", async () => {
@@ -540,6 +579,9 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(machines, /scene\.interceptMessage\.slice\(0, characterIndex\)/);
   assert.match(machines, /channel\.hidden = shouldType/);
   assert.match(machines, /channel\.hidden = false/);
+  assert.match(machines, /INTERCEPTING PRIVATE CHANNEL/);
+  assert.match(machines, /private-channel-handshaking/);
+  assert.match(machines, /}, 1250\)/);
   assert.match(machines, /prefers-reduced-motion: reduce/);
   assert.match(engine, /animate: false/);
   assert.match(mainCss, /\.discord-channel\s*\{/);
@@ -548,6 +590,8 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(mainCss, /\.private-channel:not\(\.private-channel-ready\) ~ \.scene-actions/);
   assert.match(engine, /scene\.typewriterTransmission/);
   assert.match(engine, /scene-transmission-typing/);
+  assert.match(engine, /scene-transmission-hold/);
+  assert.match(engine, /}, 1250\)/);
   assert.match(engine, /current\.paragraph\.slice\(0, characterIndex\)/);
   assert.match(mainCss, /\.story-copy-live-transmission/);
   assert.match(mainCss, /\.scene-transmission-typing > :not\(\.scene-header\):not\(\.story-copy\)/);

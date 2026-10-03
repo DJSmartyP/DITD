@@ -329,7 +329,15 @@ function privateChannel(scene, { animate = true } = {}) {
 
   channel.append(channelHeader, messageList, composer);
   channel.hidden = shouldType;
-  wrapper.append(channel);
+  const handshake = el("div", "channel-handshake");
+  handshake.hidden = true;
+  handshake.setAttribute("role", "status");
+  handshake.append(
+    el("span", "channel-handshake-label", "INTERCEPTING PRIVATE CHANNEL"),
+    el("span", "channel-handshake-track"),
+    el("small", "", "Decrypting #ai-issues · establishing read-only mirror")
+  );
+  wrapper.append(handshake, channel);
 
   if (shouldType) {
     wrapper.classList.add("private-channel-typing");
@@ -348,9 +356,15 @@ function privateChannel(scene, { animate = true } = {}) {
         return;
       }
       cursor.remove();
-      channel.hidden = false;
       wrapper.classList.remove("private-channel-typing");
-      wrapper.classList.add("private-channel-ready");
+      wrapper.classList.add("private-channel-handshaking");
+      handshake.hidden = false;
+      window.setTimeout(() => {
+        handshake.hidden = true;
+        channel.hidden = false;
+        wrapper.classList.remove("private-channel-handshaking");
+        wrapper.classList.add("private-channel-ready");
+      }, 1250);
     };
     window.setTimeout(typeNextCharacter, 350);
   } else {
@@ -402,10 +416,19 @@ function restore(scene, onComplete) {
   return machine;
 }
 
-function reward(scene) {
+function reward(scene, { completionTimeLabel = null } = {}) {
   const stack = el("div", "reward-stack");
   const booking = machineFrame("BODACH BAY BOOKING", "CONFIRMED");
   booking.classList.add("reward-booking");
+  if (completionTimeLabel) {
+    const result = el("div", "completion-time-card");
+    result.append(
+      el("span", "completion-time-kicker", "OFFICIAL TRAIL TIME"),
+      el("strong", "", completionTimeLabel),
+      el("small", "", "Recorded when your Bodach Bay booking was confirmed")
+    );
+    booking.append(result);
+  }
   booking.append(
     el("div", "armed-badge", "BLIMP PASS: RESERVED"),
     el("p", "reward-instructions", "Your collectible completion pass is ready above. Download it, add your details and keep it as proof that you completed the trail.")
@@ -422,7 +445,7 @@ function reward(scene) {
   return stack;
 }
 
-export function renderMachine(scene, { onSubmit, onComplete, animate = true }) {
+export function renderMachine(scene, { onSubmit, onComplete, animate = true, completionTimeLabel = null }) {
   switch (scene.mode) {
     case "jonavision": return jonavision(scene, onSubmit);
     case "videomatic": return videomatic(scene, onSubmit);
@@ -441,7 +464,7 @@ export function renderMachine(scene, { onSubmit, onComplete, animate = true }) {
     case "diagnostic": return diagnostic(scene);
     case "private-channel": return privateChannel(scene, { animate });
     case "restore": return restore(scene, onComplete);
-    case "reward": return reward(scene);
+    case "reward": return reward(scene, { completionTimeLabel });
     default: return null;
   }
 }

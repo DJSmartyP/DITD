@@ -192,6 +192,7 @@
       "body": [
         "VIDEOMATIC ERROR: Please re-activate your Videomatic licence to continue."
       ],
+      "mediaId": "activation-centre",
       "cta": "Open Activation Centre",
       "hints": [],
       "next": "activation-centre"
@@ -204,7 +205,6 @@
       "phase": "uneasy",
       "speaker": "Trail Console",
       "body": ["The Videomatic licence has expired. Complete the legacy activation sequence, then pass the human verification shown by the machine."],
-      "mediaId": "activation-centre",
       "validation": { "answer": "WD54L", "normalizer": "captcha" },
       "success": "HUMAN VERIFIED — WD54L. ADMINISTRATIVE ACCESS GRANTED.",
       "wrongResponses": ["Human verification failed. Re-check all five characters.", "Activation rejected the verification string."],
@@ -239,10 +239,13 @@
       "order": 12,
       "title": "Administrator Message",
       "mode": "story",
+      "modeLabel": "LIVE MESSAGE",
       "phase": "corrupted",
-      "speaker": "Jonabot",
+      "speaker": "Administrator: Jonabot",
+      "transmissionLabel": "LIVE NOW",
+      "typewriterTransmission": true,
       "body": [
-        "Videomatic 8345 playback complete."
+        "Still there, meatbag? Good. I’ve taken control of your Trail Console. Run your little diagnostic if you want to see what I changed."
       ],
       "cta": "Run diagnostic",
       "hints": [],

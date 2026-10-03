@@ -74,7 +74,35 @@ function youtube(item) {
   return shell;
 }
 
-function image(item) {
+async function downloadTimedPass(item, completionTimeLabel) {
+  const source = new Image();
+  source.src = item.src;
+  await source.decode();
+  const canvas = document.createElement("canvas");
+  canvas.width = source.naturalWidth;
+  canvas.height = source.naturalHeight;
+  const context = canvas.getContext("2d");
+  context.drawImage(source, 0, 0);
+  const scale = canvas.width / 1536;
+  context.save();
+  context.fillStyle = "#0a3f3d";
+  context.font = `900 ${Math.round(21 * scale)}px Georgia, serif`;
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(`TRAIL ${completionTimeLabel}`, 850 * scale, 856 * scale);
+  context.restore();
+
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+  if (!blob) throw new Error("Could not prepare the timed completion pass.");
+  const url = URL.createObjectURL(blob);
+  const download = document.createElement("a");
+  download.href = url;
+  download.download = item.downloadName || "trail-reward.png";
+  download.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function image(item, options = {}) {
   const shell = el("figure", "media-shell");
   const img = document.createElement("img");
   img.src = item.src;
@@ -86,9 +114,29 @@ function image(item) {
     caption.append(el("p", "", "The cypher poster is in the lower-right area of the noticeboard image."));
   }
   if (item.download) {
+    const timed = Boolean(options.completionTimeLabel);
     const link = el("a", "secondary-button download-button", item.downloadLabel || "Download reward");
     link.href = item.src;
     link.download = item.downloadName || "trail-reward.png";
+    if (timed) {
+      link.textContent = "Download your timed completion pass";
+      caption.append(el("p", "ticket-time-caption", `OFFICIAL TRAIL TIME: ${options.completionTimeLabel}`));
+      link.addEventListener("click", async (event) => {
+        event.preventDefault();
+        link.setAttribute("aria-busy", "true");
+        link.textContent = "Stamping your pass…";
+        try {
+          await downloadTimedPass(item, options.completionTimeLabel);
+          link.textContent = "Download your timed completion pass";
+        } catch (error) {
+          console.error(error);
+          link.textContent = "Timed stamp unavailable — download standard pass";
+          link.href = item.src;
+        } finally {
+          link.removeAttribute("aria-busy");
+        }
+      });
+    }
     caption.append(link);
   }
   if (item.zoomable) {
@@ -98,6 +146,34 @@ function image(item) {
     caption.append(zoomButton);
   }
   shell.append(img, caption);
+  return shell;
+}
+
+function generatedInterface(item) {
+  const shell = el("figure", "media-shell activation-visual");
+  const panel = el("div", "activation-visual-panel");
+  const header = el("header", "activation-visual-header");
+  header.append(
+    el("span", "activation-visual-brand", "JONACO SYSTEMS"),
+    el("span", "activation-visual-generation", "LEGACY UNIT · VM/04")
+  );
+  const screen = el("div", "activation-visual-screen");
+  screen.append(
+    el("span", "activation-visual-kicker", "VIDEOMATIC ACTIVATION CENTRE"),
+    el("strong", "", "LICENCE VALIDATION FAILED"),
+    el("p", "", "Legacy activation terminal ready. Reconnect the licence controller below."),
+    el("span", "activation-visual-code", "_ _ _ _ _")
+  );
+  const lamps = el("div", "activation-visual-lamps");
+  lamps.append(
+    el("span", "", "NETWORK · LOCAL"),
+    el("span", "", "LICENCE · EXPIRED"),
+    el("span", "", "OPERATOR · REQUIRED")
+  );
+  panel.append(header, screen, lamps);
+  const caption = el("figcaption", "media-caption");
+  caption.append(el("strong", "", item.title));
+  shell.append(panel, caption);
   return shell;
 }
 
@@ -223,7 +299,8 @@ function documentViewer(item, { locked = false } = {}) {
 export function renderMedia(item, options = {}) {
   if (!item) return null;
   if (item.kind === "youtube") return youtube(item);
-  if (item.kind === "image" || item.kind === "image-region") return image(item);
+  if (item.kind === "image" || item.kind === "image-region") return image(item, options);
   if (item.kind === "document") return documentViewer(item, options);
+  if (item.kind === "generated-interface") return generatedInterface(item);
   return placeholder(item);
 }
