@@ -257,7 +257,6 @@ export class TrailEngine {
       const references = el("details", "reference-drawer");
       references.append(el("summary", "", "Open noticeboard reference"));
       const referenceBody = el("div", "reference-drawer-body");
-      referenceBody.append(el("p", "reference-help", "This is the full noticeboard from earlier. Open its zoom viewer to inspect the Gremlins poster while solving the map."));
       scene.referenceMediaIds.forEach((id) => {
         const reference = renderMedia(this.manifest.items[id]);
         if (reference) referenceBody.append(reference);

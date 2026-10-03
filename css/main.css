@@ -415,7 +415,6 @@ body[data-phase="restored"] .scene-live-transmission .scene-mode { color: #eafff
 }
 .reference-drawer[open] > summary { border-bottom: 2px solid var(--brass); }
 .reference-drawer-body { padding: .85rem; }
-.reference-help { margin: 0; font-size: .88rem; font-weight: 700; }
 .reference-drawer .media-shell { margin: .85rem 0 0; box-shadow: none; }
 
 .image-viewer {
