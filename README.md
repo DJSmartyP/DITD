@@ -69,6 +69,8 @@ Each video has unique, locally hosted story artwork created for its exact scene.
 
 Each video manifest entry points to an included `assets/videos/*.mp4` file. The YouTube URL is retained only as an optional backup if local playback fails.
 
+Video artwork and playback show scene-specific in-world loading messages. Where a recording leads directly to Continue, that button appears only after the local MP4 finishes; this watched state is saved on the device. If local playback fails and the YouTube backup is used, the player can confirm that they finished the backup recording. The corrupted map itself loads eagerly, independently of the optional noticeboard reference.
+
 Jonabot favicon and touch-icon crops are included for browser tabs and saved-home-screen presentation. The opening story artwork also supplies the public social preview.
 
 The home screen uses an original responsive advert-style Jonabot hero with live HTML title, Start Trail, Resume Trail and Start Again controls. Keeping the controls out of the bitmap preserves accessibility and lets the page show the correct option for saved progress.
