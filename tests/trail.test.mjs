@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile, access, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { answerMatches, normalizeAnswer } from "../js/machines.js";
+import { answerMatches, normalizeAnswer, specialResponse } from "../js/machines.js";
 import { TrailEngine } from "../js/trail-engine.js";
 import { formatTrailTime, timerElapsedMs } from "../js/timer.js";
 import { generateTicketClass, TICKET_CLASSES, validateState } from "../js/state.js";
@@ -290,7 +290,14 @@ test("secret inputs return their authored Jonabot responses", () => {
     "factory reset.exe",
     "hello jonabot"
   ]);
-  assert.deepEqual(Object.keys(password.specialResponses).sort(), ["0000", "1234", "207", "4763", "8345"].sort());
+  const repeatedPins = Array.from({ length: 9 }, (_, index) => String(index + 1).repeat(4));
+  assert.deepEqual(Object.keys(password.specialResponses).sort(), ["0000", "1234", "207", "4763", "8345", ...repeatedPins].sort());
+  for (const pin of repeatedPins) {
+    assert.equal(specialResponse(password, pin), password.specialResponses[pin]);
+    assert.equal(answerMatches(pin, password.validation), false);
+  }
+  assert.equal(specialResponse(password, "4216"), null);
+  assert.equal(answerMatches("4216", password.validation), true);
 
   for (const [input, response] of Object.entries({
     ...booking.specialResponses,
