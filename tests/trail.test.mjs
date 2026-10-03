@@ -375,6 +375,10 @@ test("the final reward includes tickets and shows the credits video with the wri
   assert.equal(tickets.download, true);
   assert.equal(tickets.status, "generated-reward-asset");
   assert.match(tickets.src, /completion-pass\.png$/);
+  assert.match(tickets.timedSrc, /completion-pass-timed\.png$/);
+  assert.match(mediaSource, /img\.src = timed && item\.timedSrc \? item\.timedSrc : item\.src/);
+  assert.match(mediaSource, /source\.src = item\.timedSrc \|\| item\.src/);
+  assert.match(mediaSource, /context\.fillText\(completionTimeLabel/);
   assert.equal(tickets.downloadLabel, "Download your completion pass");
   assert.ok(finale.credits.includes("Originally programmed by Arty"));
   assert.ok(finale.credits.includes("Redesign by Smarty"));
