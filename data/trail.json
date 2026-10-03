@@ -404,7 +404,7 @@
         "I suppose you think unlocking my guide makes you clever. It says an earlier version of me can be restored from the most recent full-system backup—but you still have to find and enter the exact recovery instruction.",
         "I’m not worried. Meatbags are excellent at missing the obvious. Go on—issue the restore instruction from my guide. I could use another laugh."
       ],
-      "mediaId": "jonabot-operator-manual-protected",
+      "referenceSceneId": "recovery-manual",
       "validation": { "answer": "INITIATE JONABOT RESTORE", "normalizer": "command" },
       "inputLabel": "Recovery instruction",
       "success": "RECOVERY COMMAND ACCEPTED — JONABOT RESTORE INITIALISED.",

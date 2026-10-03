@@ -369,6 +369,16 @@ test("the manual password puzzle sends players to the Discord trail-note-pdfs ch
   assert.match(recoveryConsole.body.join(" "), /meatbags/i);
 });
 
+test("the unlocked Owners Guide appears once with a return button from recovery", () => {
+  const guideScenes = trail.scenes.filter((scene) => scene.mediaId === "jonabot-operator-manual-protected");
+  const recoveryConsole = trail.scenes.find((scene) => scene.id === "recovery-console");
+  assert.deepEqual(guideScenes.map((scene) => scene.id), ["recovery-manual"]);
+  assert.equal(recoveryConsole.referenceSceneId, "recovery-manual");
+  assert.match(trailEngineSource, /if \(!scene\.mediaId && !scene\.referenceSceneId\) return false/);
+  assert.match(trailEngineSource, /"Return to Owners Guide"/);
+  assert.match(trailEngineSource, /this\.scrollToMedia\(scene\.referenceSceneId, \{ focus: true \}\)/);
+});
+
 test("Videomatic 8345 preserves its reveal until playback", () => {
   const recording = manifest.items["videomatic-8345-reveal"];
   assert.equal(recording.title, "Videomatic recording 8345");

@@ -165,7 +165,7 @@ export class TrailEngine {
   }
 
   mediaShouldShow(scene, solved, replay) {
-    if (!scene.mediaId) return false;
+    if (!scene.mediaId && !scene.referenceSceneId) return false;
     if (scene.mediaAfterSolve && !solved && !replay) return false;
     if (replay || solved || scene.showMediaBeforeSolve) return true;
     return ["story", "investigation", "jonagraph", "document-terminal", "document-locked", "terminal", "restore", "reward"].includes(scene.mode);
@@ -251,6 +251,13 @@ export class TrailEngine {
     if (scene.mediaId) {
       const media = renderMedia(this.manifest.items[scene.mediaId], { locked, eager: true, playToContinue, onWatched });
       if (media) mediaLayout.append(media);
+    }
+
+    if (scene.referenceSceneId) {
+      const reference = el("button", "secondary-button document-return-button", "Return to Owners Guide");
+      reference.type = "button";
+      reference.addEventListener("click", () => this.scrollToMedia(scene.referenceSceneId, { focus: true }));
+      mediaLayout.append(reference);
     }
 
     if (scene.referenceMediaIds?.length) {
