@@ -16,7 +16,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="./assets/images/jonabot-favicon.png">
   <link rel="apple-touch-icon" href="./assets/images/jonabot-touch-icon.png">
-  <link rel="stylesheet" href="./css/main.css?v=20261003-5">
+  <link rel="stylesheet" href="./css/main.css?v=20261003-12">
   <link rel="stylesheet" href="./css/machines.css?v=20261003-2">
   <link rel="stylesheet" href="./css/corruption.css?v=20261003-1">
 </head>
@@ -110,7 +110,8 @@
   </div>
 
   <dialog id="welcome-dialog" class="welcome-dialog" aria-labelledby="welcome-title">
-    <div class="welcome-hero" role="img" aria-label="Jonabot stands before an illustrated amber expedition map of the Ridge">
+    <div class="welcome-hero">
+      <div class="welcome-art" role="img" aria-label="Jonabot stands before an illustrated amber expedition map of the Ridge"></div>
       <div class="welcome-copy">
         <div class="dialog-badge">PPEC COMMUNITY TRAIL</div>
         <h2 id="welcome-title">Discord In The Discord</h2>
@@ -141,6 +142,23 @@
     </div>
   </dialog>
 
+  <dialog id="preload-dialog" class="console-dialog preload-dialog" aria-labelledby="preload-title">
+    <p class="eyebrow">PPEC DEPARTURE CHECK</p>
+    <h2 id="preload-title">Preparing your trail</h2>
+    <p>Jonabot is getting the recordings, images, manuals and tickets ready on this device.</p>
+    <p class="preload-task" id="preload-task" role="status" aria-live="polite">Jonabot is polishing his keyboard. Again.</p>
+    <progress id="preload-progress" max="100" value="0" aria-label="Trail media preparation"></progress>
+    <div class="preload-readout">
+      <output id="preload-percent">0%</output>
+      <output id="preload-eta">Estimating time remaining…</output>
+    </div>
+    <p id="preload-size" class="fine-print">Checking local supplies…</p>
+    <div class="dialog-actions">
+      <button class="primary-button" id="preload-skip" type="button">Start now; stream media</button>
+      <button class="secondary-button" id="preload-retry" type="button" hidden>Try preparation again</button>
+    </div>
+  </dialog>
+
   <dialog id="success-dialog" class="console-dialog success-dialog" aria-labelledby="success-title">
     <p class="eyebrow">ANSWER CONFIRMED</p>
     <div class="success-signal" aria-hidden="true">✓</div>
@@ -158,10 +176,10 @@
     <button class="menu-action" type="button" data-menu-tool="history">Review completed scenes</button>
     <button class="menu-action" type="button" data-menu-tool="notes">Open notes</button>
     <button class="menu-action danger-action" id="reset-trail" type="button">Start trail again</button>
-    <p class="fine-print">Reset removes only <code>ppecTrailState:v1</code> from this browser.</p>
+    <p class="fine-print">Reset removes this trail's saved progress and prepared media from this browser.</p>
     <p class="fine-print">All compromise, activation, installation and diagnostic effects are part of the story. The trail requests no device permissions and installs nothing.</p>
   </dialog>
 
-  <script type="module" src="./js/app.js?v=20261003-8"></script>
+  <script type="module" src="./js/app.js?v=20261003-11"></script>
 </body>
 </html>

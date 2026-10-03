@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile, access } from "node:fs/promises";
+import { readFile, access, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { answerMatches, normalizeAnswer } from "../js/machines.js";
@@ -13,6 +13,49 @@ const trail = JSON.parse(await readFile(join(root, "data", "trail.json"), "utf8"
 const manifest = JSON.parse(await readFile(join(root, "data", "media-manifest.json"), "utf8"));
 const mediaSource = await readFile(join(root, "js", "media.js"), "utf8");
 const trailEngineSource = await readFile(join(root, "js", "trail-engine.js"), "utf8");
+
+test("the start download covers every active trail asset at its real size", async () => {
+  const preload = JSON.parse(await readFile(join(root, "data", "preload-assets.json"), "utf8"));
+  const expected = new Set(["./favicon.ico", "./assets/images/jonabot-touch-icon.png", "./assets/images/jonabot-favicon.png", "./assets/images/ditd-social-preview.jpg"]);
+  for (const item of Object.values(manifest.items)) {
+    for (const value of [item.localSrc, item.thumbnail, item.src, item.timedSrc, ...(item.previewPages || [])]) {
+      if (typeof value === "string" && value.startsWith("./assets/")) expected.add(value);
+    }
+  }
+  assert.deepEqual(new Set(preload.assets.map((item) => item.path)), expected);
+  assert.equal(preload.assets.length, expected.size);
+  for (const item of preload.assets) {
+    assert.equal(item.bytes, (await stat(join(root, item.path))).size, item.path);
+  }
+});
+
+test("video artwork and playback have scene-specific loading messages", () => {
+  const videos = Object.values(manifest.items).filter((item) => item.kind === "youtube");
+  assert.equal(videos.length, 9);
+  videos.forEach((item) => assert.ok(item.loadingText?.length > 12, item.title));
+  assert.match(mediaSource, /video-artwork-loading/);
+  assert.match(mediaSource, /video-playback-loading/);
+});
+
+test("the corrupted map loads independently of the optional noticeboard drawer", () => {
+  const map = trail.scenes.find((scene) => scene.id === "corrupted-ridge-map");
+  assert.equal(map.mediaId, "corrupted-ridge-map");
+  assert.deepEqual(map.referenceMediaIds, ["town-noticeboard"]);
+  assert.match(trailEngineSource, /renderMedia\(this\.manifest\.items\[scene\.mediaId\], \{ locked, eager: true, playToContinue, onWatched \}\)/);
+  assert.match(mediaSource, /img\.loading = options\.eager \? "eager" : "lazy"/);
+});
+
+test("video beats gate their direct Continue action until playback finishes", () => {
+  const gatedVideos = Object.values(manifest.items).filter((item) => item.kind === "youtube" && item.scenes?.[0] !== "trail-complete");
+  gatedVideos.forEach((item) => assert.ok(item.continuePrompt?.length <= 42, item.title));
+  assert.equal(new Set(gatedVideos.map((item) => item.promptTheme)).size, gatedVideos.length);
+  assert.match(mediaSource, /video\.addEventListener\("ended", markWatched/);
+  assert.match(trailEngineSource, /button\.hidden = true/);
+  assert.match(trailEngineSource, /currentRoot\.querySelector\("\.video-gated-continue"\)/);
+  assert.doesNotMatch(trailEngineSource, /video-watch-gate/);
+  const saved = validateState({ watchedSceneIds: ["intro", "intro", "not-a-scene"] }, trail);
+  assert.deepEqual(saved.watchedSceneIds, ["intro"]);
+});
 
 test("canonical flow contains exactly scenes 00-22 in one chain", () => {
   assert.equal(trail.scenes.length, 23);
@@ -358,7 +401,8 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
       assert.ok(item.posterKicker, `${id} poster kicker`);
       assert.ok(item.posterHeadline, `${id} poster headline`);
       assert.ok(item.posterStatus, `${id} poster status`);
-      assert.match(item.plannedLocalSrc, /^\.\/assets\/videos\/[\w-]+\.mp4$/, `${id} planned local MP4 path`);
+      assert.match(item.localSrc, /^\.\/assets\/videos\/[\w-]+\.mp4$/, `${id} local MP4 path`);
+      await access(join(root, item.localSrc.slice(2)));
       assert.equal(item.thumbnailStatus, "generated-original-story-art", `${id} thumbnail source`);
       await access(join(root, item.thumbnail.slice(2)));
     }
@@ -441,7 +485,9 @@ test("mobile welcome and landscape console use compact responsive layouts", asyn
   const html = await readFile(join(root, "index.html"), "utf8");
   const css = await readFile(join(root, "css", "main.css"), "utf8");
   const machines = await readFile(join(root, "css", "machines.css"), "utf8");
-  assert.match(css, /min-height:\s*min\(94dvh, 50rem\)/);
+  assert.match(css, /grid-template-rows:\s*minmax\(7rem, 22dvh\) minmax\(0, 1fr\)/);
+  assert.match(css, /@media \(min-width: 580px\) and \(max-height: 740px\)/);
+  assert.match(html, /class="welcome-art"/);
   assert.match(css, /@media \(min-width: 700px\) and \(orientation: landscape\), \(min-width: 980px\)/);
   assert.match(css, /grid-template-columns:\s*clamp\(150px, 17vw, 220px\) minmax\(0, 1fr\) clamp\(220px, 25vw, 300px\)/);
   assert.doesNotMatch(css, /trail-entry-complete:is\(:not\(\.trail-entry-retain\)/);
@@ -468,7 +514,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261003-5/);
+  assert.match(html, /main\.css\?v=20261003-12/);
   assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 

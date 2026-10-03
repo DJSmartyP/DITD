@@ -1,7 +1,8 @@
-import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-4";
-import { TrailEngine } from "./trail-engine.js?v=20261003-8";
+import { createStateStore, STORAGE_KEY } from "./state.js?v=20261003-10";
+import { TrailEngine } from "./trail-engine.js?v=20261003-11";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
+import { clearTrailMediaCache, preloadTrailMedia, registerMediaWorker } from "./media-cache.js?v=20261003-1";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -37,6 +38,7 @@ try {
   const toolRail = $("#tool-rail");
   const notes = $("#trail-notes");
   const welcomeDialog = $("#welcome-dialog");
+  const preloadDialog = $("#preload-dialog");
   const menuDialog = $("#menu-dialog");
   const successDialog = $("#success-dialog");
   const playerNameInput = $("#player-name");
@@ -45,6 +47,95 @@ try {
   let lastRenderedPhase = null;
   let phaseTransitionTimer = null;
   let timerInterval = null;
+  let preloadController = null;
+  let preloadRunning = false;
+  let preloadCleanup = Promise.resolve();
+  const preloadTasks = [
+    "Jonabot is polishing his keyboard. Again.",
+    "Data is loading. The data has questions.",
+    "Data is unloading. Apparently that helps.",
+    "Jonabot is reloading the data he just unloaded.",
+    "The blimp luggage has been politely rearranged.",
+    "Gremlins are being asked to leave the wires alone.",
+    "Jonabot is checking every button twice."
+  ];
+
+  function formatMediaAmount(bytes) {
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  function formatRemaining(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) return "Estimating time remaining…";
+    if (seconds > 3600) return "About an hour or more remaining";
+    if (seconds < 15) return "Less than 15 seconds remaining";
+    const rounded = Math.ceil(seconds / 15) * 15;
+    const minutes = Math.floor(rounded / 60);
+    const rest = rounded % 60;
+    const duration = `${minutes ? `${minutes} min ` : ""}${rest ? `${rest} sec` : ""}`.trim();
+    return `About ${duration} remaining`;
+  }
+
+  function enterTrail() {
+    if (preloadDialog.open) preloadDialog.close();
+    engine.scrollToScene(engine.currentScene().id, { focus: true });
+  }
+
+  async function startMediaPreparation() {
+    if (preloadRunning) return;
+    preloadRunning = true;
+    preloadController = new AbortController();
+    const controller = preloadController;
+    let taskIndex = 0;
+    let lastPaint = 0;
+    $("#preload-retry").hidden = true;
+    $("#preload-skip").textContent = "Start now; stream media";
+    $("#preload-task").textContent = preloadTasks[0];
+    $("#preload-progress").value = 0;
+    setText("#preload-percent", "0%");
+    setText("#preload-eta", "Estimating time remaining…");
+    setText("#preload-size", "Checking local supplies…");
+    if (!preloadDialog.open) preloadDialog.showModal();
+    const taskTimer = window.setInterval(() => {
+      taskIndex = (taskIndex + 1) % preloadTasks.length;
+      $("#preload-task").textContent = preloadTasks[taskIndex];
+    }, 5200);
+    try {
+      await preloadCleanup;
+      const index = await loadJson("../data/preload-assets.json");
+      if (!(await registerMediaWorker())) throw new Error("Browser media storage is unavailable.");
+      await preloadTrailMedia(index, ({ loaded, total, transferred, elapsedMs }) => {
+        const now = performance.now();
+        if (now - lastPaint < 120 && loaded < total) return;
+        lastPaint = now;
+        const percent = Math.min(100, Math.floor(loaded / total * 100));
+        $("#preload-progress").value = percent;
+        setText("#preload-percent", `${percent}%`);
+        setText("#preload-size", `${formatMediaAmount(loaded)} of ${formatMediaAmount(total)} ready`);
+        const seconds = transferred > 512000 && elapsedMs > 1000
+          ? (total - loaded) / (transferred / (elapsedMs / 1000))
+          : NaN;
+        setText("#preload-eta", formatRemaining(seconds));
+      }, { signal: controller.signal });
+      if (controller.signal.aborted) return;
+      $("#preload-progress").value = 100;
+      setText("#preload-percent", "100%");
+      setText("#preload-eta", "Ready to begin");
+      $("#preload-task").textContent = "All signals ready. Jonabot has put down the polish.";
+      window.setTimeout(() => {
+        if (!controller.signal.aborted) enterTrail();
+      }, 650);
+    } catch (error) {
+      if (controller.signal.aborted) return;
+      console.warn("Trail media preparation stopped", error);
+      $("#preload-task").textContent = "Jonabot couldn't pack every recording. The trail can still run online.";
+      setText("#preload-eta", "Preparation paused");
+      $("#preload-skip").textContent = "Start trail online";
+      $("#preload-retry").hidden = false;
+    } finally {
+      clearInterval(taskTimer);
+      preloadRunning = false;
+    }
+  }
 
   function renderTimer() {
     const state = store.get();
@@ -255,6 +346,12 @@ try {
   });
   successDialog.addEventListener("cancel", (event) => event.preventDefault());
   welcomeDialog.addEventListener("cancel", (event) => event.preventDefault());
+  preloadDialog.addEventListener("cancel", (event) => event.preventDefault());
+  $("#preload-skip").addEventListener("click", () => {
+    preloadController?.abort();
+    enterTrail();
+  });
+  $("#preload-retry").addEventListener("click", startMediaPreparation);
 
   notes.value = store.get().notes;
   const saveNotes = debounce(() => {
@@ -301,8 +398,10 @@ try {
   });
 
   function confirmReset() {
-    const approved = window.confirm(`Start again? This removes only ${STORAGE_KEY} from this browser. Your other site data is untouched.`);
+    const approved = window.confirm(`Start again? This removes ${STORAGE_KEY} and the prepared trail media from this browser. Your other site data is untouched.`);
     if (!approved) return false;
+    preloadController?.abort();
+    preloadCleanup = clearTrailMediaCache().catch((error) => console.warn("Could not clear prepared media", error));
     store.reset();
     notes.value = "";
     playerNameInput.value = "";
@@ -344,7 +443,7 @@ try {
     });
     welcomeDialog.close();
     if (nameChanged && engine.currentScene().mode === "reward") engine.render();
-    engine.scrollToScene(engine.currentScene().id, { focus: true });
+    startMediaPreparation();
   });
 
   window.addEventListener("keydown", (event) => {
@@ -353,6 +452,7 @@ try {
 
   selectTool("hints", { open: false });
   engine.render();
+  void registerMediaWorker();
 
   const hasProgress = store.hadProgress();
   playerNameInput.value = store.get().playerName || "";

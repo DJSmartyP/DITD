@@ -36,9 +36,23 @@ The responsive home advert uses original generated artwork at `assets/images/dit
 
 `Jonabot_Trail_Intro (1).mov` was deliberately excluded at the user's direction because the intro is already mapped from the YouTube playlist.
 
-## Present but not copied
+## Local video copies
 
-The nine MOV masters remain in the authoritative source folder. The deployable repository currently uses their YouTube matches as placeholders. Because YouTube can request a sign-in, the manifest records a planned local MP4 path for every video; browser-ready MP4s can later be committed under `assets/videos/` and activated by adding `localSrc`.
+The nine original MOV masters remain in the authoritative source folder. MP4 exports from that folder play directly in the trail. Six recordings were replaced on 2026-10-03 with the updated MP4 exports in `Updated Videos/`; the other three retain their prior exports. The existing YouTube URLs remain optional backups if a local MP4 cannot play on a device.
+
+| Semantic ID | Source MP4 | Repository file |
+|---|---|---|
+| `intro` | `Updated Videos/Ppec 01 Intro.mp4` | `assets/videos/intro.mp4` |
+| `bodach-bay-tourism` | `Ppec 03 Bodach Bay Video 240211.mp4` | `assets/videos/bodach-bay-tourism.mp4` |
+| `jonatravel-jonana-peel` | `Updated Videos/Ppec 05 Jonatravel.mp4` | `assets/videos/jonatravel-call.mp4` |
+| `videomatic-4763-hacker` | `Updated Videos/Ppec 07 Hacker Video 01.mp4` | `assets/videos/videomatic-4763.mp4` |
+| `videomatic-8345-reveal` | `Ppec 08 Hacker Video 02 240211.mp4` | `assets/videos/videomatic-8345.mp4` |
+| `cancel-plan-mockery` | `Updated Videos/Ppec 09 Hacker Video 03.mp4` | `assets/videos/cancel-plan.mp4` |
+| `restore-finale` | `Updated Videos/Ppec 11 Hacker Video 04.mp4` | `assets/videos/restore-finale.mp4` |
+| `final-jonana-peel` | `Ppec 12 Jonatravel Video 02 240211.mp4` | `assets/videos/final-jonatravel-call.mp4` |
+| `post-trail-credits` | `Updated Videos/Ppec 13 Credits.mp4` | `assets/videos/post-trail-credits.mp4` |
+
+The updated files were copied without re-encoding. Their SHA-256 checksums (in the table order, excluding the three unchanged rows) are `92BEACD23DB69ABE48A817BEEA6E254019033C8BF5762019AC6D82CDC69BD912`, `B9FBBBBCC8E61D1CE88583B49611172F36B9A7F5F35D029664F2C90BF6F4DEC5`, `146D3E01EC7D1690229E3B8527EA6E23DD7439C28EE9398FDAE25E943D9C0AE6`, `6ED817B42E896B7C0B9655FCBA4B0872AC061D08C92315A48F6420D1CFB4CFD8`, `9D3E3017B4363FD720DC23BAED48DCB618DFBD2848822D9FBAA3A11F42865C72`, and `675A3D03E5646DABE3770A0F5F6D24CDB7AD95791EB2213C4F2D380F08231127`.
 
 The Bodach Bay tourism video is deliberately mapped to both Scenes 02 and 03 so the answer-bearing recording stays on screen with the travel-agent question. The full noticeboard is referenced rather than collected, and reopens beside the corrupted map.
 
@@ -60,7 +74,7 @@ No replacement canon was invented for the missing Activation Centre visual.
 
 ## Generated video story art
 
-The nine temporary YouTube players use original, locally hosted artwork generated specifically for the story beat at that point in the trail. None of these covers use or derive from the YouTube thumbnails. The play control and story-specific state labels are live HTML/CSS overlays rather than baked into the images: Bodach Bay appears as a tourism broadcast, the hacker recordings as rogue/restricted uploads, and the calls and restoration as incoming system transmissions.
+The nine video players use original, locally hosted artwork generated specifically for the story beat at that point in the trail. None of these covers use or derive from the YouTube thumbnails. The play control and story-specific state labels are live HTML/CSS overlays rather than baked into the images: Bodach Bay appears as a tourism broadcast, the hacker recordings as rogue/restricted uploads, and the calls and restoration as incoming system transmissions.
 
 | Thumbnail asset | Story beat | Media ID |
 |---|---|---|

@@ -51,9 +51,9 @@ All compromise, activation, install, scanning and deletion effects are fictional
 
 ## Media
 
-`data/media-manifest.json` maps each semantic media ID to its exact local asset or temporary YouTube URL. The YouTube embeds are placeholders and load only after the player presses the in-world play control.
+`data/media-manifest.json` maps each semantic media ID to its exact local asset. The nine videos use the supplied MP4 files after the player presses the in-world play control; the existing YouTube URLs are backup links if a local recording cannot play.
 
-The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. Both manuals have local page-image readers so they work inline even when a browser cannot embed PDFs. The ordinary JonaTravel manual retains its source-PDF link; the protected Owners Guide has no source-file download in the player UI and stays concealed until its password puzzle is solved, after which its pages open directly in the console without another password prompt. The nine videos currently use the supplied unlisted YouTube playlist as placeholders. YouTube may still show its own sign-in prompt.
+The supplied noticeboard, map, manuals and Jonabot portrait are included in `assets/`. The noticeboard has a keyboard-accessible 100%-400% zoom viewer and remains an on-demand map-puzzle reference. Both manuals have local page-image readers so they work inline even when a browser cannot embed PDFs. The ordinary JonaTravel manual retains its source-PDF link; the protected Owners Guide has no source-file download in the player UI and stays concealed until its password puzzle is solved, after which its pages open directly in the console without another password prompt.
 
 When a video contains the answer to the following question, that same video remains visible with the question. The password puzzle later directs players into Discord's `#trail-note-pdfs` channel to use the previous-trail PDFs there; the website does not replace that external investigation.
 
@@ -67,7 +67,9 @@ Completed story beats remain above the current interactive section instead of be
 
 Each video has unique, locally hosted story artwork created for its exact scene. The site never uses YouTube's thumbnails. Live HTML overlays turn each cover into an in-world state such as `VISIT BODACH BAY`, `ROGUE UPLOAD DETECTED` or `INCOMING JONAGRAPH`, with a large accessible play control.
 
-Each manifest entry also records its planned `assets/videos/*.mp4` path. Once browser-ready MP4 files are added, setting `localSrc` to that path makes the same player use native video instead of YouTube without changing the scene flow or artwork.
+Each video manifest entry points to an included `assets/videos/*.mp4` file. The YouTube URL is retained only as an optional backup if local playback fails.
+
+Video artwork and playback show scene-specific in-world loading messages. Where a recording leads directly to Continue, that button appears only after the local MP4 finishes; this watched state is saved on the device. If local playback fails and the YouTube backup is used, the player can confirm that they finished the backup recording. The corrupted map itself loads eagerly, independently of the optional noticeboard reference.
 
 Jonabot favicon and touch-icon crops are included for browser tabs and saved-home-screen presentation. The opening story artwork also supplies the public social preview.
 

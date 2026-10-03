@@ -1,7 +1,7 @@
 import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-3";
-import { renderMedia } from "./media.js?v=20261003-7";
+import { renderMedia } from "./media.js?v=20261003-11";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
-import { generateTicketClass } from "./state.js?v=20261003-4";
+import { generateTicketClass } from "./state.js?v=20261003-10";
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -246,10 +246,10 @@ export class TrailEngine {
     container.append(copy);
   }
 
-  appendSceneMedia(container, scene, { locked = false } = {}) {
+  appendSceneMedia(container, scene, { locked = false, playToContinue = false, onWatched } = {}) {
     const mediaLayout = el("div", "scene-media-layout");
     if (scene.mediaId) {
-      const media = renderMedia(this.manifest.items[scene.mediaId], { locked });
+      const media = renderMedia(this.manifest.items[scene.mediaId], { locked, eager: true, playToContinue, onWatched });
       if (media) mediaLayout.append(media);
     }
 
@@ -339,8 +339,23 @@ export class TrailEngine {
     currentRoot.setAttribute("aria-live", "polite");
     stream.append(currentRoot);
     const mediaVisible = this.mediaShouldShow(scene, solved, replay);
+    const directContinue = Boolean(scene.next && (solved || (!scene.validation && !inlineMachineScene && scene.mode !== "restore" && scene.mode !== "reward")));
+    const requiresPlayback = Boolean(!replay && directContinue && mediaVisible && this.manifest.items[scene.mediaId]?.kind === "youtube");
+    const videoWatched = this.store.get().watchedSceneIds.includes(scene.id);
+    const markVideoWatched = () => {
+      if (!this.store.get().watchedSceneIds.includes(scene.id)) {
+        this.store.update((currentState) => { currentState.watchedSceneIds.push(scene.id); });
+      }
+      const continueButton = currentRoot.querySelector(".video-gated-continue");
+      if (continueButton) continueButton.hidden = false;
+    };
+    const mediaOptions = {
+      locked: scene.mode === "document-locked",
+      playToContinue: requiresPlayback && !videoWatched,
+      onWatched: requiresPlayback ? markVideoWatched : undefined
+    };
     if (scene.mediaFirst && mediaVisible) {
-      this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
+      this.appendSceneMedia(currentRoot, scene, mediaOptions);
     }
     if (!scene.openingVideoOnly) this.appendSceneHeadingAndCopy(currentRoot, scene, { completed: replay });
 
@@ -352,7 +367,7 @@ export class TrailEngine {
       currentRoot.append(this.feedback);
     };
     if (!scene.mediaFirst && mediaVisible) {
-      this.appendSceneMedia(currentRoot, scene, { locked: scene.mode === "document-locked" });
+      this.appendSceneMedia(currentRoot, scene, mediaOptions);
     }
 
     if (replay) {
@@ -400,6 +415,13 @@ export class TrailEngine {
     }
 
     const actions = el("div", "scene-actions");
+    const gateContinue = (button) => {
+      if (requiresPlayback && !videoWatched) {
+        button.classList.add("video-gated-continue");
+        button.hidden = true;
+      }
+      actions.append(button);
+    };
     if (scene.mode === "investigation" && scene.validation?.type === "evidence" && !solved) {
       const collect = el("button", "primary-button", scene.cta || "Collect evidence");
       collect.type = "button";
@@ -416,13 +438,13 @@ export class TrailEngine {
         next.textContent = `Continue: ${this.sceneById.get(scene.next)?.title || "next section"}`;
       }
       next.addEventListener("click", () => this.advance(scene));
-      actions.append(next);
+      gateContinue(next);
     } else if (solved && scene.next) {
       const next = el("button", "primary-button", scene.cta || "Continue");
       next.type = "button";
       next.textContent = scene.validation?.intentionalFailure ? "Continue behind the scenes" : `Continue: ${this.sceneById.get(scene.next)?.title || "next scene"}`;
       next.addEventListener("click", () => this.advance(scene));
-      actions.append(next);
+      gateContinue(next);
     } else if (scene.mode === "reward" && !solved) {
       const finish = el("button", "primary-button", "Complete trail");
       finish.type = "button";
