@@ -240,23 +240,6 @@ body[data-current-scene="recovery-manual"] .document-lock-card::after {
   letter-spacing: .1em;
 }
 
-body[data-current-scene="jonabot-taunt"] .story-copy {
-  position: relative;
-  padding: 1rem;
-  border: 2px solid #d7463f;
-  background: linear-gradient(100deg, rgb(92 7 19 / .13), transparent 60%);
-  box-shadow: inset .35rem 0 0 #8e2630, 0 0 1rem rgb(185 24 34 / .28);
-}
-
-body[data-current-scene="jonabot-taunt"] .story-copy::before {
-  content: "LIVE ADMINISTRATOR LINK";
-  display: block;
-  margin-bottom: .55rem;
-  color: #a9262d;
-  font: 900 .68rem var(--mono);
-  letter-spacing: .14em;
-}
-
 body[data-current-scene="recovery-console"] .machine {
   border-color: #69d6ca;
   outline-color: #d94c46;

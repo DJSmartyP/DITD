@@ -254,6 +254,7 @@
     "bodach-bay-tickets": {
       "kind": "image",
       "src": "./assets/tickets/bodach-bay-trail-completion-pass.png",
+      "timedSrc": "./assets/tickets/bodach-bay-trail-completion-pass-timed.png",
       "title": "Bodach Bay Blimp Completion Pass",
       "alt": "An ornate gold, cream, red and deep teal JonaTravel completion pass featuring Jonabot, a Bodach Bay blimp, a gold trail-completion seal, a tear-off booking stub and blank passenger, date and seat fields.",
       "sourceFile": "Generated as the final DITD trail reward on 2026-09-30",

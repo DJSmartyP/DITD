@@ -1,5 +1,5 @@
-import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261002-4";
-import { renderMedia } from "./media.js?v=20261002-6";
+import { answerMatches, renderMachine, specialResponse } from "./machines.js?v=20261003-1";
+import { renderMedia } from "./media.js?v=20261003-1";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
 function el(tag, className, text) {
@@ -184,6 +184,7 @@ export class TrailEngine {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const shouldType = Boolean(scene.typewriterTransmission && !completed && scene.body?.length && !reducedMotion);
     const copy = el("div", `story-copy${scene.typewriterTransmission ? " story-copy-live-transmission" : ""}`);
+    if (scene.speaker?.toLowerCase().includes("jonabot")) copy.dataset.voice = "jonabot";
     const typedParagraphs = [];
     (scene.body || []).forEach((paragraph, index) => {
       const p = el("p", index === 0 ? "speaker-line" : "", shouldType ? "" : paragraph);

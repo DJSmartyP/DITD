@@ -74,9 +74,9 @@ function youtube(item) {
   return shell;
 }
 
-async function downloadTimedPass(item, completionTimeLabel) {
+async function prepareTimedPass(item, completionTimeLabel) {
   const source = new Image();
-  source.src = item.src;
+  source.src = item.timedSrc || item.src;
   await source.decode();
   const canvas = document.createElement("canvas");
   canvas.width = source.naturalWidth;
@@ -86,26 +86,24 @@ async function downloadTimedPass(item, completionTimeLabel) {
   const scale = canvas.width / 1536;
   context.save();
   context.fillStyle = "#0a3f3d";
-  context.font = `900 ${Math.round(21 * scale)}px Georgia, serif`;
+  context.font = `900 ${Math.round(13 * scale)}px Georgia, serif`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText(`TRAIL ${completionTimeLabel}`, 850 * scale, 856 * scale);
+  context.fillText("OFFICIAL TIME", 805 * scale, 819 * scale);
+  context.font = `900 ${Math.round(23 * scale)}px Georgia, serif`;
+  context.fillText(completionTimeLabel, 805 * scale, 849 * scale);
   context.restore();
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("Could not prepare the timed completion pass.");
-  const url = URL.createObjectURL(blob);
-  const download = document.createElement("a");
-  download.href = url;
-  download.download = item.downloadName || "trail-reward.png";
-  download.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return URL.createObjectURL(blob);
 }
 
 function image(item, options = {}) {
   const shell = el("figure", "media-shell");
   const img = document.createElement("img");
-  img.src = item.src;
+  const timed = Boolean(options.completionTimeLabel);
+  img.src = timed && item.timedSrc ? item.timedSrc : item.src;
   img.alt = item.alt || item.title;
   img.loading = "lazy";
   const caption = el("figcaption", "media-caption");
@@ -114,27 +112,29 @@ function image(item, options = {}) {
     caption.append(el("p", "", "The cypher poster is in the lower-right area of the noticeboard image."));
   }
   if (item.download) {
-    const timed = Boolean(options.completionTimeLabel);
     const link = el("a", "secondary-button download-button", item.downloadLabel || "Download reward");
     link.href = item.src;
     link.download = item.downloadName || "trail-reward.png";
     if (timed) {
-      link.textContent = "Download your timed completion pass";
+      link.textContent = "Preparing your timed completion pass…";
+      link.removeAttribute("href");
+      link.setAttribute("aria-disabled", "true");
+      link.setAttribute("aria-busy", "true");
+      link.tabIndex = -1;
       caption.append(el("p", "ticket-time-caption", `OFFICIAL TRAIL TIME: ${options.completionTimeLabel}`));
-      link.addEventListener("click", async (event) => {
-        event.preventDefault();
-        link.setAttribute("aria-busy", "true");
-        link.textContent = "Stamping your pass…";
-        try {
-          await downloadTimedPass(item, options.completionTimeLabel);
-          link.textContent = "Download your timed completion pass";
-        } catch (error) {
+      prepareTimedPass(item, options.completionTimeLabel).then((url) => {
+        link.href = url;
+        link.textContent = "Download your timed completion pass";
+        link.removeAttribute("aria-disabled");
+        link.removeAttribute("aria-busy");
+        link.removeAttribute("tabindex");
+      }).catch((error) => {
           console.error(error);
-          link.textContent = "Timed stamp unavailable — download standard pass";
           link.href = item.src;
-        } finally {
+          link.textContent = "Download standard pass (time shown above)";
+          link.removeAttribute("aria-disabled");
           link.removeAttribute("aria-busy");
-        }
+          link.removeAttribute("tabindex");
       });
     }
     caption.append(link);

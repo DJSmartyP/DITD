@@ -364,7 +364,7 @@ function privateChannel(scene, { animate = true } = {}) {
         channel.hidden = false;
         wrapper.classList.remove("private-channel-handshaking");
         wrapper.classList.add("private-channel-ready");
-      }, 1250);
+      }, 3000);
     };
     window.setTimeout(typeNextCharacter, 350);
   } else {

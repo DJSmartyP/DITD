@@ -10,6 +10,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const trail = JSON.parse(await readFile(join(root, "data", "trail.json"), "utf8"));
 const manifest = JSON.parse(await readFile(join(root, "data", "media-manifest.json"), "utf8"));
+const mediaSource = await readFile(join(root, "js", "media.js"), "utf8");
 
 test("canonical flow contains exactly scenes 00-22 in one chain", () => {
   assert.equal(trail.scenes.length, 23);
@@ -176,6 +177,9 @@ test("Jonabot's wrong-answer messages escalate in his live voice", () => {
   const password = trail.scenes.find((scene) => scene.id === "jonabot-taunt");
   assert.match(bodachBay.wrongResponses[0], /Bodach Bay advert/);
   assert.equal(trap.wrongResponses.length, 4);
+  assert.equal(trap.typewriterTransmission, true);
+  assert.equal(trap.transmissionLabel, "LIVE NOW");
+  assert.equal(trap.speaker, "Administrator: Jonabot");
   assert.match(trap.wrongResponses[0], /^No, that’s wrong\. I /);
   assert.match(trap.wrongResponses[3], /^WHAT’S WRONG WITH YOU\?/);
   assert.equal(password.wrongResponses.length, 4);
@@ -324,6 +328,9 @@ test("every scene media ID exists and local mapped assets resolve", async () => 
     if (typeof item.src === "string" && item.src.startsWith("./")) {
       await access(join(root, item.src.slice(2)));
     }
+    if (typeof item.timedSrc === "string" && item.timedSrc.startsWith("./")) {
+      await access(join(root, item.timedSrc.slice(2)));
+    }
     for (const previewPage of item.previewPages || []) {
       assert.match(previewPage, /^\.\/assets\/documents\/previews\/[\w/-]+\.png$/, `${id} local preview page`);
       await access(join(root, previewPage.slice(2)));
@@ -431,7 +438,7 @@ test("the growing trail scrolls in the middle column while desktop rails stay vi
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.story-copy[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.scene-media-layout[^{]*\{[^}]*display:\s*none/s);
   assert.doesNotMatch(css, /trail-entry-complete[^{}]*\.machine[^{]*\{[^}]*display:\s*none/s);
-  assert.match(html, /main\.css\?v=20261002-6/);
+  assert.match(html, /main\.css\?v=20261003-1/);
   assert.match(css, /#timer-readout\[hidden\]\s*\{\s*display:\s*none;/);
 });
 
@@ -581,7 +588,7 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(machines, /channel\.hidden = false/);
   assert.match(machines, /INTERCEPTING PRIVATE CHANNEL/);
   assert.match(machines, /private-channel-handshaking/);
-  assert.match(machines, /}, 1250\)/);
+  assert.match(machines, /}, 3000\)/);
   assert.match(machines, /prefers-reduced-motion: reduce/);
   assert.match(engine, /animate: false/);
   assert.match(mainCss, /\.discord-channel\s*\{/);
@@ -594,6 +601,13 @@ test("corrupted diagnostic replaces repeated video dialogue and keeps the counte
   assert.match(engine, /}, 1250\)/);
   assert.match(engine, /current\.paragraph\.slice\(0, characterIndex\)/);
   assert.match(mainCss, /\.story-copy-live-transmission/);
+  assert.match(mainCss, /INCOMING \/\/ LIVE ADMINISTRATOR/);
+  assert.match(mainCss, /repeating-linear-gradient\(135deg, #7e1720/);
+  assert.match(mainCss, /story-copy\[data-voice="jonabot"\].*#104b3c/);
+  assert.match(mainCss, /\.story-copy > \.speaker-line:not\(\.speaker-line-live\).*#123b59/);
+  assert.match(mediaSource, /Preparing your timed completion pass/);
+  assert.match(mediaSource, /link\.href = url/);
+  assert.doesNotMatch(mediaSource, /download\.click\(\)/);
   assert.match(mainCss, /\.scene-transmission-typing > :not\(\.scene-header\):not\(\.story-copy\)/);
   for (const moderator of ["smarty", "neven", "arty", "grayfitz"]) {
     assert.match(mainCss, new RegExp(`\\.channel-message--${moderator}`));

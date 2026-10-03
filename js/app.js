@@ -1,5 +1,5 @@
 import { createStateStore, STORAGE_KEY } from "./state.js";
-import { TrailEngine } from "./trail-engine.js?v=20261002-5";
+import { TrailEngine } from "./trail-engine.js?v=20261003-1";
 import { renderHints, revealNextHint } from "./hints.js";
 import { formatTrailTime, timerElapsedMs } from "./timer.js?v=20261002-1";
 
